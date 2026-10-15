@@ -1,0 +1,144 @@
+---
+import {
+  asText,
+  imageAlt,
+  imageSrc,
+  isExternal,
+  type EntryLike,
+  valueOf,
+  withBase,
+} from "./content";
+
+interface Props {
+  entry: EntryLike;
+}
+
+const { entry } = Astro.props;
+const title = asText(valueOf(entry, "title", "name"), "News update");
+const date = asText(valueOf(entry, "date", "publishedAt", "year"));
+const summary = asText(
+  valueOf(entry, "summary", "excerpt", "description", "body"),
+);
+const image = valueOf(entry, "image", "photo");
+const imageUrl = imageSrc(image);
+const rawLink = asText(valueOf(entry, "link", "url"));
+const linkValue = rawLink || (entry.slug ? `/news/${entry.slug}/` : "");
+const link = linkValue
+  ? isExternal(linkValue)
+    ? linkValue
+    : withBase(linkValue)
+  : "";
+---
+
+<article
+  class:list={{ "news-card": true, "news-card--with-image": Boolean(imageUrl) }}
+>
+  {
+    imageUrl && (
+      <img
+        class="news-card__image"
+        src={imageUrl}
+        alt={imageAlt(image, title)}
+        loading="lazy"
+      />
+    )
+  }
+  <div class="news-card__body">
+    {date && <time datetime={date}>{date}</time>}
+    <h3>
+      {
+        link ? (
+          <a
+            href={link}
+            target={isExternal(linkValue) ? "_blank" : undefined}
+            rel={isExternal(linkValue) ? "noreferrer" : undefined}
+          >
+            {title}
+          </a>
+        ) : (
+          title
+        )
+      }
+    </h3>
+    {summary && <p>{summary}</p>}
+    {
+      link && (
+        <a
+          class="text-link"
+          href={link}
+          target={isExternal(linkValue) ? "_blank" : undefined}
+          rel={isExternal(linkValue) ? "noreferrer" : undefined}
+        >
+          Read story <span aria-hidden="true">↗</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .news-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.35rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .news-card--with-image {
+    grid-template-columns: minmax(7rem, 0.8fr) minmax(0, 1.5fr);
+    align-items: start;
+    gap: clamp(1rem, 3vw, 2.5rem);
+  }
+
+  .news-card__image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: var(--teal-soft);
+  }
+
+  .news-card__body {
+    display: grid;
+    align-content: start;
+    gap: 0.65rem;
+  }
+
+  .news-card time {
+    color: var(--teal);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .news-card h3 {
+    margin-bottom: 0;
+  }
+
+  .news-card h3 a {
+    text-decoration: none;
+  }
+
+  .news-card h3 a:hover,
+  .news-card h3 a:focus-visible {
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .news-card p {
+    margin-bottom: 0;
+  }
+
+  .news-card .text-link {
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 38rem) {
+    .news-card--with-image {
+      grid-template-columns: 5rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+  }
+</style>

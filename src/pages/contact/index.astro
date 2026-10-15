@@ -1,0 +1,277 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { asText, withBase } from "../../components/content";
+import site from "../../data/site.json";
+
+const siteData = site as Record<string, unknown>;
+const siteName = asText(siteData.shortName ?? siteData.name, "Research Lab");
+const university = asText(siteData.university);
+const address = Array.isArray(siteData.address)
+  ? siteData.address.filter(
+      (line): line is string =>
+        typeof line === "string" && line.trim().length > 0,
+    )
+  : [];
+const location = [university, ...address].filter(Boolean);
+const email = asText(siteData.email).trim();
+const phone = asText(siteData.phone).trim();
+const socials = Array.isArray(siteData.socials)
+  ? siteData.socials.filter(
+      (social): social is { label: string; url: string } =>
+        Boolean(social) &&
+        typeof social === "object" &&
+        typeof social.label === "string" &&
+        social.label.trim().length > 0 &&
+        typeof social.url === "string" &&
+        social.url.trim().length > 0,
+    )
+  : [];
+const description = asText(siteData.description);
+---
+
+<BaseLayout
+  title={`Contact · ${siteName}`}
+  description={description || `Contact ${siteName}.`}
+>
+  <div class="editorial-canvas editorial-contact">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>Contact <span aria-hidden="true">/</span> {siteName}</p>
+        <p>Directory / Open invitation</p>
+      </div>
+      <div class="editorial-content">
+        <header class="editorial-hero" aria-labelledby="contact-title">
+          <p class="editorial-kicker">Contact / Open invitation</p>
+          <h1 id="contact-title">Find the lab.</h1>
+          <p class="editorial-hero__intro">
+            {description || "Contact details are not currently published."}
+          </p>
+        </header>
+
+        <section class="editorial-section" aria-labelledby="hello-title">
+          <div class="contact-grid">
+            <div class="contact-intro">
+              <p class="editorial-index">
+                01 <span aria-hidden="true">/</span> Location
+              </p>
+              <h2 id="hello-title">Where the lab is based</h2>
+              {
+                location.length ? (
+                  <address>
+                    {location.map((line) => (
+                      <span>{line}</span>
+                    ))}
+                  </address>
+                ) : (
+                  <p class="empty-state">
+                    Location details are not currently published.
+                  </p>
+                )
+              }
+            </div>
+            <div class="contact-details">
+              {
+                email && (
+                  <div class="detail-block">
+                    <h3>Email</h3>
+                    <a class="email-link" href={`mailto:${email}`}>
+                      {email} <span aria-hidden="true">↗</span>
+                    </a>
+                  </div>
+                )
+              }
+              {
+                phone && (
+                  <div class="detail-block">
+                    <h3>Phone</h3>
+                    <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>
+                  </div>
+                )
+              }
+              {
+                socials.length > 0 && (
+                  <div class="detail-block">
+                    <h3>Elsewhere</h3>
+                    <ul>
+                      {socials.map((social) => (
+                        <li>
+                          <a href={social.url} target="_blank" rel="noreferrer">
+                            {social.label} <span aria-hidden="true">↗</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              }
+              {
+                !email && !phone && socials.length === 0 && (
+                  <p class="empty-state">
+                    Email, phone, and social details are not currently
+                    published.
+                  </p>
+                )
+              }
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="editorial-section next-step"
+          aria-labelledby="write-title"
+        >
+          <p class="editorial-index">
+            02 <span aria-hidden="true">/</span> Keep exploring
+          </p>
+          <h2 id="write-title">Follow the questions behind the work.</h2>
+          <p>
+            Read about the lab's research, explore its pathogen focus, or find
+            out how to join a conversation.
+          </p>
+          <div class="contact-links">
+            <a class="editorial-link" href={withBase("/research/")}
+              >Research <span aria-hidden="true">→</span></a
+            >
+            <a class="editorial-link" href={withBase("/pathogens/")}
+              >Pathogens <span aria-hidden="true">→</span></a
+            >
+            <a class="editorial-link" href={withBase("/join/")}
+              >Join or collaborate <span aria-hidden="true">→</span></a
+            >
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .editorial-contact {
+    --c-rule: var(--editorial-line, #c9ccc2);
+    --c-muted: var(--editorial-muted, #64736f);
+    --c-teal: var(--editorial-teal, #276d6a);
+  }
+
+  .editorial-contact .editorial-hero__intro {
+    max-width: 40rem;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.72fr);
+    gap: clamp(2rem, 8vw, 7rem);
+    align-items: start;
+  }
+
+  .contact-intro h2 {
+    max-width: 12ch;
+    margin-top: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .contact-intro > p:not(.editorial-index) {
+    max-width: 34rem;
+    margin-bottom: 0;
+    color: var(--c-muted, var(--ink-muted));
+  }
+
+  .editorial-index {
+    margin: 0;
+    color: var(--c-teal, var(--teal-deep));
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .email-link {
+    display: inline-block;
+    margin-top: 1.4rem;
+    color: var(--c-teal, var(--teal-deep));
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.25rem, 2.7vw, 2rem);
+    text-underline-offset: 0.15em;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-details {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+
+  .detail-block {
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--c-rule, var(--line));
+  }
+
+  .detail-block h3 {
+    margin-bottom: 0.55rem;
+    font-family: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  address {
+    color: var(--c-muted, var(--ink-muted));
+    font-style: normal;
+  }
+
+  address span {
+    display: block;
+  }
+
+  .detail-block a {
+    color: var(--c-teal, var(--teal-deep));
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .detail-block ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .detail-block li + li {
+    margin-top: 0.45rem;
+  }
+
+  .next-step {
+    max-width: 52rem;
+    margin-top: 1rem;
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--c-rule, var(--line));
+  }
+
+  .next-step h2 {
+    max-width: 15ch;
+    margin-top: 0.7rem;
+  }
+
+  .next-step > p:not(.editorial-index) {
+    max-width: 36rem;
+    color: var(--c-muted, var(--ink-muted));
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .editorial-link {
+    color: var(--c-teal, var(--teal-deep));
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 48rem) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>

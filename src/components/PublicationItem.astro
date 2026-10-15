@@ -1,0 +1,148 @@
+---
+import {
+  asText,
+  isExternal,
+  type EntryLike,
+  valueOf,
+  withBase,
+} from "./content";
+
+interface Props {
+  entry: EntryLike;
+}
+
+const { entry } = Astro.props;
+const title = asText(valueOf(entry, "title", "name"), "Untitled publication");
+const authors = asText(valueOf(entry, "authors", "author"));
+const journal = asText(valueOf(entry, "journal", "venue", "publication"));
+const year = asText(valueOf(entry, "year", "date"));
+const abstract = asText(valueOf(entry, "abstract", "summary", "description"));
+const urlValue = asText(valueOf(entry, "url", "link"));
+const doiValue = asText(valueOf(entry, "doi"));
+const citationUrl =
+  urlValue ||
+  (doiValue
+    ? isExternal(doiValue)
+      ? doiValue
+      : `https://doi.org/${doiValue.replace(/^doi:\s*/i, "")}`
+    : "");
+const citationLink = citationUrl
+  ? isExternal(citationUrl)
+    ? citationUrl
+    : withBase(citationUrl)
+  : "";
+---
+
+<article class="publication-item">
+  <div class="publication-item__year">{year || "—"}</div>
+  <div class="publication-item__body">
+    <h3>
+      {
+        citationLink ? (
+          <a
+            href={citationLink}
+            target={isExternal(citationUrl) ? "_blank" : undefined}
+            rel={isExternal(citationUrl) ? "noreferrer" : undefined}
+          >
+            {title}
+          </a>
+        ) : (
+          title
+        )
+      }
+    </h3>
+    {authors && <p class="publication-item__authors">{authors}</p>}
+    {
+      (journal || year) && (
+        <p class="publication-item__journal">
+          {[journal, year].filter(Boolean).join(" · ")}
+        </p>
+      )
+    }
+    {abstract && <p>{abstract}</p>}
+    {
+      citationLink && (
+        <a
+          class="text-link"
+          href={citationLink}
+          target={isExternal(citationUrl) ? "_blank" : undefined}
+          rel={isExternal(citationUrl) ? "noreferrer" : undefined}
+        >
+          {doiValue ? "View DOI" : "Read publication"}{" "}
+          <span aria-hidden="true">↗</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .publication-item {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.25rem);
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .publication-item:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .publication-item__year {
+    padding-top: 0.25rem;
+    color: var(--teal);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .publication-item__body {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .publication-item h3 {
+    margin-bottom: 0;
+    font-size: clamp(1.25rem, 2.3vw, 1.75rem);
+  }
+
+  .publication-item h3 a {
+    text-decoration: none;
+  }
+
+  .publication-item h3 a:hover,
+  .publication-item h3 a:focus-visible {
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .publication-item p {
+    margin-bottom: 0;
+  }
+
+  .publication-item__authors {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .publication-item__journal {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+  }
+
+  .publication-item .text-link {
+    margin-top: 0.3rem;
+    font-size: 0.7rem;
+  }
+
+  @media (max-width: 35rem) {
+    .publication-item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

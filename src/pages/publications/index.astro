@@ -1,0 +1,341 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PublicationItem from "../../components/PublicationItem.astro";
+import site from "../../data/site.json";
+
+const publications = (await getCollection("publications")).sort(
+  (a, b) =>
+    b.data.year - a.data.year ||
+    a.data.title.localeCompare(b.data.title) ||
+    a.id.localeCompare(b.id),
+);
+---
+
+<BaseLayout
+  title={`Publications · ${site.shortName}`}
+  description="Research publications from Tushar Shaw Lab."
+>
+  <div class="editorial-canvas publications-page">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>Editorial journal <span aria-hidden="true">/</span> Publications</p>
+        <p>Research record</p>
+      </div>
+
+      <div class="editorial-content">
+        <header
+          class="editorial-hero publications-hero"
+          aria-labelledby="publications-hero-title"
+        >
+          <div class="publications-hero__meta">
+            <p class="editorial-kicker">Publications</p>
+            <p class="publications-hero__edition">Lab research / Archive</p>
+          </div>
+          <div class="publications-hero__copy">
+            <h1 id="publications-hero-title">Research in practice.</h1>
+            <p>
+              A record of work from Tushar Shaw Lab on infectious diseases,
+              bacterial pathogens, and rapid, reliable, cost-effective
+              diagnostics.
+            </p>
+          </div>
+          <aside class="publications-hero__aside" aria-label="Archive note">
+            <p class="publications-hero__aside-label">Reading the archive</p>
+            <p>Publication records will be added as the lab shares its work.</p>
+          </aside>
+        </header>
+
+        <section
+          class="editorial-section publication-section"
+          aria-labelledby="publications-title"
+        >
+          <div class="publication-section__heading">
+            <p class="editorial-index">
+              01 <span aria-hidden="true">/</span> Archive <span
+                aria-hidden="true">·</span
+              > Selected writing
+            </p>
+            <div>
+              <h2 id="publications-title">A working bibliography</h2>
+              <p>
+                Browse the lab's research record as publications are added.
+                Author, journal, and link details will appear with each record.
+              </p>
+            </div>
+          </div>
+          {
+            publications.length ? (
+              <div class="editorial-rule-list publication-archive">
+                {publications.map((entry) => (
+                  <PublicationItem entry={entry} />
+                ))}
+              </div>
+            ) : (
+              <p class="empty-state">
+                Publication records have not yet been added.
+              </p>
+            )
+          }
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .publications-page {
+    --editorial-ink: var(--ink);
+    --editorial-navy: var(--navy);
+    --editorial-teal: var(--teal);
+    --editorial-teal-soft: var(--teal-soft);
+    --editorial-ivory: var(--canvas);
+    --editorial-paper: var(--paper);
+    --editorial-line: var(--line);
+    --editorial-muted: var(--muted);
+    color: var(--editorial-ink);
+    background: var(--editorial-ivory);
+  }
+
+  .publications-hero {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(
+        10rem,
+        0.75fr
+      );
+    gap: clamp(1.25rem, 4vw, 4rem);
+    align-items: start;
+    padding-block: clamp(3.75rem, 8vw, 6.75rem);
+    border-bottom: 1px solid var(--editorial-line);
+  }
+
+  .publications-hero__meta,
+  .publications-hero__aside {
+    padding-top: 0.35rem;
+  }
+
+  .publications-hero__edition,
+  .publications-hero__aside-label {
+    margin-top: 1.4rem;
+    color: var(--editorial-muted);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .publications-hero__aside {
+    border-top: 1px solid var(--editorial-teal);
+  }
+
+  .publications-hero__aside-label {
+    margin: 0.8rem 0 0;
+    color: var(--editorial-teal);
+  }
+
+  .publications-hero__aside p:last-child {
+    margin: 0.75rem 0 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .publications-hero h1 {
+    max-width: 12ch;
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.8rem, 6vw, 5.25rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .publications-hero__copy > p {
+    max-width: 37rem;
+    margin: 1.6rem 0 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+    line-height: 1.45;
+  }
+
+  .publication-section {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .publication-section__heading {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.85fr);
+    gap: clamp(1.25rem, 4vw, 4rem);
+    align-items: start;
+    margin-bottom: clamp(2rem, 4vw, 3.25rem);
+  }
+
+  .editorial-index {
+    margin: 0;
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.69rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .editorial-index span {
+    margin-inline: 0.3rem;
+    color: var(--editorial-line);
+  }
+
+  .publication-section__heading h2 {
+    max-width: 20ch;
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.9rem, 3.3vw, 3rem);
+    font-weight: 400;
+    line-height: 1.08;
+  }
+
+  .publication-section__heading p:last-child {
+    max-width: 34rem;
+    margin: 0.8rem 0 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .publication-archive {
+    border-top: 1px solid var(--editorial-line);
+  }
+
+  .publication-archive :global(.publication-item) {
+    display: grid;
+    grid-template-columns: minmax(3.25rem, 0.3fr) minmax(0, 2.7fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding-block: 1.35rem;
+    border-top: 0;
+    border-bottom: 1px solid var(--editorial-line);
+  }
+
+  .publication-archive :global(.publication-item__year) {
+    padding-top: 0.25rem;
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+  }
+
+  .publication-archive :global(.publication-item__body) {
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .publication-archive :global(.publication-item h3) {
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  .publication-archive :global(.publication-item h3 a) {
+    text-decoration: none;
+  }
+
+  .publication-archive :global(.publication-item h3 a:hover),
+  .publication-archive :global(.publication-item h3 a:focus-visible) {
+    color: var(--editorial-teal);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .publication-archive :global(.publication-item p) {
+    margin: 0;
+  }
+
+  .publication-archive :global(.publication-item__authors) {
+    color: var(--editorial-ink);
+    font-size: 0.88rem;
+  }
+
+  .publication-archive :global(.publication-item__journal) {
+    color: var(--editorial-muted);
+    font-size: 0.78rem;
+    font-style: italic;
+  }
+
+  .publication-archive
+    :global(
+      .publication-item__body
+        > p:not(.publication-item__authors):not(.publication-item__journal)
+    ) {
+    max-width: 44rem;
+    color: var(--editorial-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .publication-archive :global(.publication-item .text-link) {
+    width: fit-content;
+    margin-top: 0.25rem;
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.69rem;
+    font-weight: 750;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .empty-state {
+    padding: 1.2rem 0;
+    border-block: 1px dashed var(--editorial-line);
+    color: var(--editorial-muted);
+  }
+
+  .fine-print {
+    margin: 1.25rem 0 0;
+    color: var(--editorial-muted);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 48rem) {
+    .publications-hero {
+      grid-template-columns: minmax(6rem, 0.45fr) minmax(0, 1.55fr);
+    }
+
+    .publications-hero__aside {
+      grid-column: 2;
+    }
+  }
+
+  @media (max-width: 38rem) {
+    .publications-hero,
+    .publication-section__heading {
+      display: block;
+    }
+
+    .publications-hero__copy,
+    .publication-section__heading > div {
+      margin-top: 1.5rem;
+    }
+
+    .publications-hero__aside {
+      margin-top: 2rem;
+    }
+
+    .publication-archive :global(.publication-item) {
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+    }
+  }
+</style>

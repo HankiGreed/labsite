@@ -1,0 +1,384 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../components/content";
+import site from "../../data/site.json";
+
+const entries = (await getCollection("research")).sort(
+  (a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id),
+);
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+---
+
+<BaseLayout
+  title={`Research · ${site.shortName}`}
+  description="Research themes from the Tushar Shaw Lab: infectious diseases, bacterial pathogens, and rapid, reliable, cost-effective diagnostics."
+>
+  <div class="editorial-canvas research-page">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>Editorial journal <span aria-hidden="true">/</span> Research</p>
+        <p>{site.shortName}</p>
+      </div>
+
+      <div class="editorial-content">
+        <header
+          class="editorial-hero research-hero"
+          aria-labelledby="research-title"
+        >
+          <div class="research-hero__meta">
+            <p class="editorial-kicker">Research at a glance</p>
+            <p class="research-hero__edition">Infectious disease research</p>
+          </div>
+          <div class="research-hero__copy">
+            <h1 id="research-title">
+              Understanding infection, improving diagnosis.
+            </h1>
+            <p>
+              The Tushar Shaw Lab investigates infectious diseases and bacterial
+              pathogens, while developing rapid, reliable, and cost-effective
+              diagnostic technologies.
+            </p>
+          </div>
+          <aside class="research-hero__aside" aria-label="Research methods">
+            <p class="research-hero__aside-label">Methods in practice</p>
+            <p>
+              Clinical microbiology, molecular biology, molecular epidemiology,
+              genomics, and bioinformatics.
+            </p>
+          </aside>
+        </header>
+
+        <section
+          class="editorial-section research-section"
+          aria-labelledby="themes-title"
+        >
+          <div class="research-section__heading">
+            <p class="editorial-index">
+              01 <span aria-hidden="true">/</span> Research <span
+                aria-hidden="true">·</span
+              > Themes
+            </p>
+            <h2 id="themes-title">Four ways into the question</h2>
+            <p>
+              Research directions spanning bacterial diversity, resistance,
+              diagnostics, and respiratory infection.
+            </p>
+          </div>
+          {
+            entries.length ? (
+              <div class="editorial-rule-list research-list">
+                {rendered.map(({ entry, Content }, index) => (
+                  <article class="research-row" id={entry.id}>
+                    <p class="editorial-index research-row__index">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <div class="research-row__main">
+                      <h3>{entry.data.title}</h3>
+                      <p class="research-row__summary">{entry.data.summary}</p>
+                      <div class="prose">
+                        <Content />
+                      </div>
+                    </div>
+                    {entry.data.image && (
+                      <div class="research-row__image-wrap">
+                        <img
+                          class="research-row__image"
+                          src={withBase(entry.data.image)}
+                          alt={`Illustration for ${entry.data.title}`}
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p class="empty-state">Research themes are being prepared.</p>
+            )
+          }
+        </section>
+
+        <nav class="research-links" aria-label="Explore the research">
+          <a class="research-link" href={withBase("/pathogens/")}>
+            <span class="editorial-kicker">Next archive</span>
+            <strong
+              >Pathogens of interest <span aria-hidden="true">↗</span></strong
+            >
+          </a>
+          <a class="research-link" href={withBase("/projects/")}>
+            <span class="editorial-kicker">Follow the work</span>
+            <strong
+              >Projects and scientific directions <span aria-hidden="true"
+                >↗</span
+              ></strong
+            >
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .research-page,
+  .pathogens-page,
+  .projects-page {
+    --editorial-ink: var(--ink);
+    --editorial-navy: var(--navy);
+    --editorial-teal: var(--teal);
+    --editorial-teal-soft: var(--teal-soft);
+    --editorial-ivory: var(--canvas);
+    --editorial-paper: var(--paper);
+    --editorial-line: var(--line);
+    --editorial-muted: var(--muted);
+    color: var(--editorial-ink);
+    background: var(--editorial-ivory);
+  }
+
+  .research-hero {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(
+        10rem,
+        0.75fr
+      );
+    gap: clamp(1.25rem, 4vw, 4rem);
+    align-items: start;
+    padding-block: clamp(3.75rem, 8vw, 6.75rem);
+    border-bottom: 1px solid var(--editorial-line);
+  }
+
+  .research-hero__meta,
+  .research-hero__aside {
+    padding-top: 0.35rem;
+  }
+  .research-hero__edition,
+  .research-hero__aside-label {
+    margin-top: 1.4rem;
+    color: var(--editorial-muted);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+  .research-hero__aside {
+    border-top: 1px solid var(--editorial-teal);
+  }
+  .research-hero__aside-label {
+    margin: 0.8rem 0 0;
+    color: var(--editorial-teal);
+  }
+  .research-hero__aside p:last-child {
+    margin: 0.75rem 0 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+  .research-hero h1 {
+    max-width: 13ch;
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.8rem, 6vw, 5.25rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+  .research-hero__copy > p {
+    max-width: 35rem;
+    margin: 1.6rem 0 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+    line-height: 1.45;
+  }
+  .research-section {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .research-section__heading {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(
+        10rem,
+        0.75fr
+      );
+    gap: clamp(1.25rem, 4vw, 4rem);
+    align-items: end;
+    margin-bottom: clamp(2rem, 4vw, 3.25rem);
+  }
+  .research-section__heading .editorial-index {
+    align-self: start;
+  }
+  .editorial-index {
+    margin: 0;
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.69rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .editorial-index span {
+    margin-inline: 0.3rem;
+    color: var(--editorial-line);
+  }
+  .editorial-kicker {
+    margin: 0;
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.69rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .research-section__heading h2 {
+    max-width: 19ch;
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.9rem, 3.3vw, 3rem);
+    font-weight: 400;
+    line-height: 1.08;
+  }
+  .research-section__heading > p:last-child {
+    max-width: 18rem;
+    margin: 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+  .research-list {
+    border-top: 1px solid var(--editorial-line);
+  }
+  .research-row {
+    display: grid;
+    grid-template-columns: minmax(2rem, 0.22fr) minmax(0, 1.65fr) minmax(
+        10rem,
+        0.75fr
+      );
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--editorial-line);
+  }
+  .research-row__index {
+    padding-top: 0.35rem;
+  }
+  .research-row__main h3 {
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .research-row__summary {
+    max-width: 38rem;
+    margin: 0.65rem 0 0;
+    color: var(--editorial-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+  .research-row__image-wrap {
+    aspect-ratio: 1;
+    align-self: start;
+    overflow: hidden;
+    background: var(--editorial-teal-soft);
+  }
+  .research-row__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .prose {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: var(--editorial-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .prose :global(p) {
+    margin-bottom: 0.8rem;
+  }
+  .prose :global(a) {
+    color: var(--editorial-teal);
+  }
+  .empty-state {
+    padding: 1.2rem 0;
+    border-block: 1px dashed var(--editorial-line);
+    color: var(--editorial-muted);
+  }
+  .research-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    border-top: 1px solid var(--editorial-line);
+    background: var(--editorial-line);
+  }
+  .research-link {
+    display: block;
+    min-height: 9rem;
+    padding: 1.5rem;
+    background: var(--editorial-paper);
+    color: var(--editorial-navy);
+    text-decoration: none;
+  }
+  .research-link strong {
+    display: block;
+    margin-top: 1rem;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    font-weight: 400;
+  }
+  .research-link:hover strong,
+  .research-link:focus-visible strong {
+    color: var(--editorial-teal);
+  }
+  @media (max-width: 48rem) {
+    .research-hero,
+    .research-section__heading {
+      grid-template-columns: minmax(6rem, 0.45fr) minmax(0, 1.55fr);
+    }
+    .research-hero__aside,
+    .research-section__heading > p:last-child {
+      grid-column: 2;
+    }
+    .research-row {
+      grid-template-columns: 2rem minmax(0, 1fr);
+    }
+    .research-row__image-wrap {
+      grid-column: 2;
+      max-width: 20rem;
+    }
+  }
+  @media (max-width: 38rem) {
+    .research-hero,
+    .research-section__heading {
+      display: block;
+    }
+    .research-hero__copy,
+    .research-section__heading h2 {
+      margin-top: 1.5rem;
+    }
+    .research-hero__aside,
+    .research-section__heading > p:last-child {
+      margin-top: 2rem;
+    }
+    .research-row__image-wrap {
+      margin-top: 0.5rem;
+    }
+    .research-links {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

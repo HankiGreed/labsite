@@ -1,0 +1,179 @@
+---
+import {
+  asText,
+  imageAlt,
+  imageSrc,
+  isExternal,
+  type EntryLike,
+  valueOf,
+  withBase,
+} from "./content";
+
+interface Props {
+  entry: EntryLike;
+}
+
+const { entry } = Astro.props;
+const title = asText(valueOf(entry, "title", "name"), "Research area");
+const summary = asText(valueOf(entry, "summary", "description", "excerpt"));
+const image = valueOf(entry, "image", "photo");
+const imageUrl = imageSrc(image);
+const linkValue = asText(valueOf(entry, "link", "url"));
+const link = linkValue
+  ? isExternal(linkValue)
+    ? linkValue
+    : withBase(linkValue)
+  : "";
+const rawTags = valueOf(entry, "tags", "keywords");
+const tags: unknown[] = Array.isArray(rawTags) ? rawTags : [];
+---
+
+<article
+  class:list={{
+    "research-card": true,
+    "research-card--with-image": Boolean(imageUrl),
+  }}
+>
+  {
+    imageUrl && (
+      <img
+        class="research-card__image"
+        src={imageUrl}
+        alt={imageAlt(image, title)}
+        loading="lazy"
+      />
+    )
+  }
+  <div class="research-card__body">
+    <p class="research-card__number" aria-hidden="true">
+      {
+        String(entry.id ?? entry.slug ?? "")
+          .slice(0, 2)
+          .padStart(2, "0")
+      }
+    </p>
+    <h3>
+      {
+        link ? (
+          <a
+            href={link}
+            target={isExternal(linkValue) ? "_blank" : undefined}
+            rel={isExternal(linkValue) ? "noreferrer" : undefined}
+          >
+            {title}
+          </a>
+        ) : (
+          title
+        )
+      }
+    </h3>
+    {summary && <p>{summary}</p>}
+    {
+      tags.length > 0 && (
+        <ul class="research-card__tags" aria-label="Research keywords">
+          {tags.map((tag) => (
+            <li>{asText(tag)}</li>
+          ))}
+        </ul>
+      )
+    }
+    {
+      link && (
+        <a
+          class="text-link"
+          href={link}
+          target={isExternal(linkValue) ? "_blank" : undefined}
+          rel={isExternal(linkValue) ? "noreferrer" : undefined}
+        >
+          Explore <span aria-hidden="true">↗</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .research-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.35rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .research-card--with-image {
+    grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 2fr);
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+  }
+
+  .research-card__image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: var(--teal-soft);
+  }
+
+  .research-card__body {
+    display: grid;
+    align-content: start;
+    gap: 0.65rem;
+  }
+
+  .research-card__number {
+    margin-bottom: 0;
+    color: var(--teal);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .research-card h3 {
+    margin-bottom: 0;
+  }
+
+  .research-card h3 a {
+    text-decoration: none;
+  }
+
+  .research-card h3 a:hover,
+  .research-card h3 a:focus-visible {
+    color: var(--teal);
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.15em;
+  }
+
+  .research-card p {
+    margin-bottom: 0;
+  }
+
+  .research-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.8rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .research-card__tags li {
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  .research-card .text-link {
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 38rem) {
+    .research-card--with-image {
+      grid-template-columns: 5rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+  }
+</style>

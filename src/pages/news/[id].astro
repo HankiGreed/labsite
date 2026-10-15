@@ -1,0 +1,157 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../components/content";
+import site from "../../data/site.json";
+
+export async function getStaticPaths() {
+  const entries = (await getCollection("news")).sort(
+    (a, b) =>
+      b.data.date.valueOf() - a.data.date.valueOf() || a.id.localeCompare(b.id),
+  );
+  return entries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const date = entry.data.date.toLocaleDateString("en", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<BaseLayout
+  title={`${entry.data.title} · ${site.shortName}`}
+  description={entry.data.summary}
+>
+  <div class="editorial-canvas editorial-story-page">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>News &amp; notes <span aria-hidden="true">/</span> Journal</p>
+        <a class="editorial-link" href={withBase("/news/")}>Back to news</a>
+      </div>
+      <article class="editorial-content story">
+        <header class="story__header">
+          <a class="back-link" href={withBase("/news/")}>← Back to news</a>
+          <p class="editorial-kicker">Dispatch / {date}</p>
+          <h1>{entry.data.title}</h1>
+          <p class="story__summary">{entry.data.summary}</p>
+        </header>
+        {
+          entry.data.image && (
+            <figure class="story__figure">
+              <img
+                src={withBase(entry.data.image)}
+                alt={`Illustration for ${entry.data.title}`}
+                width="800"
+                height="420"
+              />
+              <figcaption>Image accompanying this update.</figcaption>
+            </figure>
+          )
+        }
+        <div class="story__body prose"><Content /></div>
+        <footer class="story__footer">
+          <p class="editorial-kicker">Keep reading</p>
+          <a class="editorial-link" href={withBase("/news/")}
+            >More notes from the notebook <span aria-hidden="true">→</span></a
+          >
+        </footer>
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .editorial-story-page {
+    --c-rule: var(--editorial-line, #c9ccc2);
+    --c-muted: var(--editorial-muted, #64736f);
+    --c-teal: var(--editorial-teal, #276d6a);
+  }
+
+  .story {
+    padding-block: clamp(2.5rem, 6vw, 5.5rem);
+  }
+
+  .story__header {
+    max-width: 46rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+    color: var(--c-teal, var(--teal-deep));
+    font-size: 0.8rem;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-underline-offset: 0.2em;
+  }
+
+  .story__header h1 {
+    max-width: 16ch;
+    margin: 0.55rem 0 1.2rem;
+    font-size: clamp(2.4rem, 6vw, 5.25rem);
+    line-height: 0.98;
+  }
+
+  .story__summary {
+    max-width: 39rem;
+    margin: 0;
+    color: var(--c-muted, var(--ink-muted));
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+    line-height: 1.35;
+  }
+
+  .story__figure {
+    max-width: 52rem;
+    margin: clamp(2.5rem, 6vw, 5rem) 0;
+  }
+
+  .story__figure img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.9 / 1;
+    object-fit: cover;
+  }
+
+  .story__figure figcaption {
+    margin-top: 0.7rem;
+    color: var(--c-muted, var(--ink-muted));
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .story__body {
+    max-width: 40rem;
+    margin-inline: auto;
+    font-size: 1.08rem;
+    line-height: 1.78;
+  }
+
+  .story__body :global(p) {
+    margin-bottom: 1.3rem;
+  }
+
+  .story__body :global(h2),
+  .story__body :global(h3) {
+    margin-top: 2.2rem;
+  }
+
+  .story__footer {
+    max-width: 40rem;
+    margin: 3.5rem auto 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--c-rule, var(--line));
+  }
+
+  .story__footer .editorial-kicker {
+    margin-bottom: 0.45rem;
+  }
+</style>

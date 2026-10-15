@@ -1,0 +1,319 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../components/content";
+import site from "../../data/site.json";
+
+const about = Array.isArray(site.about)
+  ? site.about.filter(
+      (paragraph): paragraph is string => typeof paragraph === "string",
+    )
+  : [];
+
+const methods = [
+  "Clinical microbiology",
+  "Molecular biology",
+  "Molecular epidemiology",
+  "Genomics",
+  "Bioinformatics",
+];
+
+const focusAreas = [
+  {
+    title: "Molecular Epidemiology and Genomics",
+    description:
+      "Characterizing bacterial genetic diversity, population structure, serotype distribution, and virulence-associated traits using molecular typing and whole-genome sequencing, with a particular focus on Streptococcus pneumoniae.",
+  },
+  {
+    title: "Antimicrobial Resistance Surveillance and Detection",
+    description:
+      "Investigating antimicrobial resistance mechanisms in clinically important bacteria, particularly carbapenem resistance in Gram-negative pathogens, and developing molecular approaches for rapid detection of antimicrobial resistance determinants.",
+  },
+  {
+    title: "Rapid Molecular Diagnostics",
+    description:
+      "Developing and evaluating multiplex PCR, real-time PCR, loop-mediated isothermal amplification (LAMP), and lateral flow assays for rapid detection of bacterial pathogens and antimicrobial resistance genes.",
+  },
+  {
+    title: "Respiratory Pathogen Research",
+    description:
+      "Investigating Streptococcus pneumoniae, Haemophilus influenzae, and atypical pneumonia-associated pathogens, with emphasis on pathogen detection, epidemiological surveillance, and the development of diagnostic approaches for community-acquired pneumonia in children.",
+  },
+];
+---
+
+<BaseLayout title={`About · ${site.shortName}`} description={site.description}>
+  <div class="editorial-canvas about-page">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>About <span aria-hidden="true">/</span> {site.shortName}</p>
+        <p>Laboratory overview</p>
+      </div>
+
+      <div class="editorial-content">
+        <header class="editorial-hero about-hero" aria-labelledby="about-title">
+          <div class="about-hero__meta">
+            <p class="editorial-kicker">The laboratory</p>
+            <p class="about-hero__location">
+              {site.university} · {site.location}
+            </p>
+          </div>
+          <div class="about-hero__copy">
+            <h1 id="about-title">
+              Understanding infectious diseases through <em>careful methods.</em
+              >
+            </h1>
+            <p class="editorial-hero__intro">{site.tagline}</p>
+          </div>
+          <aside class="about-hero__aside" aria-label="Laboratory lead">
+            <p class="about-hero__aside-label">Led by</p>
+            <p>Dr. Tushar Shaw</p>
+          </aside>
+        </header>
+
+        <section
+          class="editorial-section about-overview"
+          aria-labelledby="overview-title"
+        >
+          <div class="about-section-label">
+            <p class="editorial-index">
+              01 <span aria-hidden="true">/</span> About the laboratory
+            </p>
+          </div>
+          <div class="about-overview__body">
+            <h2 id="overview-title">
+              Infectious disease research with diagnostic purpose
+            </h2>
+            {about.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+        </section>
+
+        <section
+          class="editorial-section about-methods"
+          aria-labelledby="methods-title"
+        >
+          <div class="about-section-label">
+            <p class="editorial-index">
+              02 <span aria-hidden="true">/</span> Methods
+            </p>
+          </div>
+          <div class="about-methods__body">
+            <h2 id="methods-title">
+              Methods that connect clinical questions to evidence
+            </h2>
+            <ul class="about-methods__list">
+              {methods.map((method) => <li>{method}</li>)}
+            </ul>
+          </div>
+        </section>
+
+        <section
+          class="editorial-section about-focus"
+          aria-labelledby="focus-title"
+        >
+          <div class="about-section-label">
+            <p class="editorial-index">
+              03 <span aria-hidden="true">/</span> Research at a glance
+            </p>
+          </div>
+          <div class="about-focus__body">
+            <h2 id="focus-title">Four connected areas of focus</h2>
+            <div class="about-focus__list">
+              {
+                focusAreas.map((area, index) => (
+                  <article class="about-focus__item">
+                    <p class="about-focus__number">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <div>
+                      <h3>{area.title}</h3>
+                      <p>{area.description}</p>
+                    </div>
+                  </article>
+                ))
+              }
+            </div>
+            <a class="editorial-link" href={withBase("/research/")}
+              >Explore research themes <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page {
+    --about-rule: var(--editorial-line, var(--line));
+    --about-muted: var(--editorial-muted, var(--muted));
+    --about-teal: var(--editorial-teal, var(--teal));
+    color: var(--ink);
+    background: var(--canvas);
+  }
+
+  .about-hero {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(
+        10rem,
+        0.75fr
+      );
+    gap: clamp(1.25rem, 4vw, 4rem);
+    align-items: start;
+    padding-block: clamp(3.75rem, 8vw, 6.75rem);
+    border-bottom: 1px solid var(--about-rule);
+  }
+
+  .about-hero__location,
+  .about-hero__aside-label {
+    margin-top: 1.4rem;
+    color: var(--about-muted);
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .about-hero__copy h1 {
+    max-width: 15ch;
+    margin: 0 0 1.25rem;
+    font-size: clamp(2.75rem, 6vw, 5.7rem);
+    line-height: 0.96;
+  }
+
+  .about-hero__copy h1 em {
+    color: var(--about-teal);
+    font-style: normal;
+  }
+
+  .about-hero__copy .editorial-hero__intro {
+    max-width: 32rem;
+  }
+
+  .about-hero__aside {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--about-teal);
+  }
+
+  .about-hero__aside-label {
+    margin: 0 0 0.35rem;
+    color: var(--about-teal);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .about-hero__aside p:last-child {
+    margin-bottom: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.15rem;
+  }
+
+  .about-overview,
+  .about-methods,
+  .about-focus {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr);
+    gap: clamp(1.25rem, 4vw, 4rem);
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+    border-bottom: 1px solid var(--about-rule);
+  }
+
+  .about-overview__body,
+  .about-methods__body,
+  .about-focus__body {
+    min-width: 0;
+  }
+
+  .about-overview h2,
+  .about-methods h2,
+  .about-focus h2 {
+    max-width: 18ch;
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.9rem, 3.5vw, 3rem);
+  }
+
+  .about-overview__body p {
+    max-width: 44rem;
+  }
+
+  .about-methods__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--about-rule);
+  }
+
+  .about-methods__list li {
+    padding: 1rem 1rem 1rem 0;
+    border-bottom: 1px solid var(--about-rule);
+    color: var(--about-teal);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.15rem;
+  }
+
+  .about-focus {
+    border-bottom: 0;
+  }
+
+  .about-focus__list {
+    margin-bottom: 1.5rem;
+    border-top: 1px solid var(--about-rule);
+  }
+
+  .about-focus__item {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--about-rule);
+  }
+
+  .about-focus__number {
+    margin: 0;
+    color: var(--about-teal);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+  }
+
+  .about-focus__item h3 {
+    margin-bottom: 0.4rem;
+  }
+
+  .about-focus__item p:last-child {
+    max-width: 40rem;
+    margin-bottom: 0;
+    color: var(--about-muted);
+  }
+
+  @media (max-width: 48rem) {
+    .about-hero,
+    .about-overview,
+    .about-methods,
+    .about-focus {
+      grid-template-columns: 1fr;
+    }
+
+    .about-hero__meta,
+    .about-hero__aside,
+    .about-section-label {
+      max-width: 34rem;
+    }
+
+    .about-hero__aside {
+      padding-top: 0.75rem;
+    }
+  }
+
+  @media (max-width: 38rem) {
+    .about-methods__list {
+      grid-template-columns: 1fr;
+    }
+
+    .about-hero {
+      padding-top: 2.5rem;
+    }
+  }
+</style>

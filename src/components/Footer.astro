@@ -1,0 +1,221 @@
+---
+import site from "../data/site.json";
+import { asText, isExternal, withBase } from "./content";
+
+const siteName = asText(site.name, "Research Lab");
+const description = asText(site.description);
+const university = asText(site.university);
+const department = asText(site.department);
+const email = asText(site.email);
+const phone = asText(site.phone);
+const location = asText(site.location);
+const address = Array.isArray(site.address)
+  ? site.address.filter((line): line is string => typeof line === "string")
+  : [];
+type Social = { label?: unknown; url?: unknown };
+const rawSocials: unknown = site.socials;
+const socials: Social[] = Array.isArray(rawSocials)
+  ? rawSocials.filter(
+      (social): social is Social =>
+        typeof social === "object" && social !== null && !Array.isArray(social),
+    )
+  : [];
+const footerLinks = [
+  { label: "Pathogens", href: "/pathogens/" },
+  { label: "Achievements", href: "/achievements/" },
+  { label: "Join the lab", href: "/join/" },
+];
+const hasContact = Boolean(email || phone || location || address.length);
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__intro">
+      <p class="site-footer__name">{siteName}</p>
+      {description && <p>{description}</p>}
+      {
+        (university || department) && (
+          <p class="site-footer__affiliation">
+            {[department, university].filter(Boolean).join(" · ")}
+          </p>
+        )
+      }
+    </div>
+
+    {
+      hasContact && (
+        <div class="site-footer__contact">
+          <p class="eyebrow">Find us</p>
+          {email && <a href={`mailto:${email}`}>{email}</a>}
+          {phone && <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>}
+          {(address.length > 0 || location) && (
+            <address>
+              {(address.length > 0 ? address : [location]).map((line) => (
+                <span>{line}</span>
+              ))}
+            </address>
+          )}
+        </div>
+      )
+    }
+
+    <nav class="site-footer__links" aria-label="More pages">
+      <p class="eyebrow">Explore</p>
+      <div>
+        {
+          footerLinks.map((item) => (
+            <a href={withBase(item.href)}>{item.label}</a>
+          ))
+        }
+      </div>
+    </nav>
+
+    {
+      socials.length > 0 && (
+        <div class="site-footer__socials">
+          <p class="eyebrow">Elsewhere</p>
+          <div>
+            {socials.map((social) => {
+              const label = asText(social.label);
+              const url = asText(social.url);
+              return url && label ? (
+                <a
+                  href={isExternal(url) ? url : withBase(url)}
+                  target={
+                    isExternal(url) && !url.startsWith("mailto:")
+                      ? "_blank"
+                      : undefined
+                  }
+                  rel={
+                    isExternal(url) && !url.startsWith("mailto:")
+                      ? "noreferrer"
+                      : undefined
+                  }
+                >
+                  {label}
+                </a>
+              ) : null;
+            })}
+          </div>
+        </div>
+      )
+    }
+  </div>
+  <div class="site-footer__bottom">
+    <span>© {new Date().getFullYear()} {siteName}</span>
+    <span>Research, in conversation.</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 3.5rem var(--gutter) 1.25rem;
+    color: #dbe8e1;
+    background: var(--navy);
+  }
+
+  .site-footer__inner,
+  .site-footer__bottom {
+    width: min(100%, var(--max-width));
+    margin-inline: auto;
+  }
+
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .site-footer p {
+    color: inherit;
+  }
+
+  .site-footer__intro {
+    max-width: 25rem;
+  }
+
+  .site-footer__name {
+    margin-bottom: 0.65rem;
+    color: var(--paper) !important;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.45rem;
+  }
+
+  .site-footer__affiliation {
+    color: #aebfba !important;
+    font-size: 0.85rem;
+  }
+
+  .site-footer__contact,
+  .site-footer__links,
+  .site-footer__socials {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+  }
+
+  .site-footer .eyebrow {
+    color: var(--teal-soft);
+  }
+
+  .site-footer a {
+    width: fit-content;
+    color: #dbe8e1;
+    text-underline-offset: 0.2em;
+  }
+
+  .site-footer a:hover,
+  .site-footer a:focus-visible {
+    color: var(--paper);
+  }
+
+  .site-footer address {
+    display: grid;
+    margin-top: 0.25rem;
+    color: #aebfba;
+    font-size: 0.9rem;
+    font-style: normal;
+  }
+
+  .site-footer__links > div,
+  .site-footer__socials > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1rem;
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(219, 232, 225, 0.25);
+    color: #aebfba;
+    font-size: 0.76rem;
+  }
+
+  @media (max-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .site-footer__intro {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 32rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .site-footer__intro {
+      grid-column: auto;
+    }
+
+    .site-footer__bottom {
+      display: grid;
+    }
+  }
+</style>

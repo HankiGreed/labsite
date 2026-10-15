@@ -1,0 +1,261 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../components/content";
+import site from "../../data/site.json";
+
+const entries = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id),
+);
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+---
+
+<BaseLayout
+  title={`Projects · ${site.shortName}`}
+  description="Projects and scientific directions from the Tushar Shaw Lab."
+>
+  <div class="editorial-canvas projects-page">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>Editorial journal <span aria-hidden="true">/</span> Projects</p>
+        <p>{site.shortName}</p>
+      </div>
+
+      <div class="editorial-content">
+        <header class="projects-hero" aria-labelledby="projects-title">
+          <div>
+            <p class="editorial-kicker">Projects and scientific directions</p>
+            <h1 id="projects-title">Questions, carried forward.</h1>
+          </div>
+          <p>
+            A record of work on carriage and epidemiology, resistance detection,
+            respiratory diagnostics, endodontic disinfection, and bioimaging.
+          </p>
+        </header>
+
+        <section class="projects-list" aria-labelledby="projects-list-title">
+          <div class="projects-list__heading">
+            <p class="editorial-index">
+              01 <span aria-hidden="true">/</span> Project archive
+            </p>
+            <h2 id="projects-list-title">Six chapters in progress.</h2>
+          </div>
+          {
+            entries.length ? (
+              <div class="project-chapters">
+                {rendered.map(({ entry, Content }, index) => (
+                  <article class="project-chapter" id={entry.id}>
+                    <p class="project-chapter__number" aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <div class="project-chapter__body">
+                      <h3>{entry.data.title}</h3>
+                      {(entry.data.funder ||
+                        entry.data.period ||
+                        entry.data.role) && (
+                        <dl class="project-meta">
+                          {entry.data.funder && (
+                            <div>
+                              <dt>Funder</dt>
+                              <dd>{entry.data.funder}</dd>
+                            </div>
+                          )}
+                          {entry.data.period && (
+                            <div>
+                              <dt>Period</dt>
+                              <dd>{entry.data.period}</dd>
+                            </div>
+                          )}
+                          {entry.data.role && (
+                            <div>
+                              <dt>Role</dt>
+                              <dd>{entry.data.role}</dd>
+                            </div>
+                          )}
+                        </dl>
+                      )}
+                      <div class="prose">
+                        <Content />
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p class="empty-state">Projects are being prepared.</p>
+            )
+          }
+        </section>
+
+        <nav class="projects-links" aria-label="Explore related research">
+          <a class="editorial-button" href={withBase("/research/")}
+            >Research themes <span aria-hidden="true">↗</span></a
+          >
+          <a class="editorial-button" href={withBase("/pathogens/")}
+            >Pathogens <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .projects-page {
+    --editorial-ink: var(--ink);
+    --editorial-navy: var(--navy);
+    --editorial-teal: var(--teal);
+    --editorial-teal-soft: var(--teal-soft);
+    --editorial-ivory: var(--canvas);
+    --editorial-paper: var(--paper);
+    --editorial-line: var(--line);
+    --editorial-muted: var(--muted);
+    color: var(--editorial-ink);
+    background: var(--editorial-ivory);
+  }
+  .projects-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 0.7fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    align-items: end;
+    padding-block: clamp(4rem, 9vw, 7.5rem);
+    border-bottom: 1px solid var(--editorial-line);
+  }
+  .projects-hero h1 {
+    max-width: 12ch;
+    margin: 0.85rem 0 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.8rem, 6.5vw, 5.6rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+  .projects-hero > p {
+    max-width: 25rem;
+    margin: 0;
+    color: var(--editorial-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  .projects-list {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .projects-list__heading {
+    display: grid;
+    grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1.8fr);
+    gap: clamp(1.5rem, 6vw, 6rem);
+    align-items: start;
+    margin-bottom: 2.5rem;
+  }
+  .projects-list__heading h2 {
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.9rem, 3.3vw, 3rem);
+    font-weight: 400;
+    line-height: 1.08;
+  }
+  .project-chapters {
+    border-top: 1px solid var(--editorial-line);
+  }
+  .project-chapter {
+    display: grid;
+    grid-template-columns: minmax(3rem, 0.25fr) minmax(0, 2fr);
+    gap: clamp(1rem, 5vw, 5rem);
+    padding-block: clamp(1.7rem, 3vw, 2.75rem);
+    border-bottom: 1px solid var(--editorial-line);
+  }
+  .project-chapter__number {
+    margin: 0.25rem 0 0;
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+  }
+  .project-chapter h3 {
+    margin: 0;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.55rem, 3vw, 2.45rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.5rem;
+    margin: 1.1rem 0 0;
+    padding-block: 0.75rem;
+    border-block: 1px solid var(--editorial-line);
+  }
+  .project-meta div {
+    display: flex;
+    gap: 0.55rem;
+    align-items: baseline;
+  }
+  .project-meta dt {
+    color: var(--editorial-teal);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.64rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .project-meta dd {
+    margin: 0;
+    color: var(--editorial-ink);
+    font-size: 0.92rem;
+  }
+  .prose {
+    max-width: 46rem;
+    margin-top: 1rem;
+    color: var(--editorial-muted);
+    line-height: 1.6;
+  }
+  .prose :global(p) {
+    margin: 0 0 0.8rem;
+  }
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .prose :global(a) {
+    color: var(--editorial-teal);
+  }
+  .empty-state {
+    padding: 1.2rem 0;
+    border-block: 1px dashed var(--editorial-line);
+    color: var(--editorial-muted);
+  }
+  .projects-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    padding-block: 0 clamp(3rem, 6vw, 5rem);
+  }
+  @media (max-width: 42rem) {
+    .projects-hero {
+      display: block;
+    }
+    .projects-hero > p {
+      margin-top: 1.75rem;
+    }
+    .projects-list__heading {
+      display: block;
+    }
+    .projects-list__heading h2 {
+      margin-top: 1.25rem;
+    }
+    .project-chapter {
+      grid-template-columns: 2rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+  }
+</style>

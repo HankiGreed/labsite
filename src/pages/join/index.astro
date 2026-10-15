@@ -1,0 +1,174 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { asText, withBase } from "../../components/content";
+import site from "../../data/site.json";
+
+const siteData = site as Record<string, unknown>;
+const siteName = asText(siteData.shortName ?? siteData.name, "Research Lab");
+const focus = asText(siteData.description);
+const invitation = asText(siteData.joinText);
+---
+
+<BaseLayout
+  title={`Join · ${siteName}`}
+  description={invitation || focus || siteName}
+>
+  <div class="editorial-canvas join-page">
+    <div class="editorial-sheet">
+      <div class="editorial-bar">
+        <p>Join <span aria-hidden="true">/</span> {siteName}</p>
+        <p>Open invitation / Conversation</p>
+      </div>
+
+      <div class="editorial-content">
+        <header class="editorial-hero" aria-labelledby="join-title">
+          <p class="editorial-kicker">Join / Collaborate</p>
+          <h1 id="join-title">Join or collaborate.</h1>
+          {
+            invitation ? (
+              <p class="editorial-hero__intro">{invitation}</p>
+            ) : (
+              <p class="editorial-hero__intro empty-state">
+                Invitation details are not currently published.
+              </p>
+            )
+          }
+        </header>
+
+        <section
+          class="editorial-section join-grid"
+          aria-labelledby="focus-title"
+        >
+          <div>
+            <p class="editorial-index">
+              01 <span aria-hidden="true">/</span> The focus
+            </p>
+            <h2 id="focus-title">Work around infectious disease.</h2>
+          </div>
+          <div class="join-copy">
+            {
+              focus ? (
+                <p>{focus}</p>
+              ) : (
+                <p class="empty-state">
+                  Focus details are not currently published.
+                </p>
+              )
+            }
+            <div class="join-links">
+              <a class="editorial-link" href={withBase("/research/")}
+                >Explore research <span aria-hidden="true">→</span></a
+              >
+              <a class="editorial-link" href={withBase("/pathogens/")}
+                >See pathogens <span aria-hidden="true">→</span></a
+              >
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="editorial-section join-next"
+          aria-labelledby="next-title"
+        >
+          <p class="editorial-index">
+            02 <span aria-hidden="true">/</span> Start a conversation
+          </p>
+          <h2 id="next-title">Continue the conversation.</h2>
+          <p>Contact the lab to continue the conversation.</p>
+          <a class="editorial-button" href={withBase("/contact/")}
+            >Contact the lab <span aria-hidden="true">↗</span></a
+          >
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .join-page {
+    --c-rule: var(--editorial-line, #c9ccc2);
+    --c-muted: var(--editorial-muted, #64736f);
+    --c-teal: var(--editorial-teal, #276d6a);
+  }
+
+  .join-page .editorial-hero__intro {
+    max-width: 42rem;
+  }
+
+  .join-grid {
+    display: grid;
+    grid-template-columns: minmax(9rem, 0.8fr) minmax(0, 1.5fr);
+    gap: clamp(2rem, 8vw, 7rem);
+    align-items: start;
+    border-top: 1px solid var(--c-rule, var(--line));
+  }
+
+  .join-grid h2 {
+    max-width: 20rem;
+    margin-top: 0.75rem;
+  }
+
+  .join-copy {
+    max-width: 42rem;
+  }
+
+  .join-copy > p {
+    margin: 0;
+    color: var(--c-muted, var(--ink-muted));
+  }
+
+  .join-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .editorial-link {
+    color: var(--c-teal, var(--teal-deep));
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .join-next {
+    max-width: 52rem;
+    margin-top: 1rem;
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--c-rule, var(--line));
+  }
+
+  .join-next h2 {
+    max-width: 24rem;
+    margin-top: 0.7rem;
+  }
+
+  .join-next > p:not(.editorial-index) {
+    max-width: 35rem;
+    color: var(--c-muted, var(--ink-muted));
+  }
+
+  .editorial-button {
+    display: inline-flex;
+    gap: 0.55rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.8rem 1.05rem;
+    border: 1px solid var(--c-teal, var(--teal-deep));
+    color: var(--c-teal, var(--teal-deep));
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .editorial-button:hover,
+  .editorial-button:focus-visible {
+    color: var(--paper, #f9f7f1);
+    background: var(--c-teal, var(--teal-deep));
+  }
+
+  @media (max-width: 48rem) {
+    .join-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

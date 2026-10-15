@@ -1,0 +1,102 @@
+1. About the laboratory (VN)
+2. Research at a glance (VN)
+3. Pathogens of interest (RN)
+4. Projects and scientific directions (Guru)
+5. Team (Guru)
+6. Publications (RN)
+7. Achievement (VN)
+8. New and updates (RN)
+9. Join us / collaborate
+10.Contact info
+About the laboratory
+Tushar Shaw’s Lab, led by Dr. Tushar Shaw at M.S. Ramaiah University of Applied Sciences
+(RUAS), Bengaluru, India, focuses on understanding infectious diseases, investigating bacterial
+pathogens, and developing rapid, reliable, and cost-effective diagnostic technologies.
+The laboratory integrates clinical microbiology, molecular biology, molecular epidemiology,
+genomics, and bioinformatics to address key challenges in infectious disease diagnosis and
+antimicrobial resistance. Its research interests include bacterial carriage and transmission,
+pathogen diversity, virulence, and antimicrobial resistance, with an emphasis on respiratory
+pathogens, Gram-negative bacteria, and emerging infectious diseases.
+Research at a glance
+Molecular Epidemiology and Genomics
+Characterizing bacterial genetic diversity, population structure, serotype distribution, and
+virulence-associated traits using molecular typing and whole-genome sequencing, with a
+particular focus on Streptococcus pneumoniae.
+Antimicrobial Resistance Surveillance and Detection
+Investigating antimicrobial resistance mechanisms in clinically important bacteria, particularly
+carbapenem resistance in Gram-negative pathogens, and developing molecular approaches for
+rapid detection of antimicrobial resistance determinants.
+Rapid Molecular Diagnostics
+Developing and evaluating multiplex PCR, real-time PCR, loop-mediated isothermal
+amplification (LAMP), and lateral flow assays for rapid detection of bacterial pathogens and
+antimicrobial resistance genes.
+Respiratory Pathogen Research
+Investigating Streptococcus pneumoniae, Haemophilus influenzae, and atypical pneumoniaassociated pathogens, with emphasis on pathogen detection, epidemiological surveillance, and
+the development of diagnostic approaches for community-acquired pneumonia in children.
+Pathogens of interest
+Respiratory Pathogens
+• Streptococcus pneumoniae — carriage, serotyping, genomics and epidemiology.
+• Haemophilus influenzae — pathogen detection and respiratory diagnostics.
+Antimicrobial-Resistant Bacteria
+• Acinetobacter baumannii — genomic diversity and antimicrobial resistance.
+• Escherichia coli — pathogen characterization and resistance surveillance.
+• Klebsiella pneumoniae — antimicrobial resistance and pathogen characterization.
+• Carbapenem-resistant Enterobacterales (CRE) — rapid detection of carbapenem
+resistance.
+Hypervirulent Pathogens
+- Hypervirulent Klebsiella pneumoniae (hvKp) — virulence-associated characteristics and
+pathogen detection.
+Endodontic and Other Bacterial Pathogens
+• Enterococcus faecalis& S.mutans — pathogenicity, antimicrobial susceptibility and
+persistent endodontic infections.
+• Anaerobic bacteria — pathogens associated with polymicrobial infections.
+Fungal Pathogens
+- Candida albicans — fungal pathogenicity and infection-related research.
+Projects and scientific directions
+1. Pneumococcal Carriage and Epidemiology
+ICMR
+Project: Nasopharyngeal carriage of Streptococcus pneumoniae serotypes among children and
+their cohabiting relatives in South India: a cross-sectional study.
+Project period- 2022–2025
+Role: Principal Investigator
+2. Rapid Detection of Carbapenem Resistance
+RUAS
+Project: Development and evaluation of an economical loop-mediated isothermal amplification
+combined with a lateral flow assay for rapid detection of carbapenem-resistant
+Enterobacteriaceae.
+Project period - 2022–2023
+Role: Principal Investigator
+3. Multiplex Diagnostics for Paediatric Pneumonia
+ICMR
+Project: Development and validation of a multiplex lateral flow assay for simultaneous
+detection of common bacterial pathogens of community-acquired pneumonia among the
+paediatric population.
+Project period - 2023–2026
+Role: Principal Investigator
+4. Development of Peptide-Based Agents for Endodontic Disinfection
+ICMR Project: Development of Peptide-Based Agents for Endodontic Disinfection.
+Project Period: 2024–2026
+Role: Co-Principal Investigator
+5. Accelerated Diagnostics for Antimicrobial Resistance
+ICMR
+Project: Accelerated Diagnostics of Antibiotic Resistance in Gram Negative Urinary Tract
+Infection Using Bioimaging Tools.
+Project period - 2025–2028
+Role: Co-Principal Investigator
+6. BIRAC
+Team
+PI – Dr. Tushar Shaw
+Research Staff
+• Vaishnavi Vishram Naik
+• Guruprasad
+• Ramanath
+• Anu Kurian
+Student intern
+• Varshaa. M
+• Ankita
+• Devika
+• Deepika
+Alumini
+Zohra (PRS- 1)
+Priyanka
+Virti
