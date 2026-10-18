@@ -36,26 +36,12 @@ const pathogenGroups = researchData.pathogens.groups.map((group) => ({
       </div>
 
       <div class="editorial-content">
-        <header class="editorial-hero research-hero" aria-labelledby="research-title">
-          <div class="research-hero__meta">
-            <p class="editorial-kicker">{researchData.page.kicker}</p>
-            <p class="research-hero__edition">{researchData.page.edition}</p>
-          </div>
-          <div class="research-hero__copy">
-            <h1 id="research-title">{researchData.page.title}</h1>
-            <p>{researchData.page.intro}</p>
-          </div>
-          <aside class="research-hero__aside" aria-label={researchData.page.methodsLabel}>
-            <p class="research-hero__aside-label">{researchData.page.methodsLabel}</p>
-            <p>{researchData.page.methods}</p>
-          </aside>
-        </header>
 
         <section class="editorial-section research-section" aria-labelledby="themes-title">
           <div class="section-heading">
             <p class="editorial-index">{researchData.themes.index}</p>
             <div>
-              <h2 id="themes-title">{researchData.themes.title}</h2>
+              <h1 id="themes-title">{researchData.themes.title}</h1>
               <p>{researchData.themes.intro}</p>
             </div>
           </div>
@@ -137,62 +123,14 @@ const pathogenGroups = researchData.pathogens.groups.map((group) => ({
     background: var(--editorial-ivory);
   }
 
-  .research-hero {
-    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(10rem, 0.75fr);
-  }
-
-  .research-hero__meta,
-  .research-hero__aside {
-    padding-top: 0.35rem;
-  }
-
-  .research-hero__edition {
-    margin-top: 1.4rem;
-    color: var(--editorial-muted);
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.11em;
-    line-height: 1.45;
-    text-transform: uppercase;
-  }
-
-  .research-hero__aside {
-    border-top: 1px solid var(--editorial-teal);
-  }
-
-  .research-hero__aside-label {
-    margin: 0.8rem 0 0;
-    color: var(--editorial-teal);
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-  }
-
-  .research-hero__aside p:last-child {
-    margin: 0.75rem 0 0;
-    color: var(--editorial-muted);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 0.98rem;
-    line-height: 1.45;
-  }
-
-  .research-hero h1 {
-    max-width: 13ch;
-  }
-
-  .research-hero__copy > p {
-    max-width: 35rem;
-    margin: 1.6rem 0 0;
-    color: var(--editorial-muted);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.08rem, 1.8vw, 1.3rem);
-    line-height: 1.45;
-  }
 
   .research-section,
   .pathogens-section {
     padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .research-section {
+    padding-top: clamp(2rem, 4vw, 3rem);
   }
 
   .section-heading {
@@ -203,9 +141,14 @@ const pathogenGroups = researchData.pathogens.groups.map((group) => ({
     margin-bottom: clamp(2rem, 4vw, 3.25rem);
   }
 
+  .section-heading h1,
   .section-heading h2 {
     max-width: 19ch;
     margin-bottom: 0.8rem;
+  }
+
+  .section-heading h1 {
+    font-size: clamp(2rem, 4vw, 3.15rem);
   }
 
   .section-heading p:last-child {
@@ -324,14 +267,10 @@ const pathogenGroups = researchData.pathogens.groups.map((group) => ({
   }
 
   @media (max-width: 48rem) {
-    .research-hero,
     .section-heading {
       grid-template-columns: minmax(6rem, 0.45fr) minmax(0, 1.55fr);
     }
 
-    .research-hero__aside {
-      grid-column: 2;
-    }
 
     .research-grid {
       grid-template-columns: 1fr;
@@ -339,21 +278,16 @@ const pathogenGroups = researchData.pathogens.groups.map((group) => ({
   }
 
   @media (max-width: 38rem) {
-    .research-hero,
     .section-heading,
     .pathogen-group {
       display: block;
     }
 
-    .research-hero__copy,
     .section-heading > div,
     .pathogen-group ul {
       margin-top: 1.5rem;
     }
 
-    .research-hero__aside {
-      margin-top: 2rem;
-    }
 
     .pathogen-group ul {
       grid-template-columns: 1fr;

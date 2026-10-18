@@ -458,20 +458,8 @@ content:
             label: Edition
             type: string
             required: true
-          - name: title
-            label: Title
-            type: string
-            required: true
           - name: intro
             label: Intro
-            type: text
-            required: true
-          - name: methodsLabel
-            label: Methods Label
-            type: string
-            required: true
-          - name: methods
-            label: Methods
             type: text
             required: true
       - name: themes
@@ -622,14 +610,6 @@ content:
       - name: intro
         label: Intro
         type: text
-        required: true
-      - name: scholarProfile
-        label: Scholar Profile
-        type: string
-        required: true
-      - name: snapshotDate
-        label: Snapshot Date
-        type: string
         required: true
     operations:
       delete: false

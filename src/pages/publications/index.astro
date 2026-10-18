@@ -12,7 +12,6 @@ const publications = (await getCollection("publications")).sort(
       (b.data.order ?? Number.MAX_SAFE_INTEGER),
 );
 const years = [...new Set(publications.map((entry) => entry.data.year))];
-const scholarProfile = publicationPage.scholarProfile;
 ---
 
 <BaseLayout
@@ -36,15 +35,6 @@ const scholarProfile = publicationPage.scholarProfile;
             <h1 id="publications-title">{publicationPage.title}</h1>
             <p>{publicationPage.intro}</p>
           </div>
-          <aside class="publications-hero__aside" aria-label="Archive note">
-            <p class="publications-hero__aside-label">About this archive</p>
-            <p>
-              This date-sorted snapshot ({publicationPage.snapshotDate}) was prepared from the lab's
-              <a href={scholarProfile} target="_blank" rel="noreferrer"
-                >Google Scholar profile</a
-              >. Entries are editable local records, not a live feed.
-            </p>
-          </aside>
         </header>
 
         {
@@ -74,12 +64,6 @@ const scholarProfile = publicationPage.scholarProfile;
           )
         }
 
-        <p class="fine-print">
-          Snapshot sorted by publication year (newest first), then source order.
-          <a href={scholarProfile} target="_blank" rel="noreferrer"
-            >Open the source profile <span aria-hidden="true">↗</span></a
-          >
-        </p>
       </div>
     </div>
   </div>
@@ -100,20 +84,18 @@ const scholarProfile = publicationPage.scholarProfile;
 
   .publications-hero {
     display: grid;
-    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(12rem, 0.8fr);
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.9fr);
     gap: clamp(1.25rem, 4vw, 4rem);
     align-items: start;
     padding-block: clamp(3.75rem, 8vw, 6.75rem);
     border-bottom: 1px solid var(--editorial-line);
   }
 
-  .publications-hero__meta,
-  .publications-hero__aside {
+  .publications-hero__meta {
     padding-top: 0.35rem;
   }
 
-  .publications-hero__edition,
-  .publications-hero__aside-label {
+  .publications-hero__edition {
     margin-top: 1.4rem;
     color: var(--editorial-muted);
     font-family: ui-sans-serif, system-ui, sans-serif;
@@ -124,29 +106,6 @@ const scholarProfile = publicationPage.scholarProfile;
     text-transform: uppercase;
   }
 
-  .publications-hero__aside {
-    border-top: 1px solid var(--editorial-teal);
-  }
-
-  .publications-hero__aside-label {
-    margin: 0.8rem 0 0;
-    color: var(--editorial-teal);
-  }
-
-  .publications-hero__aside p:last-child {
-    margin: 0.75rem 0 0;
-    color: var(--editorial-muted);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 0.98rem;
-    line-height: 1.45;
-  }
-
-  .publications-hero__aside a,
-  .fine-print a {
-    color: var(--editorial-teal);
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
-  }
 
   .publications-hero h1 {
     max-width: 12ch;
@@ -266,26 +225,12 @@ const scholarProfile = publicationPage.scholarProfile;
     color: var(--editorial-muted);
   }
 
-  .fine-print {
-    margin: 1.25rem 0 0;
-    color: var(--editorial-muted);
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-  }
-
-  .fine-print a {
-    margin-left: 0.45rem;
-  }
 
   @media (max-width: 48rem) {
     .publications-hero {
       grid-template-columns: minmax(6rem, 0.45fr) minmax(0, 1.55fr);
     }
 
-    .publications-hero__aside {
-      grid-column: 2;
-    }
   }
 
   @media (max-width: 38rem) {
@@ -297,9 +242,6 @@ const scholarProfile = publicationPage.scholarProfile;
       margin-top: 1.5rem;
     }
 
-    .publications-hero__aside {
-      margin-top: 2rem;
-    }
 
     .publication-year__heading {
       display: block;
