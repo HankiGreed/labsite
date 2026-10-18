@@ -1,0 +1,37 @@
+{
+  "page": {
+    "kicker": "The people / Team",
+    "barLabel": "Laboratory directory",
+    "title": "The Tushar Shaw Lab team.",
+    "intro": "The Tushar Shaw Lab brings together a principal investigator, research staff, student interns, and alumni at M.S. Ramaiah University of Applied Sciences (RUAS), Bengaluru, India.",
+    "index": "01 / The group",
+    "sectionTitle": "The people behind the work",
+    "sectionIntro": "The team studies infectious diseases and bacterial pathogens, developing rapid, reliable, and cost-effective diagnostics."
+  },
+  "groups": [
+    {
+      "key": "leadership",
+      "label": "Principal Investigator",
+      "copy": "Laboratory leadership and direction.",
+      "empty": "No principal investigator profile is listed yet."
+    },
+    {
+      "key": "researchers",
+      "label": "Research Staff",
+      "copy": "Research staff working across the laboratory's scientific methods.",
+      "empty": "No research staff profiles are listed yet."
+    },
+    {
+      "key": "students",
+      "label": "Student Interns",
+      "copy": "Student interns contributing to the laboratory's work.",
+      "empty": "No student intern profiles are listed yet."
+    },
+    {
+      "key": "alumni",
+      "label": "Alumni",
+      "copy": "Former members of the laboratory.",
+      "empty": "No alumni profiles are listed yet."
+    }
+  ]
+}

@@ -48,6 +48,9 @@ const link = linkValue
     <h3>{name}</h3>
     {role && <p class="person-card__role">{role}</p>}
     {bio && <p>{bio}</p>}
+    <div class="person-card__prose prose">
+      <slot />
+    </div>
     <div class="person-card__links">
       {email && <a href={`mailto:${email}`}>Email</a>}
       {
@@ -120,6 +123,16 @@ const link = linkValue
     font-weight: 750;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  .person-card__prose {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .person-card__prose :global(p) {
+    margin: 0;
   }
 
   .person-card__links {

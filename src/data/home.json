@@ -1,0 +1,22 @@
+{
+  "overviewTitle": "Overview",
+  "overviewLabel": "The laboratory",
+  "images": [
+    {
+      "src": "/images/research-microbial.svg",
+      "alt": "Abstract illustration of connected microbial populations",
+      "caption": "Pathogen diversity & transmission"
+    },
+    {
+      "src": "/images/research-signals.svg",
+      "alt": "Abstract illustration of diagnostic signal patterns",
+      "caption": "Rapid molecular diagnostics"
+    }
+  ],
+  "researchTitle": "Research overview",
+  "researchIntro": "Connecting pathogen biology, antimicrobial resistance, and diagnostic development.",
+  "researchLinkLabel": "Explore our research",
+  "teamLinkLabel": "Meet the team",
+  "contactTitle": "Contact us",
+  "contactLinkLabel": "Contact & collaboration"
+}

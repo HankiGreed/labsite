@@ -78,6 +78,64 @@ content:
     operations:
       delete: false
 
+  - name: homepage
+    label: Homepage
+    type: file
+    path: src/data/home.json
+    format: json
+    fields:
+      - name: overviewTitle
+        label: Overview heading
+        type: string
+        required: true
+      - name: overviewLabel
+        label: Overview label
+        type: string
+        required: true
+      - name: images
+        label: Overview images (displayed in order)
+        type: object
+        list: true
+        fields:
+          - name: src
+            label: Image
+            type: image
+            required: true
+          - name: alt
+            label: Image description for accessibility
+            type: string
+            required: true
+          - name: caption
+            label: Caption
+            type: string
+            required: false
+      - name: researchTitle
+        label: Research heading
+        type: string
+        required: true
+      - name: researchIntro
+        label: Research introduction
+        type: text
+        required: true
+      - name: researchLinkLabel
+        label: Research link label
+        type: string
+        required: true
+      - name: teamLinkLabel
+        label: Team link label
+        type: string
+        required: true
+      - name: contactTitle
+        label: Contact heading
+        type: string
+        required: true
+      - name: contactLinkLabel
+        label: Contact link label
+        type: string
+        required: true
+    operations:
+      delete: false
+
   - name: research
     label: Research
     type: collection
@@ -157,7 +215,7 @@ content:
       delete: true
 
   - name: projects
-    label: Projects
+    label: Funding
     type: collection
     path: src/content/projects
     format: yaml-frontmatter
@@ -173,6 +231,10 @@ content:
         required: true
       - name: funder
         label: Funder
+        type: string
+        required: false
+      - name: amount
+        label: Funding amount (include currency, leave blank if unknown)
         type: string
         required: false
       - name: period
@@ -197,7 +259,7 @@ content:
       delete: true
 
   - name: people
-    label: People
+    label: Team
     type: collection
     path: src/content/people
     format: yaml-frontmatter
@@ -273,11 +335,15 @@ content:
       - name: journal
         label: Journal
         type: string
-        required: true
+        required: false
       - name: year
         label: Year
         type: number
         required: true
+      - name: order
+        label: Order within year (lower first; optional)
+        type: number
+        required: false
       - name: doi
         label: DOI
         type: string
@@ -295,7 +361,7 @@ content:
       rename: true
       delete: true
   - name: achievements
-    label: Achievements
+    label: Recognition
     type: collection
     path: src/content/achievements
     format: yaml-frontmatter
@@ -331,7 +397,7 @@ content:
       delete: true
 
   - name: news
-    label: News
+    label: News/Events
     type: collection
     path: src/content/news
     format: yaml-frontmatter
@@ -345,6 +411,10 @@ content:
         label: Title
         type: string
         required: true
+      - name: url
+        label: Optional title link (full URL)
+        type: string
+        required: false
       - name: date
         label: Date
         type: date
@@ -364,8 +434,262 @@ content:
       - name: body
         label: Body
         type: rich-text
-        required: true
+        required: false
     operations:
       create: true
       rename: true
       delete: true
+
+  - name: researchPage
+    label: Research page text
+    type: file
+    path: src/data/research.json
+    format: json
+    fields:
+      - name: page
+        label: Page
+        type: object
+        fields:
+          - name: kicker
+            label: Kicker
+            type: string
+            required: true
+          - name: edition
+            label: Edition
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: intro
+            label: Intro
+            type: text
+            required: true
+          - name: methodsLabel
+            label: Methods Label
+            type: string
+            required: true
+          - name: methods
+            label: Methods
+            type: text
+            required: true
+      - name: themes
+        label: Themes
+        type: object
+        fields:
+          - name: index
+            label: Index
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: intro
+            label: Intro
+            type: text
+            required: true
+          - name: empty
+            label: Empty
+            type: text
+            required: true
+      - name: pathogens
+        label: pathogens
+        type: object
+        fields:
+          - name: index
+            label: Index
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: intro
+            label: Intro
+            type: text
+            required: true
+          - name: empty
+            label: Empty
+            type: text
+            required: true
+          - name: groups
+            label: Groups
+            type: object
+            list: true
+            fields:
+              - name: key
+                label: Key
+                type: string
+                required: true
+              - name: label
+                label: Label
+                type: string
+                required: true
+      - name: links
+        label: Links
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+            required: true
+          - name: caption
+            label: Caption
+            type: string
+            required: true
+          - name: href
+            label: Href
+            type: string
+            required: true
+    operations:
+      delete: false
+
+  - name: teamPage
+    label: Team page text
+    type: file
+    path: src/data/team.json
+    format: json
+    fields:
+      - name: page
+        label: Page
+        type: object
+        fields:
+          - name: kicker
+            label: Kicker
+            type: string
+            required: true
+          - name: barLabel
+            label: Bar Label
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: intro
+            label: Intro
+            type: text
+            required: true
+          - name: index
+            label: Index
+            type: string
+            required: true
+          - name: sectionTitle
+            label: Section Title
+            type: string
+            required: true
+          - name: sectionIntro
+            label: Section Intro
+            type: text
+            required: true
+      - name: groups
+        label: Groups
+        type: object
+        list: true
+        fields:
+          - name: key
+            label: Key
+            type: string
+            required: true
+          - name: label
+            label: Label
+            type: string
+            required: true
+          - name: copy
+            label: Copy
+            type: text
+            required: true
+          - name: empty
+            label: Empty
+            type: text
+            required: true
+    operations:
+      delete: false
+
+  - name: publicationPage
+    label: Publication page settings
+    type: file
+    path: src/data/publications.json
+    format: json
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: intro
+        label: Intro
+        type: text
+        required: true
+      - name: scholarProfile
+        label: Scholar Profile
+        type: string
+        required: true
+      - name: snapshotDate
+        label: Snapshot Date
+        type: string
+        required: true
+    operations:
+      delete: false
+
+
+
+  - name: updatesPage
+    label: News, Funding and Recognition page text
+    type: file
+    path: src/data/updates.json
+    format: json
+    fields:
+      - name: news
+        label: News
+        type: object
+        fields:
+          - name: heroIntro
+            label: Hero Intro
+            type: text
+            required: true
+          - name: sectionIntro
+            label: Section Intro
+            type: text
+            required: true
+          - name: emptyState
+            label: Empty State
+            type: text
+            required: true
+      - name: funding
+        label: Funding
+        type: object
+        fields:
+          - name: heroIntro
+            label: Hero Intro
+            type: text
+            required: true
+          - name: sectionIntro
+            label: Section Intro
+            type: text
+            required: true
+          - name: emptyState
+            label: Empty State
+            type: text
+            required: true
+      - name: recognition
+        label: Recognition
+        type: object
+        fields:
+          - name: heroIntro
+            label: Hero Intro
+            type: text
+            required: true
+          - name: sectionIntro
+            label: Section Intro
+            type: text
+            required: true
+          - name: emptyState
+            label: Empty State
+            type: text
+            required: true
+    operations:
+      delete: false
+

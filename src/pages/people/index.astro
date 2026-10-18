@@ -1,8 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PersonCard from "../../components/PersonCard.astro";
 import site from "../../data/site.json";
+import teamData from "../../data/team.json";
 
 const people = (await getCollection("people")).sort(
   (a, b) =>
@@ -10,77 +11,50 @@ const people = (await getCollection("people")).sort(
     a.data.name.localeCompare(b.data.name) ||
     a.id.localeCompare(b.id),
 );
-const groups = [
-  {
-    key: "leadership",
-    label: "Principal Investigator",
-    copy: "Laboratory leadership and direction.",
-  },
-  {
-    key: "researchers",
-    label: "Research Staff",
-    copy: "Research staff working across the laboratory's scientific methods.",
-  },
-  {
-    key: "students",
-    label: "Student Interns",
-    copy: "Student interns contributing to the laboratory's work.",
-  },
-  {
-    key: "alumni",
-    label: "Alumni",
-    copy: "Former members of the laboratory.",
-  },
-] as const;
+const renderedPeople = await Promise.all(
+  people.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
 ---
 
 <BaseLayout
-  title={`People · ${site.shortName}`}
-  description="Meet the Tushar Shaw Lab team."
+  title="Team"
+  description={teamData.page.intro}
 >
   <div class="editorial-canvas editorial-people">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>Team <span aria-hidden="true">/</span> {site.shortName}</p>
-        <p>Laboratory directory</p>
+        <p>{teamData.page.kicker} <span aria-hidden="true">/</span> {site.shortName}</p>
+        <p>{teamData.page.barLabel}</p>
       </div>
       <div class="editorial-content">
-        <header class="editorial-hero" aria-labelledby="people-title">
-          <p class="editorial-kicker">The people / Team</p>
-          <h1 id="people-title">The Tushar Shaw Lab team.</h1>
-          <p class="editorial-hero__intro">
-            The Tushar Shaw Lab brings together a principal investigator,
-            research staff, student interns, and alumni at M.S. Ramaiah
-            University of Applied Sciences (RUAS), Bengaluru, India.
-          </p>
+        <header class="editorial-hero people-hero" aria-labelledby="people-title">
+          <div>
+            <p class="editorial-kicker">{teamData.page.kicker}</p>
+            <h1 id="people-title">{teamData.page.title}</h1>
+          </div>
+          <p class="editorial-hero__intro">{teamData.page.intro}</p>
         </header>
 
-        <section class="editorial-section" aria-labelledby="group-title">
+        <section class="editorial-section people-section" aria-labelledby="group-title">
           <div class="section-intro">
-            <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> The group
-            </p>
-            <h2 id="group-title">The people behind the work</h2>
-            <p>
-              The team studies infectious diseases and bacterial pathogens,
-              developing rapid, reliable, and cost-effective diagnostics.
-            </p>
+            <p class="editorial-index">{teamData.page.index}</p>
+            <div>
+              <h2 id="group-title">{teamData.page.sectionTitle}</h2>
+              <p>{teamData.page.sectionIntro}</p>
+            </div>
           </div>
           {
-            groups.map((group, index) => {
-              const entries = people.filter(
-                (entry) => entry.data.group === group.key,
+            teamData.groups.map((group, index) => {
+              const entries = renderedPeople.filter(
+                ({ entry }) => entry.data.group === group.key,
               );
               return (
-                <section
-                  class="people-group"
-                  aria-labelledby={`${group.key}-title`}
-                >
+                <section class="people-group" aria-labelledby={`${group.key}-title`}>
                   <div class="people-group__heading">
-                    <p class="editorial-index">
-                      {String(index + 1).padStart(2, "0")}{" "}
-                      <span aria-hidden="true">/</span>
-                    </p>
+                    <p class="editorial-index">{String(index + 1).padStart(2, "0")}</p>
                     <div>
                       <h3 id={`${group.key}-title`}>{group.label}</h3>
                       <p>{group.copy}</p>
@@ -88,14 +62,14 @@ const groups = [
                   </div>
                   {entries.length ? (
                     <div class="people-grid">
-                      {entries.map((entry) => (
-                        <PersonCard entry={entry} />
+                      {entries.map(({ entry, Content }) => (
+                        <PersonCard entry={entry}>
+                          <Content />
+                        </PersonCard>
                       ))}
                     </div>
                   ) : (
-                    <p class="empty-state">
-                      No {group.label.toLowerCase()} profiles yet.
-                    </p>
+                    <p class="empty-state">{group.empty}</p>
                   )}
                 </section>
               );
@@ -109,13 +83,31 @@ const groups = [
 
 <style>
   .editorial-people {
-    --c-rule: var(--editorial-line, #c9ccc2);
-    --c-muted: var(--editorial-muted, #64736f);
-    --c-teal: var(--editorial-teal, #276d6a);
+    --c-rule: var(--line);
+    --c-muted: var(--muted);
+    --c-teal: var(--teal);
   }
 
-  .editorial-people .editorial-hero__intro {
-    max-width: 39rem;
+  .people-hero {
+    grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 0.7fr);
+    align-items: end;
+  }
+
+  .people-hero h1 {
+    margin-top: 0.85rem;
+  }
+
+  .people-hero__intro {
+    max-width: 30rem;
+    margin: 0;
+    color: var(--c-muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+
+  .people-section {
+    padding-bottom: 0;
   }
 
   .section-intro {
@@ -124,11 +116,7 @@ const groups = [
     column-gap: clamp(1.5rem, 5vw, 5rem);
     align-items: start;
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--c-rule, var(--line));
-  }
-
-  .section-intro .editorial-index {
-    grid-row: span 2;
+    border-bottom: 1px solid var(--c-rule);
   }
 
   .section-intro h2 {
@@ -139,7 +127,7 @@ const groups = [
   .section-intro p:last-child {
     max-width: 34rem;
     margin-bottom: 0;
-    color: var(--c-muted, var(--ink-muted));
+    color: var(--c-muted);
   }
 
   .people-group {
@@ -147,7 +135,7 @@ const groups = [
     grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 5vw, 5rem);
     padding-block: 2.4rem;
-    border-bottom: 1px solid var(--c-rule, var(--line));
+    border-bottom: 1px solid var(--c-rule);
   }
 
   .people-group__heading {
@@ -163,17 +151,8 @@ const groups = [
 
   .people-group__heading p:last-child {
     margin-bottom: 0;
-    color: var(--c-muted, var(--ink-muted));
+    color: var(--c-muted);
     font-size: 0.95rem;
-  }
-
-  .editorial-index {
-    margin: 0;
-    color: var(--c-teal, var(--teal-deep));
-    font-size: 0.72rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
   }
 
   .people-grid {
@@ -185,12 +164,9 @@ const groups = [
     display: grid;
     grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
     gap: clamp(1rem, 3vw, 1.75rem);
-    overflow: visible;
     padding-block: 1rem;
     border: 0;
-    border-top: 1px solid var(--c-rule, var(--line));
-    border-radius: 0;
-    background: transparent;
+    border-top: 1px solid var(--c-rule);
   }
 
   .people-grid :global(.person-card:first-child) {
@@ -221,7 +197,11 @@ const groups = [
   }
 
   .people-grid :global(.person-card__role) {
-    color: var(--c-teal, var(--teal-deep));
+    color: var(--c-teal);
+  }
+
+  .people-grid :global(.person-card__prose) {
+    color: var(--c-muted);
   }
 
   .people-grid :global(.person-card__links) {
@@ -229,16 +209,24 @@ const groups = [
   }
 
   .people-grid :global(.person-card__links a) {
-    color: var(--c-teal, var(--teal-deep));
+    color: var(--c-teal);
   }
 
   .empty-state {
     padding: 1rem 0;
-    border-top: 1px dashed var(--c-rule, var(--line));
-    color: var(--c-muted, var(--ink-muted));
+    border-top: 1px dashed var(--c-rule);
+    color: var(--c-muted);
   }
 
   @media (max-width: 48rem) {
+    .people-hero {
+      display: block;
+    }
+
+    .people-hero__intro {
+      margin-top: 1.5rem;
+    }
+
     .people-group {
       grid-template-columns: 1fr;
       gap: 1.5rem;
@@ -249,10 +237,6 @@ const groups = [
     .section-intro {
       grid-template-columns: 1fr;
       gap: 0.75rem;
-    }
-
-    .section-intro .editorial-index {
-      grid-row: auto;
     }
 
     .people-grid :global(.person-card) {

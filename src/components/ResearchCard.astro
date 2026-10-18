@@ -16,6 +16,7 @@ interface Props {
 const { entry } = Astro.props;
 const title = asText(valueOf(entry, "title", "name"), "Research area");
 const summary = asText(valueOf(entry, "summary", "description", "excerpt"));
+const hasBody = Astro.slots.has("default");
 const image = valueOf(entry, "image", "photo");
 const imageUrl = imageSrc(image);
 const linkValue = asText(valueOf(entry, "link", "url"));
@@ -29,6 +30,7 @@ const tags: unknown[] = Array.isArray(rawTags) ? rawTags : [];
 ---
 
 <article
+  id={entry.id ?? entry.slug}
   class:list={{
     "research-card": true,
     "research-card--with-image": Boolean(imageUrl),
@@ -46,11 +48,11 @@ const tags: unknown[] = Array.isArray(rawTags) ? rawTags : [];
   }
   <div class="research-card__body">
     <p class="research-card__number" aria-hidden="true">
-      {
-        String(entry.id ?? entry.slug ?? "")
+      <slot name="number">
+        {String(entry.id ?? entry.slug ?? "")
           .slice(0, 2)
-          .padStart(2, "0")
-      }
+          .padStart(2, "0")}
+      </slot>
     </p>
     <h3>
       {
@@ -67,7 +69,10 @@ const tags: unknown[] = Array.isArray(rawTags) ? rawTags : [];
         )
       }
     </h3>
-    {summary && <p>{summary}</p>}
+    {!hasBody && summary && <p>{summary}</p>}
+    <div class="research-card__prose prose">
+      <slot />
+    </div>
     {
       tags.length > 0 && (
         <ul class="research-card__tags" aria-label="Research keywords">
@@ -94,6 +99,7 @@ const tags: unknown[] = Array.isArray(rawTags) ? rawTags : [];
 
 <style>
   .research-card {
+    scroll-margin-top: 6rem;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
@@ -118,6 +124,19 @@ const tags: unknown[] = Array.isArray(rawTags) ? rawTags : [];
     display: grid;
     align-content: start;
     gap: 0.65rem;
+  }
+  .research-card__prose {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .research-card__prose :global(p) {
+    margin: 0;
+  }
+
+  .research-card__prose :global(p + p) {
+    margin-top: 0.8rem;
   }
 
   .research-card__number {

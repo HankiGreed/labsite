@@ -15,14 +15,18 @@ interface Props {
 
 const { entry } = Astro.props;
 const title = asText(valueOf(entry, "title", "name"), "News update");
-const date = asText(valueOf(entry, "date", "publishedAt", "year"));
+const rawDate = valueOf(entry, "date", "publishedAt", "year");
+const date =
+  rawDate instanceof Date && !Number.isNaN(rawDate.getTime())
+    ? rawDate.toISOString().slice(0, 10)
+    : asText(rawDate);
 const summary = asText(
   valueOf(entry, "summary", "excerpt", "description", "body"),
 );
 const image = valueOf(entry, "image", "photo");
 const imageUrl = imageSrc(image);
-const rawLink = asText(valueOf(entry, "link", "url"));
-const linkValue = rawLink || (entry.slug ? `/news/${entry.slug}/` : "");
+const rawLink = asText(valueOf(entry, "url"));
+const linkValue = rawLink;
 const link = linkValue
   ? isExternal(linkValue)
     ? linkValue

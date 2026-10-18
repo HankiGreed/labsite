@@ -31,6 +31,15 @@ Open **Site settings** to edit:
 
 Keep the field names and list/object shapes unchanged. Do not add a personal email address, phone number, department, or social account unless the lab has provided it.
 
+### Homepage and page introductions
+
+The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions and captions. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order. Existing abstract illustrations are used until the lab supplies approved photos.
+
+Use **Research page text**, **Team page text**, **Publication page settings**, and **News, Funding and Recognition page text** to edit introductions independently of the templates. Keep group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
+
+Content lives in `src/content/<collection>/*.md`; page settings live in `src/data/*.json`. Layout and rendering live in `src/pages`, `src/components`, and `src/layouts`. Adding a content entry does not require editing an Astro file. The public Funding and Recognition pages retain `/projects/` and `/achievements/` respectively, and Team retains `/people/`.
+
+
 ### Research themes
 
 Use **Research → New** or edit an existing entry. Each entry has a title, summary, integer display order (lower numbers appear first), featured toggle, optional image, and Markdown body. The supplied themes are:
@@ -54,12 +63,12 @@ Use **Pathogens → New** to add an organism or pathogen group entry. The form h
 
 The supplied organisms and focus descriptions include _Streptococcus pneumoniae_, _Haemophilus influenzae_, _Acinetobacter baumannii_, _Escherichia coli_, _Klebsiella pneumoniae_, carbapenem-resistant Enterobacterales (CRE), hypervirulent _Klebsiella pneumoniae_ (hvKp), _Enterococcus faecalis_ and _S. mutans_, anaerobic bacteria, and _Candida albicans_. Use the supplied spelling and descriptions, including “Enterococcus faecalis and S. mutans”.
 
-### Projects
+### Funding
 
-Use **Projects → New** or edit an existing project. Each entry has:
+Use **Funding → New** or edit an existing project. Each entry has:
 
 - **Title** (required).
-- **Funder**, **period**, and **role** (optional when not supplied).
+- **Funder**, **funding amount**, **period**, and **role** (optional when not supplied). Include the currency in the amount, for example `INR 10,00,000`; do not enter an unverified amount. Missing metadata displays as **Not listed**.
 - **Display order** (required integer).
 - **Project description**, entered as Markdown rich text. Add the supplied project description to this body. The BIRAC entry is the only one for which the supplied information has no description, so its body may remain empty; do not write a replacement description.
 
@@ -85,15 +94,32 @@ Use **Alumni** for the group label and `Varshaa M` for the student's name. Add b
 
 ### Publications
 
-No publications were supplied for this site. Leave **Publications** empty until the lab provides real records. When adding one, use the exact form: title, one or more author list items, journal, integer year, optional DOI, optional URL, and featured toggle. DOI values may be an identifier or a complete DOI link. Do not create placeholder citations.
+The initial bibliography contains the latest 15 entries from [Tushar Shaw’s date-sorted Google Scholar profile](https://scholar.google.com/citations?hl=en&user=21DS-IsAAAAJ&view_op=list_works&sortby=pubdate), retrieved on 2026-10-18. This is an editable snapshot, not a live Scholar integration. It includes the dataset and conference entries that appear in the source list; the source’s displayed years and ordering are retained, including the BMJ entry listed as 2025. Source details are recorded in each Markdown file.
 
-### Achievements
+Use **Publications → New** for subsequent work. Enter title, authors as list items, integer year, optional journal/venue, optional DOI, optional URL, optional order, and featured toggle. Titles link to the URL when supplied, otherwise the DOI. DOI values may be an identifier or a complete DOI link. Records are grouped by year descending, then order ascending within each year; records without an order appear after explicitly ordered records in that year. Use the order field to distinguish works in the same year. Do not create placeholder citations. Update the snapshot date in **Publication page settings** only when refreshing the Scholar snapshot.
 
-No achievements were supplied. Leave **Achievements** empty rather than adding an invented award or date. When the lab provides one, add its title, optional date, summary, featured toggle, and optional Markdown details. Dates must be supplied by the lab; do not infer them.
+### Recognition
 
-### News
+No recognition entries were supplied. Leave **Recognition** empty rather than adding an invented award or date. When the lab provides one, add its title, optional date, summary, featured toggle, and optional Markdown details. Undated entries are supported and follow dated entries. Dates must be supplied by the lab; do not infer them.
 
-No news or updates were supplied. Leave **News** empty until there is a real announcement. A news entry has a title, date, summary, optional image, featured toggle, and Markdown body. Do not create a generic announcement to fill the page.
+### News/Events
+
+No news or updates were supplied. Leave **News/Events** empty until there is a real announcement. Each entry has a title, date, paragraph (**Summary**), optional title link (**URL**, a full `https://…` address), optional image, featured toggle, and optional Markdown body. A title is plain text when no URL is supplied. Newest dates appear first; full Markdown details render beneath the paragraph. Do not create a generic announcement to fill the page.
+
+For file-based editing, create a Markdown file in `src/content/news/` with this shape, replacing the example values with approved content:
+
+```yaml
+---
+title: "Approved event title"
+date: 2026-10-18
+summary: "A paragraph describing the event."
+url: "https://example.org/event" # Optional: omit to leave the title unlinked.
+image: "/images/uploads/event.jpg" # Optional: omit when no image is available.
+featured: false
+---
+```
+
+Any text after the closing `---` is optional Markdown detail. The same frontmatter-plus-body convention applies to research themes, team biographies, funding project descriptions, and recognition details. Publication fields instead describe the citation itself.
 
 ### Join and contact
 
@@ -103,7 +129,7 @@ The **Join** page uses the Site settings **Join text** and the lab's supplied re
 
 The initial team photos are named SVG replacement cues in `public/images/people/`. To use a real portrait without local tools:
 
-1. In Pages CMS, open **People**, select the person, and use the **Photo** image field to upload the approved portrait. Pages CMS stores uploads in `public/images/uploads`.
+1. In Pages CMS, open **Team**, select the person, and use the **Photo** image field to upload the approved portrait. Pages CMS stores uploads in `public/images/uploads`.
 2. Save/commit the person entry. The uploaded photo replaces that person's placeholder on the site; repeat for each person as portraits become available.
 3. Keep the image focused on the named person, use a descriptive filename, and publish only portraits approved for public use.
 
@@ -124,3 +150,7 @@ If a custom domain is attached in **Settings → Pages**, configure its DNS in G
 3. For check or build failures, read the file and line named in the log. Common causes are a missing required field, invalid date or URL, or malformed Markdown frontmatter. Fix the entry in Pages CMS and commit again.
 4. Confirm **Settings → Pages** still uses **GitHub Actions** and that workflow permissions allow the workflow to read contents and deploy Pages. Do not broaden permissions unnecessarily.
 5. After fixing the cause, choose **Re-run failed jobs** or save a new CMS commit. A successful run uploads `dist/` and deploys it; browser caches can make the update take a few minutes to appear.
+
+## Local development
+
+Run `npm ci`, then `npm run dev`. If a new entry in a previously empty collection does not appear in the local development server, restart it; production builds always reload the collections. Use `npm run check` for Astro/TypeScript diagnostics and `npm run build` for the static site. To exercise GitHub project hosting locally, set `BASE_PATH=/labsite` and `SITE_URL=https://example.org/labsite` when building, then run `npm run preview` and open `/labsite/`.

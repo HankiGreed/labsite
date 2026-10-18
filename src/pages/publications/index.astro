@@ -2,82 +2,84 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PublicationItem from "../../components/PublicationItem.astro";
-import site from "../../data/site.json";
+import publicationPage from "../../data/publications.json";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) =>
     b.data.year - a.data.year ||
-    a.data.title.localeCompare(b.data.title) ||
-    a.id.localeCompare(b.id),
+    // Entries without an order sort after explicitly ordered records.
+    (a.data.order ?? Number.MAX_SAFE_INTEGER) -
+      (b.data.order ?? Number.MAX_SAFE_INTEGER),
 );
+const years = [...new Set(publications.map((entry) => entry.data.year))];
+const scholarProfile = publicationPage.scholarProfile;
 ---
 
 <BaseLayout
-  title={`Publications · ${site.shortName}`}
-  description="Research publications from Tushar Shaw Lab."
+  title={publicationPage.title}
+  description={publicationPage.intro}
 >
   <div class="editorial-canvas publications-page">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>Editorial journal <span aria-hidden="true">/</span> Publications</p>
-        <p>Research record</p>
+        <p>Research record <span aria-hidden="true">/</span> Publications</p>
+        <p>{publications.length} works</p>
       </div>
 
       <div class="editorial-content">
-        <header
-          class="editorial-hero publications-hero"
-          aria-labelledby="publications-hero-title"
-        >
+        <header class="publications-hero" aria-labelledby="publications-title">
           <div class="publications-hero__meta">
             <p class="editorial-kicker">Publications</p>
-            <p class="publications-hero__edition">Lab research / Archive</p>
+            <p class="publications-hero__edition">A working bibliography</p>
           </div>
           <div class="publications-hero__copy">
-            <h1 id="publications-hero-title">Research in practice.</h1>
-            <p>
-              A record of work from Tushar Shaw Lab on infectious diseases,
-              bacterial pathogens, and rapid, reliable, cost-effective
-              diagnostics.
-            </p>
+            <h1 id="publications-title">{publicationPage.title}</h1>
+            <p>{publicationPage.intro}</p>
           </div>
           <aside class="publications-hero__aside" aria-label="Archive note">
-            <p class="publications-hero__aside-label">Reading the archive</p>
-            <p>Publication records will be added as the lab shares its work.</p>
+            <p class="publications-hero__aside-label">About this archive</p>
+            <p>
+              This date-sorted snapshot ({publicationPage.snapshotDate}) was prepared from the lab's
+              <a href={scholarProfile} target="_blank" rel="noreferrer"
+                >Google Scholar profile</a
+              >. Entries are editable local records, not a live feed.
+            </p>
           </aside>
         </header>
 
-        <section
-          class="editorial-section publication-section"
-          aria-labelledby="publications-title"
-        >
-          <div class="publication-section__heading">
-            <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> Archive <span
-                aria-hidden="true">·</span
-              > Selected writing
-            </p>
-            <div>
-              <h2 id="publications-title">A working bibliography</h2>
-              <p>
-                Browse the lab's research record as publications are added.
-                Author, journal, and link details will appear with each record.
-              </p>
+        {
+          publications.length ? (
+            <div class="publication-archive" aria-label="Publications by year">
+              {years.map((year) => (
+                <section class="publication-year" aria-labelledby={`year-${year}`}>
+                  <div class="publication-year__heading">
+                    <h2 id={`year-${year}`}>{year}</h2>
+                    <p>
+                      {publications.filter((entry) => entry.data.year === year).length} {" "}
+                      {publications.filter((entry) => entry.data.year === year).length === 1
+                        ? "publication"
+                        : "publications"}
+                    </p>
+                  </div>
+                  <div class="publication-year__items">
+                    {publications
+                      .filter((entry) => entry.data.year === year)
+                      .map((entry) => <PublicationItem entry={entry} />)}
+                  </div>
+                </section>
+              ))}
             </div>
-          </div>
-          {
-            publications.length ? (
-              <div class="editorial-rule-list publication-archive">
-                {publications.map((entry) => (
-                  <PublicationItem entry={entry} />
-                ))}
-              </div>
-            ) : (
-              <p class="empty-state">
-                Publication records have not yet been added.
-              </p>
-            )
-          }
-        </section>
+          ) : (
+            <p class="empty-state">Publication records have not yet been added.</p>
+          )
+        }
+
+        <p class="fine-print">
+          Snapshot sorted by publication year (newest first), then source order.
+          <a href={scholarProfile} target="_blank" rel="noreferrer"
+            >Open the source profile <span aria-hidden="true">↗</span></a
+          >
+        </p>
       </div>
     </div>
   </div>
@@ -88,7 +90,6 @@ const publications = (await getCollection("publications")).sort(
     --editorial-ink: var(--ink);
     --editorial-navy: var(--navy);
     --editorial-teal: var(--teal);
-    --editorial-teal-soft: var(--teal-soft);
     --editorial-ivory: var(--canvas);
     --editorial-paper: var(--paper);
     --editorial-line: var(--line);
@@ -99,10 +100,7 @@ const publications = (await getCollection("publications")).sort(
 
   .publications-hero {
     display: grid;
-    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(
-        10rem,
-        0.75fr
-      );
+    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr) minmax(12rem, 0.8fr);
     gap: clamp(1.25rem, 4vw, 4rem);
     align-items: start;
     padding-block: clamp(3.75rem, 8vw, 6.75rem);
@@ -143,6 +141,13 @@ const publications = (await getCollection("publications")).sort(
     line-height: 1.45;
   }
 
+  .publications-hero__aside a,
+  .fine-print a {
+    color: var(--editorial-teal);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
   .publications-hero h1 {
     max-width: 12ch;
     margin: 0;
@@ -163,127 +168,88 @@ const publications = (await getCollection("publications")).sort(
     line-height: 1.45;
   }
 
-  .publication-section {
-    padding-block: clamp(3.5rem, 7vw, 6rem);
+  .publication-archive {
+    padding-top: clamp(3rem, 6vw, 5rem);
   }
 
-  .publication-section__heading {
-    display: grid;
-    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.85fr);
-    gap: clamp(1.25rem, 4vw, 4rem);
-    align-items: start;
-    margin-bottom: clamp(2rem, 4vw, 3.25rem);
+  .publication-year + .publication-year {
+    margin-top: clamp(3rem, 7vw, 6rem);
   }
 
-  .editorial-index {
+  .publication-year__heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--editorial-navy);
+  }
+
+  .publication-year__heading h2 {
     margin: 0;
-    color: var(--editorial-teal);
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+
+  .publication-year__heading p {
+    margin: 0;
+    color: var(--editorial-muted);
     font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.69rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-    line-height: 1.4;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  .editorial-index span {
-    margin-inline: 0.3rem;
-    color: var(--editorial-line);
-  }
-
-  .publication-section__heading h2 {
-    max-width: 20ch;
-    margin: 0;
-    color: var(--editorial-navy);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.9rem, 3.3vw, 3rem);
-    font-weight: 400;
-    line-height: 1.08;
-  }
-
-  .publication-section__heading p:last-child {
-    max-width: 34rem;
-    margin: 0.8rem 0 0;
-    color: var(--editorial-muted);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 0.98rem;
-    line-height: 1.45;
-  }
-
-  .publication-archive {
-    border-top: 1px solid var(--editorial-line);
-  }
-
-  .publication-archive :global(.publication-item) {
-    display: grid;
-    grid-template-columns: minmax(3.25rem, 0.3fr) minmax(0, 2.7fr);
-    gap: clamp(1rem, 3vw, 2.5rem);
-    padding-block: 1.35rem;
-    border-top: 0;
+  .publication-year__items {
     border-bottom: 1px solid var(--editorial-line);
   }
 
-  .publication-archive :global(.publication-item__year) {
-    padding-top: 0.25rem;
-    color: var(--editorial-teal);
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.7rem;
-    font-weight: 750;
-    letter-spacing: 0.1em;
+  .publication-year__items :global(.publication-item) {
+    border-top: 1px solid var(--editorial-line);
+    padding-block: 1.35rem;
   }
 
-  .publication-archive :global(.publication-item__body) {
-    display: grid;
+  .publication-year__items :global(.publication-item:first-child) {
+    border-top: 0;
+  }
+
+  .publication-year__items :global(.publication-item__body) {
     gap: 0.42rem;
   }
 
-  .publication-archive :global(.publication-item h3) {
-    margin: 0;
+  .publication-year__items :global(.publication-item h3) {
     color: var(--editorial-navy);
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
     font-weight: 400;
-    line-height: 1.2;
+    line-height: 1.22;
   }
 
-  .publication-archive :global(.publication-item h3 a) {
-    text-decoration: none;
-  }
-
-  .publication-archive :global(.publication-item h3 a:hover),
-  .publication-archive :global(.publication-item h3 a:focus-visible) {
+  .publication-year__items :global(.publication-item h3 a:hover),
+  .publication-year__items :global(.publication-item h3 a:focus-visible) {
     color: var(--editorial-teal);
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
   }
 
-  .publication-archive :global(.publication-item p) {
+  .publication-year__items :global(.publication-item p) {
     margin: 0;
   }
 
-  .publication-archive :global(.publication-item__authors) {
+  .publication-year__items :global(.publication-item__authors) {
     color: var(--editorial-ink);
     font-size: 0.88rem;
   }
 
-  .publication-archive :global(.publication-item__journal) {
+  .publication-year__items :global(.publication-item__journal) {
     color: var(--editorial-muted);
     font-size: 0.78rem;
     font-style: italic;
   }
 
-  .publication-archive
-    :global(
-      .publication-item__body
-        > p:not(.publication-item__authors):not(.publication-item__journal)
-    ) {
-    max-width: 44rem;
-    color: var(--editorial-muted);
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .publication-archive :global(.publication-item .text-link) {
+  .publication-year__items :global(.publication-item .text-link) {
     width: fit-content;
     margin-top: 0.25rem;
     color: var(--editorial-teal);
@@ -308,6 +274,10 @@ const publications = (await getCollection("publications")).sort(
     letter-spacing: 0.04em;
   }
 
+  .fine-print a {
+    margin-left: 0.45rem;
+  }
+
   @media (max-width: 48rem) {
     .publications-hero {
       grid-template-columns: minmax(6rem, 0.45fr) minmax(0, 1.55fr);
@@ -319,13 +289,11 @@ const publications = (await getCollection("publications")).sort(
   }
 
   @media (max-width: 38rem) {
-    .publications-hero,
-    .publication-section__heading {
+    .publications-hero {
       display: block;
     }
 
-    .publications-hero__copy,
-    .publication-section__heading > div {
+    .publications-hero__copy {
       margin-top: 1.5rem;
     }
 
@@ -333,9 +301,12 @@ const publications = (await getCollection("publications")).sort(
       margin-top: 2rem;
     }
 
-    .publication-archive :global(.publication-item) {
-      grid-template-columns: 1fr;
-      gap: 0.55rem;
+    .publication-year__heading {
+      display: block;
+    }
+
+    .publication-year__heading p {
+      margin-top: 0.4rem;
     }
   }
 </style>

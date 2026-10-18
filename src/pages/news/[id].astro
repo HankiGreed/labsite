@@ -1,8 +1,14 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { withBase } from "../../components/content";
-import site from "../../data/site.json";
+import {
+  asText,
+  imageAlt,
+  imageSrc,
+  isExternal,
+  valueOf,
+  withBase,
+} from "../../components/content";
 
 export async function getStaticPaths() {
   const entries = (await getCollection("news")).sort(
@@ -17,39 +23,58 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const date = entry.data.date.toLocaleDateString("en", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  timeZone: "UTC",
-});
+const title = asText(valueOf(entry, "title"), "News update");
+const summary = asText(valueOf(entry, "summary"));
+const image = valueOf(entry, "image");
+const imageUrl = imageSrc(image);
+const rawUrl = asText(valueOf(entry, "url"));
+const externalUrl = rawUrl && isExternal(rawUrl) ? rawUrl : undefined;
+const dateValue = valueOf(entry, "date");
+const date =
+  dateValue instanceof Date && !Number.isNaN(dateValue.getTime())
+    ? new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC",
+      }).format(dateValue)
+    : undefined;
 ---
 
 <BaseLayout
-  title={`${entry.data.title} · ${site.shortName}`}
-  description={entry.data.summary}
+  title={title}
+  description={summary || title}
 >
   <div class="editorial-canvas editorial-story-page">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>News &amp; notes <span aria-hidden="true">/</span> Journal</p>
+        <p>News &amp; events <span aria-hidden="true">/</span> Journal</p>
         <a class="editorial-link" href={withBase("/news/")}>Back to news</a>
       </div>
       <article class="editorial-content story">
         <header class="story__header">
           <a class="back-link" href={withBase("/news/")}>← Back to news</a>
-          <p class="editorial-kicker">Dispatch / {date}</p>
-          <h1>{entry.data.title}</h1>
-          <p class="story__summary">{entry.data.summary}</p>
+          <p class="editorial-kicker">Dispatch{date ? ` / ${date}` : ""}</p>
+          <h1>{title}</h1>
+          {summary && <p class="story__summary">{summary}</p>}
+          {externalUrl && (
+            <a
+              class="story__source editorial-link"
+              href={externalUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open original source <span aria-hidden="true">↗</span>
+            </a>
+          )}
         </header>
         {
-          entry.data.image && (
+          imageUrl && (
             <figure class="story__figure">
               <img
-                src={withBase(entry.data.image)}
-                alt={`Illustration for ${entry.data.title}`}
-                width="800"
-                height="420"
+                src={imageUrl}
+                alt={imageAlt(image, `Illustration for ${title}`)}
+                loading="lazy"
               />
               <figcaption>Image accompanying this update.</figcaption>
             </figure>
@@ -106,6 +131,11 @@ const date = entry.data.date.toLocaleDateString("en", {
     font-family: Georgia, "Times New Roman", serif;
     font-size: clamp(1.2rem, 2.4vw, 1.65rem);
     line-height: 1.35;
+  }
+
+  .story__source {
+    display: inline-block;
+    margin-top: 1.2rem;
   }
 
   .story__figure {

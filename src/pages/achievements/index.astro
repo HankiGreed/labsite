@@ -2,55 +2,53 @@
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { asText, withBase } from "../../components/content";
+import updates from "../../data/updates.json";
 import site from "../../data/site.json";
 
-const siteData = site as Record<string, unknown>;
-const siteName = asText(siteData.shortName ?? siteData.name, "Research Lab");
+const siteName = asText(site.shortName ?? site.name, "Research Lab");
 const entries = (await getCollection("achievements")).sort((a, b) => {
   const aDate = a.data.date instanceof Date ? a.data.date.getTime() : 0;
   const bDate = b.data.date instanceof Date ? b.data.date.getTime() : 0;
-  return (
-    bDate - aDate ||
-    a.data.title.localeCompare(b.data.title) ||
-    a.id.localeCompare(b.id)
-  );
+  return bDate - aDate || a.data.title.localeCompare(b.data.title) || a.id.localeCompare(b.id);
 });
 const rendered = await Promise.all(
   entries.map(async (entry) => ({
     entry,
     Content: (await render(entry)).Content,
+    hasBody: Boolean(entry.body?.trim()),
   })),
 );
 
-function formattedDate(value: unknown): string | undefined {
-  if (!(value instanceof Date) || Number.isNaN(value.getTime()))
-    return undefined;
-  return new Intl.DateTimeFormat("en", {
-    month: "long",
-    year: "numeric",
-  }).format(value);
+function dateParts(value: unknown): { label: string; iso: string } | undefined {
+  if (!(value instanceof Date) || Number.isNaN(value.getTime())) return undefined;
+  return {
+    label: new Intl.DateTimeFormat("en", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    }).format(value),
+    iso: value.toISOString().slice(0, 10),
+  };
 }
 ---
 
 <BaseLayout
-  title={`Achievements · ${siteName}`}
-  description={`Achievements and distinctions from ${siteName}.`}
+  title="Recognition"
+  description={`Recognition shared by ${siteName}.`}
 >
-  <div class="editorial-canvas achievements-page">
+  <div class="editorial-canvas recognition-page">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>Achievements <span aria-hidden="true">/</span> {siteName}</p>
+        <p>Recognition <span aria-hidden="true">/</span> {siteName}</p>
         <p>Record / Selected notes</p>
       </div>
 
       <div class="editorial-content">
-        <header class="editorial-hero" aria-labelledby="achievements-title">
-          <p class="editorial-kicker">Achievements / Record</p>
-          <h1 id="achievements-title">What the work makes possible.</h1>
-          <p class="editorial-hero__intro">
-            This page records achievements shared by the lab, as they become
-            available.
-          </p>
+        <header class="editorial-hero" aria-labelledby="recognition-title">
+          <p class="editorial-kicker">Recognition / Record</p>
+          <h1 id="recognition-title">Recognition, as recorded.</h1>
+          <p class="editorial-hero__intro">{updates.recognition.heroIntro}</p>
         </header>
 
         <section class="editorial-section" aria-labelledby="record-title">
@@ -59,90 +57,68 @@ function formattedDate(value: unknown): string | undefined {
               01 <span aria-hidden="true">/</span> The record
             </p>
             <div>
-              <h2 id="record-title">A growing account of the work</h2>
-              <p>
-                Entries are presented with the dates and context supplied by the
-                lab.
-              </p>
+              <h2 id="record-title">Recognition notes</h2>
+              <p>{updates.recognition.sectionIntro}</p>
             </div>
           </div>
 
           {
             rendered.length ? (
-              <div class="achievement-list">
-                {rendered.map(({ entry, Content }, index) => {
-                  const date = formattedDate(entry.data.date);
-                  const isoDate =
-                    entry.data.date instanceof Date
-                      ? entry.data.date.toISOString()
-                      : undefined;
+              <div class="recognition-list">
+                {rendered.map(({ entry, Content, hasBody }, index) => {
+                  const title = asText(entry.data.title, "Recognition");
+                  const summary = asText(entry.data.summary);
+                  const date = dateParts(entry.data.date);
                   return (
-                    <article class="achievement-row" id={entry.id}>
-                      <p class="editorial-index achievement-row__index">
+                    <article class="recognition-row" id={entry.id}>
+                      <p class="editorial-index recognition-row__index">
                         {String(index + 1).padStart(2, "0")}
                       </p>
-                      <div class="achievement-row__body">
-                        <div class="achievement-row__heading">
-                          <h3>{entry.data.title}</h3>
-                          {date && isoDate && (
-                            <time datetime={isoDate}>{date}</time>
-                          )}
+                      <div class="recognition-row__body">
+                        <div class="recognition-row__heading">
+                          <h3>{title}</h3>
+                          {date && <time datetime={date.iso}>{date.label}</time>}
                         </div>
-                        <p class="achievement-row__summary">
-                          {entry.data.summary}
-                        </p>
+                        {summary && <p class="recognition-row__summary">{summary}</p>}
                         <div class="prose">
-                          <Content />
+                          {hasBody ? (
+                            <Content />
+                          ) : (
+                            <p class="not-listed">No further details listed.</p>
+                          )}
                         </div>
                       </div>
                       {entry.data.featured && (
-                        <p class="achievement-row__tag">Featured</p>
+                        <p class="recognition-row__tag">Featured</p>
                       )}
                     </article>
                   );
                 })}
               </div>
             ) : (
-              <p class="empty-state">
-                No achievements have been published yet. This record will be
-                updated when the lab shares one.
-              </p>
+              <p class="empty-state">{updates.recognition.emptyState}</p>
             )
           }
         </section>
 
-        <section
-          class="editorial-section achievements-close"
-          aria-labelledby="close-title"
-        >
-          <p class="editorial-kicker">Keep exploring</p>
-          <h2 id="close-title">Start with the questions behind the work.</h2>
-          <div class="achievements-links">
-            <a class="editorial-link" href={withBase("/research/")}
-              >Research themes <span aria-hidden="true">→</span></a
-            >
-            <a class="editorial-link" href={withBase("/pathogens/")}
-              >Pathogens <span aria-hidden="true">→</span></a
-            >
-            <a class="editorial-link" href={withBase("/join/")}
-              >Join or collaborate <span aria-hidden="true">→</span></a
-            >
-          </div>
-        </section>
+        <nav class="recognition-links" aria-label="Explore related pages">
+          <a class="editorial-link" href={withBase("/research/")}
+            >Research themes <span aria-hidden="true">→</span></a
+          >
+          <a class="editorial-link" href={withBase("/publications/")}
+            >Publications <span aria-hidden="true">→</span></a
+          >
+        </nav>
       </div>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .achievements-page {
+  .recognition-page {
     --c-rule: var(--editorial-line, #c9ccc2);
     --c-muted: var(--editorial-muted, #64736f);
     --c-teal: var(--editorial-teal, #276d6a);
-  }
-
-  .achievements-page .editorial-hero__intro {
-    max-width: 39rem;
   }
 
   .section-intro {
@@ -169,7 +145,20 @@ function formattedDate(value: unknown): string | undefined {
     color: var(--c-muted, var(--ink-muted));
   }
 
-  .achievement-row {
+  .editorial-index {
+    margin: 0;
+    color: var(--c-teal, var(--teal-deep));
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .recognition-list {
+    display: grid;
+  }
+
+  .recognition-row {
     display: grid;
     grid-template-columns: minmax(4rem, 0.45fr) minmax(0, 1fr) auto;
     gap: clamp(1rem, 4vw, 4rem);
@@ -177,23 +166,23 @@ function formattedDate(value: unknown): string | undefined {
     border-bottom: 1px solid var(--c-rule, var(--line));
   }
 
-  .achievement-row__index {
+  .recognition-row__index {
     padding-top: 0.3rem;
   }
 
-  .achievement-row__heading {
+  .recognition-row__heading {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     gap: 0.75rem 1.25rem;
   }
 
-  .achievement-row h3 {
+  .recognition-row h3 {
     margin: 0;
   }
 
-  .achievement-row time,
-  .achievement-row__tag {
+  .recognition-row time,
+  .recognition-row__tag {
     color: var(--c-teal, var(--teal-deep));
     font-size: 0.72rem;
     font-weight: 750;
@@ -201,40 +190,52 @@ function formattedDate(value: unknown): string | undefined {
     text-transform: uppercase;
   }
 
-  .achievement-row__summary {
+  .recognition-row__summary {
     max-width: 40rem;
     margin: 0.8rem 0 0;
     color: var(--c-muted, var(--ink-muted));
   }
 
-  .achievement-row .prose {
+  .recognition-row .prose {
     max-width: 42rem;
     margin-top: 1rem;
+    line-height: 1.65;
   }
 
-  .achievement-row__tag {
+  .recognition-row .prose :global(p) {
+    margin-bottom: 0.8rem;
+  }
+
+  .recognition-row .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .recognition-row .prose :global(a) {
+    color: var(--c-teal, var(--teal-deep));
+  }
+
+  .recognition-row__tag {
     align-self: start;
     margin: 0;
     white-space: nowrap;
   }
 
-  .achievements-close {
-    max-width: 52rem;
-    margin-top: 1rem;
-    padding-top: clamp(2.5rem, 6vw, 4rem);
-    border-top: 1px solid var(--c-rule, var(--line));
+  .not-listed {
+    color: var(--c-muted, var(--ink-muted));
+    font-style: italic;
   }
 
-  .achievements-close h2 {
-    max-width: 28rem;
-    margin-top: 0.7rem;
+  .empty-state {
+    padding: 1rem 0;
+    border-bottom: 1px dashed var(--c-rule, var(--line));
+    color: var(--c-muted, var(--ink-muted));
   }
 
-  .achievements-links {
+  .recognition-links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.5rem;
-    margin-top: 1.5rem;
+    padding-block: clamp(2.5rem, 6vw, 4rem);
   }
 
   .editorial-link {
@@ -245,7 +246,7 @@ function formattedDate(value: unknown): string | undefined {
 
   @media (max-width: 48rem) {
     .section-intro,
-    .achievement-row {
+    .recognition-row {
       grid-template-columns: 1fr;
       gap: 0.85rem;
     }
@@ -254,7 +255,7 @@ function formattedDate(value: unknown): string | undefined {
       grid-row: auto;
     }
 
-    .achievement-row__tag {
+    .recognition-row__tag {
       justify-self: start;
     }
   }

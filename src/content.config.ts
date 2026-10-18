@@ -32,8 +32,9 @@ const publications = defineCollection({
   schema: z.object({
     title: z.string(),
     authors: z.array(z.string()).min(1),
-    journal: z.string(),
+    journal: z.string().default(""),
     year: z.number().int(),
+    order: z.number().int().optional(),
     doi: z.string().optional(),
     url: z.string().url().optional(),
     featured: z.boolean(),
@@ -46,6 +47,7 @@ const news = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     summary: z.string(),
+    url: z.string().url().optional(),
     image: imagePath.optional(),
     featured: z.boolean(),
   }),
@@ -72,6 +74,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     funder: z.string().optional(),
+    amount: z.string().optional(),
     period: z.string().optional(),
     role: z.string().optional(),
     order: z.number().int(),

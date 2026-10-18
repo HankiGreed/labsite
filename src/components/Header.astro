@@ -6,12 +6,13 @@ const siteName = asText(site.name, "Research Lab");
 const shortName = asText(site.shortName, siteName);
 const currentPath = Astro.url.pathname;
 const navigation = [
-  { label: "About", href: "/about/" },
+  { label: "Home", href: "/" },
   { label: "Research", href: "/research/" },
-  { label: "Projects", href: "/projects/" },
   { label: "Team", href: "/people/" },
   { label: "Publications", href: "/publications/" },
-  { label: "News", href: "/news/" },
+  { label: "News/Events", href: "/news/" },
+  { label: "Funding", href: "/projects/" },
+  { label: "Recognition", href: "/achievements/" },
   { label: "Contact", href: "/contact/" },
 ];
 

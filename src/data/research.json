@@ -1,0 +1,33 @@
+{
+  "page": {
+    "kicker": "Research at a glance",
+    "edition": "Infectious disease research",
+    "title": "Understanding infection, improving diagnosis.",
+    "intro": "The Tushar Shaw Lab investigates infectious diseases and bacterial pathogens, while developing rapid, reliable, and cost-effective diagnostic technologies.",
+    "methodsLabel": "Methods in practice",
+    "methods": "Clinical microbiology, molecular biology, molecular epidemiology, genomics, and bioinformatics."
+  },
+  "themes": {
+    "index": "01 / Research · Themes",
+    "title": "Research themes",
+    "intro": "Research directions spanning bacterial diversity, resistance, diagnostics, and respiratory infection.",
+    "empty": "No research themes are listed yet."
+  },
+  "pathogens": {
+    "index": "02 / Pathogens",
+    "title": "Organisms under study",
+    "intro": "Explore the pathogen archive by research area.",
+    "empty": "No pathogens are listed in this category.",
+    "groups": [
+      { "key": "respiratory", "label": "Respiratory pathogens" },
+      { "key": "antimicrobial-resistant", "label": "Antimicrobial-resistant bacteria" },
+      { "key": "hypervirulent", "label": "Hypervirulent pathogens" },
+      { "key": "endodontic-other", "label": "Endodontic and other bacteria" },
+      { "key": "fungal", "label": "Fungal pathogens" }
+    ]
+  },
+  "links": [
+    { "label": "Pathogens of interest", "caption": "Next archive", "href": "/pathogens/" },
+    { "label": "Funding and projects", "caption": "Follow the work", "href": "/projects/" }
+  ]
+}

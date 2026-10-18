@@ -1,8 +1,9 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { withBase } from "../../components/content";
+import { asText, withBase } from "../../components/content";
 import site from "../../data/site.json";
+import updates from "../../data/updates.json";
 
 const entries = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id),
@@ -11,93 +12,97 @@ const rendered = await Promise.all(
   entries.map(async (entry) => ({
     entry,
     Content: (await render(entry)).Content,
+    hasBody: Boolean(entry.body?.trim()),
   })),
 );
+
+function listed(value: unknown): string {
+  return asText(value, "Not listed") || "Not listed";
+}
 ---
 
 <BaseLayout
-  title={`Projects · ${site.shortName}`}
-  description="Projects and scientific directions from the Tushar Shaw Lab."
+  title="Funding"
+  description={`Funding information shared by ${site.shortName}.`}
 >
-  <div class="editorial-canvas projects-page">
+  <div class="editorial-canvas funding-page">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>Editorial journal <span aria-hidden="true">/</span> Projects</p>
-        <p>{site.shortName}</p>
+        <p>Funding <span aria-hidden="true">/</span> {site.shortName}</p>
+        <p>Project record</p>
       </div>
 
       <div class="editorial-content">
-        <header class="projects-hero" aria-labelledby="projects-title">
+        <header class="funding-hero" aria-labelledby="funding-title">
           <div>
-            <p class="editorial-kicker">Projects and scientific directions</p>
-            <h1 id="projects-title">Questions, carried forward.</h1>
+            <p class="editorial-kicker">Funding / Project record</p>
+            <h1 id="funding-title">Work with support.</h1>
           </div>
-          <p>
-            A record of work on carriage and epidemiology, resistance detection,
-            respiratory diagnostics, endodontic disinfection, and bioimaging.
-          </p>
+          <p>{updates.funding.heroIntro}</p>
         </header>
 
-        <section class="projects-list" aria-labelledby="projects-list-title">
-          <div class="projects-list__heading">
+        <section class="funding-list" aria-labelledby="funding-list-title">
+          <div class="funding-list__heading">
             <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> Project archive
+              01 <span aria-hidden="true">/</span> Funding archive
             </p>
-            <h2 id="projects-list-title">Six chapters in progress.</h2>
+            <div>
+              <h2 id="funding-list-title">Project details</h2>
+              <p>{updates.funding.sectionIntro}</p>
+            </div>
           </div>
+
           {
-            entries.length ? (
-              <div class="project-chapters">
-                {rendered.map(({ entry, Content }, index) => (
-                  <article class="project-chapter" id={entry.id}>
-                    <p class="project-chapter__number" aria-hidden="true">
+            rendered.length ? (
+              <div class="funding-records">
+                {rendered.map(({ entry, Content, hasBody }, index) => (
+                  <article class="funding-record" id={entry.id}>
+                    <p class="funding-record__number" aria-hidden="true">
                       {String(index + 1).padStart(2, "0")}
                     </p>
-                    <div class="project-chapter__body">
+                    <div class="funding-record__body">
                       <h3>{entry.data.title}</h3>
-                      {(entry.data.funder ||
-                        entry.data.period ||
-                        entry.data.role) && (
-                        <dl class="project-meta">
-                          {entry.data.funder && (
-                            <div>
-                              <dt>Funder</dt>
-                              <dd>{entry.data.funder}</dd>
-                            </div>
-                          )}
-                          {entry.data.period && (
-                            <div>
-                              <dt>Period</dt>
-                              <dd>{entry.data.period}</dd>
-                            </div>
-                          )}
-                          {entry.data.role && (
-                            <div>
-                              <dt>Role</dt>
-                              <dd>{entry.data.role}</dd>
-                            </div>
-                          )}
-                        </dl>
-                      )}
+                      <dl class="funding-meta">
+                        <div>
+                          <dt>Provider</dt>
+                          <dd>{listed(entry.data.funder)}</dd>
+                        </div>
+                        <div>
+                          <dt>Period</dt>
+                          <dd>{listed(entry.data.period)}</dd>
+                        </div>
+                        <div>
+                          <dt>Role</dt>
+                          <dd>{listed(entry.data.role)}</dd>
+                        </div>
+                        <div>
+                          <dt>Amount</dt>
+                          <dd>{listed(entry.data.amount)}</dd>
+                        </div>
+                      </dl>
                       <div class="prose">
-                        <Content />
+                        {hasBody ? (
+                          <Content />
+                        ) : (
+                          <p class="not-listed">No further project details listed.</p>
+                        )}
                       </div>
                     </div>
                   </article>
                 ))}
               </div>
             ) : (
-              <p class="empty-state">Projects are being prepared.</p>
+              <p class="empty-state">{updates.funding.emptyState}</p>
             )
           }
         </section>
 
-        <nav class="projects-links" aria-label="Explore related research">
+        <nav class="funding-links" aria-label="Explore related research">
           <a class="editorial-button" href={withBase("/research/")}
             >Research themes <span aria-hidden="true">↗</span></a
           >
-          <a class="editorial-button" href={withBase("/pathogens/")}
-            >Pathogens <span aria-hidden="true">↗</span></a
+          <a class="editorial-button" href={withBase("/publications/")}
+            >Publications <span aria-hidden="true">↗</span></a
           >
         </nav>
       </div>
@@ -106,19 +111,18 @@ const rendered = await Promise.all(
 </BaseLayout>
 
 <style>
-  .projects-page {
+  .funding-page {
     --editorial-ink: var(--ink);
     --editorial-navy: var(--navy);
     --editorial-teal: var(--teal);
-    --editorial-teal-soft: var(--teal-soft);
     --editorial-ivory: var(--canvas);
-    --editorial-paper: var(--paper);
     --editorial-line: var(--line);
     --editorial-muted: var(--muted);
     color: var(--editorial-ink);
     background: var(--editorial-ivory);
   }
-  .projects-hero {
+
+  .funding-hero {
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 0.7fr);
     gap: clamp(2rem, 8vw, 8rem);
@@ -126,7 +130,8 @@ const rendered = await Promise.all(
     padding-block: clamp(4rem, 9vw, 7.5rem);
     border-bottom: 1px solid var(--editorial-line);
   }
-  .projects-hero h1 {
+
+  .funding-hero h1 {
     max-width: 12ch;
     margin: 0.85rem 0 0;
     color: var(--editorial-navy);
@@ -136,7 +141,8 @@ const rendered = await Promise.all(
     letter-spacing: -0.045em;
     line-height: 0.98;
   }
-  .projects-hero > p {
+
+  .funding-hero > p {
     max-width: 25rem;
     margin: 0;
     color: var(--editorial-muted);
@@ -144,43 +150,60 @@ const rendered = await Promise.all(
     font-size: 1.1rem;
     line-height: 1.5;
   }
-  .projects-list {
+
+  .funding-list {
     padding-block: clamp(3.5rem, 7vw, 6rem);
   }
-  .projects-list__heading {
+
+  .funding-list__heading {
     display: grid;
     grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1.8fr);
     gap: clamp(1.5rem, 6vw, 6rem);
     align-items: start;
     margin-bottom: 2.5rem;
   }
-  .projects-list__heading h2 {
-    margin: 0;
+
+  .funding-list__heading h2 {
+    margin: 0 0 0.65rem;
     color: var(--editorial-navy);
     font-family: Georgia, "Times New Roman", serif;
     font-size: clamp(1.9rem, 3.3vw, 3rem);
     font-weight: 400;
     line-height: 1.08;
   }
-  .project-chapters {
+
+  .funding-list__heading p:last-child {
+    margin: 0;
+    color: var(--editorial-muted);
+  }
+
+  .editorial-index,
+  .funding-record__number {
+    margin: 0;
+    color: var(--editorial-teal);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .funding-records {
     border-top: 1px solid var(--editorial-line);
   }
-  .project-chapter {
+
+  .funding-record {
     display: grid;
     grid-template-columns: minmax(3rem, 0.25fr) minmax(0, 2fr);
     gap: clamp(1rem, 5vw, 5rem);
     padding-block: clamp(1.7rem, 3vw, 2.75rem);
     border-bottom: 1px solid var(--editorial-line);
   }
-  .project-chapter__number {
-    margin: 0.25rem 0 0;
-    color: var(--editorial-teal);
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.72rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
+
+  .funding-record__number {
+    margin-top: 0.25rem;
   }
-  .project-chapter h3 {
+
+  .funding-record h3 {
     margin: 0;
     color: var(--editorial-navy);
     font-family: Georgia, "Times New Roman", serif;
@@ -188,74 +211,97 @@ const rendered = await Promise.all(
     font-weight: 400;
     line-height: 1.1;
   }
-  .project-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem 1.5rem;
+
+  .funding-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1.5rem;
     margin: 1.1rem 0 0;
-    padding-block: 0.75rem;
+    padding-block: 0.85rem;
     border-block: 1px solid var(--editorial-line);
   }
-  .project-meta div {
-    display: flex;
+
+  .funding-meta div {
+    display: grid;
+    grid-template-columns: 5.25rem minmax(0, 1fr);
     gap: 0.55rem;
     align-items: baseline;
   }
-  .project-meta dt {
+
+  .funding-meta dt {
     color: var(--editorial-teal);
-    font-family: ui-sans-serif, system-ui, sans-serif;
     font-size: 0.64rem;
     font-weight: 750;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .project-meta dd {
+
+  .funding-meta dd {
     margin: 0;
     color: var(--editorial-ink);
     font-size: 0.92rem;
   }
+
   .prose {
     max-width: 46rem;
     margin-top: 1rem;
     color: var(--editorial-muted);
     line-height: 1.6;
   }
+
   .prose :global(p) {
     margin: 0 0 0.8rem;
   }
+
   .prose :global(p:last-child) {
     margin-bottom: 0;
   }
+
   .prose :global(a) {
     color: var(--editorial-teal);
   }
+
+  .not-listed {
+    font-style: italic;
+  }
+
   .empty-state {
     padding: 1.2rem 0;
     border-block: 1px dashed var(--editorial-line);
     color: var(--editorial-muted);
   }
-  .projects-links {
+
+  .funding-links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem 1rem;
     padding-block: 0 clamp(3rem, 6vw, 5rem);
   }
+
   @media (max-width: 42rem) {
-    .projects-hero {
+    .funding-hero {
       display: block;
     }
-    .projects-hero > p {
+
+    .funding-hero > p {
       margin-top: 1.75rem;
     }
-    .projects-list__heading {
+
+    .funding-list__heading {
       display: block;
     }
-    .projects-list__heading h2 {
+
+    .funding-list__heading > div {
       margin-top: 1.25rem;
     }
-    .project-chapter {
+
+    .funding-record {
       grid-template-columns: 2rem minmax(0, 1fr);
       gap: 1rem;
+    }
+
+    .funding-meta {
+      grid-template-columns: 1fr;
     }
   }
 </style>

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   asText,
@@ -10,125 +10,119 @@ import {
   withBase,
 } from "../../components/content";
 import site from "../../data/site.json";
+import updates from "../../data/updates.json";
 
 const entries = (await getCollection("news")).sort(
   (a, b) =>
     b.data.date.valueOf() - a.data.date.valueOf() || a.id.localeCompare(b.id),
 );
-const cards = entries.map((entry) => ({
-  ...entry,
-  slug: entry.id,
-  data: { ...entry.data, date: entry.data.date.toISOString().slice(0, 10) },
-}));
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+
+function dateParts(value: unknown): { label: string; iso: string } | undefined {
+  if (!(value instanceof Date) || Number.isNaN(value.getTime())) return undefined;
+  return {
+    label: new Intl.DateTimeFormat("en", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    }).format(value),
+    iso: value.toISOString().slice(0, 10),
+  };
+}
 ---
 
 <BaseLayout
-  title={`News · ${site.shortName}`}
-  description="News and updates from Tushar Shaw Lab."
+  title="News & events"
+  description={`News and events from ${site.shortName}.`}
 >
   <div class="editorial-canvas editorial-news">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>
-          News &amp; notes <span aria-hidden="true">/</span>
-          {site.shortName}
-        </p>
-        <p>Research updates</p>
+        <p>News &amp; events <span aria-hidden="true">/</span> {site.shortName}</p>
+        <p>Updates</p>
       </div>
+
       <div class="editorial-content">
         <header class="editorial-hero" aria-labelledby="news-title">
-          <p class="editorial-kicker">The notebook / Research updates</p>
-          <h1 id="news-title">Research in motion.</h1>
-          <p class="editorial-hero__intro">
-            Updates from Tushar Shaw Lab on infectious diseases, bacterial
-            pathogens, and rapid, reliable, cost-effective diagnostics.
-          </p>
+          <p class="editorial-kicker">News / Events</p>
+          <h1 id="news-title">Notes from the lab.</h1>
+          <p class="editorial-hero__intro">{updates.news.heroIntro}</p>
         </header>
 
-        <section class="editorial-section" aria-labelledby="archive-title">
-          <div class="archive-intro">
+        <section class="editorial-section" aria-labelledby="updates-title">
+          <div class="section-intro">
             <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> The notebook
+              01 <span aria-hidden="true">/</span> Updates
             </p>
             <div>
-              <h2 id="archive-title">Recent updates</h2>
-              <p>
-                Published updates from the lab will collect news, events, and
-                observations here.
-              </p>
+              <h2 id="updates-title">News and events</h2>
+              <p>{updates.news.sectionIntro}</p>
             </div>
           </div>
+
           {
-            cards.length ? (
-              <div class="dispatch-list">
-                {cards.map((entry) => {
-                  const title = asText(
-                    valueOf(entry, "title", "name"),
-                    "News update",
-                  );
-                  const date = asText(
-                    valueOf(entry, "date", "publishedAt", "year"),
-                  );
-                  const summary = asText(
-                    valueOf(entry, "summary", "excerpt", "description", "body"),
-                  );
-                  const image = valueOf(entry, "image", "photo");
+            rendered.length ? (
+              <div class="news-list">
+                {rendered.map(({ entry, Content }) => {
+                  const title = asText(valueOf(entry, "title"), "News update");
+                  const summary = asText(valueOf(entry, "summary"));
+                  const image = valueOf(entry, "image");
                   const imageUrl = imageSrc(image);
-                  const rawLink = asText(valueOf(entry, "link", "url"));
-                  const linkValue = rawLink || `/news/${entry.slug}/`;
-                  const link = isExternal(linkValue)
-                    ? linkValue
-                    : withBase(linkValue);
+                  const date = dateParts(valueOf(entry, "date"));
+                  const rawUrl = asText(valueOf(entry, "url"));
+                  const link = rawUrl
+                    ? isExternal(rawUrl)
+                      ? rawUrl
+                      : withBase(rawUrl)
+                    : "";
+                  const external = Boolean(rawUrl && isExternal(rawUrl));
                   return (
-                    <article class="dispatch-row">
-                      {imageUrl ? (
+                    <article
+                      class:list={{
+                        "news-entry": true,
+                        "news-entry--with-image": Boolean(imageUrl),
+                      }}
+                    >
+                      {imageUrl && (
                         <img
-                          class="dispatch-row__image"
+                          class="news-entry__image"
                           src={imageUrl}
                           alt={imageAlt(image, title)}
                           loading="lazy"
                         />
-                      ) : (
-                        <div
-                          class="dispatch-row__image dispatch-row__image--empty"
-                          aria-hidden="true"
-                        >
-                          <span>—</span>
-                        </div>
                       )}
-                      <div class="dispatch-row__body">
-                        {date && <time datetime={date}>{date}</time>}
+                      <div class="news-entry__body">
+                        {date && <time datetime={date.iso}>{date.label}</time>}
                         <h3>
-                          <a
-                            href={link}
-                            target={
-                              isExternal(linkValue) ? "_blank" : undefined
-                            }
-                            rel={
-                              isExternal(linkValue) ? "noreferrer" : undefined
-                            }
-                          >
-                            {title}
-                          </a>
+                          {link ? (
+                            <a
+                              href={link}
+                              target={external ? "_blank" : undefined}
+                              rel={external ? "noreferrer" : undefined}
+                            >
+                              {title}
+                            </a>
+                          ) : (
+                            title
+                          )}
                         </h3>
-                        {summary && <p>{summary}</p>}
-                        <a
-                          class="editorial-link"
-                          href={link}
-                          target={isExternal(linkValue) ? "_blank" : undefined}
-                          rel={isExternal(linkValue) ? "noreferrer" : undefined}
-                        >
-                          Read story <span aria-hidden="true">↗</span>
-                        </a>
+                        {summary && <p class="news-entry__summary">{summary}</p>}
+                        <div class="news-entry__content prose">
+                          <Content />
+                        </div>
                       </div>
                     </article>
                   );
                 })}
               </div>
             ) : (
-              <p class="empty-state">
-                Updates will appear here when they are published.
-              </p>
+              <p class="empty-state">{updates.news.emptyState}</p>
             )
           }
         </section>
@@ -142,10 +136,9 @@ const cards = entries.map((entry) => ({
     --c-rule: var(--editorial-line, #c9ccc2);
     --c-muted: var(--editorial-muted, #64736f);
     --c-teal: var(--editorial-teal, #276d6a);
-    --c-teal-soft: var(--editorial-teal-soft, #dbe8e1);
   }
 
-  .archive-intro {
+  .section-intro {
     display: grid;
     grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 5vw, 5rem);
@@ -154,11 +147,11 @@ const cards = entries.map((entry) => ({
     border-bottom: 1px solid var(--c-rule, var(--line));
   }
 
-  .archive-intro h2 {
+  .section-intro h2 {
     margin-bottom: 0.65rem;
   }
 
-  .archive-intro p:last-child {
+  .section-intro p:last-child {
     max-width: 37rem;
     margin-bottom: 0;
     color: var(--c-muted, var(--ink-muted));
@@ -173,40 +166,38 @@ const cards = entries.map((entry) => ({
     text-transform: uppercase;
   }
 
-  .dispatch-list {
+  .news-list {
     display: grid;
   }
 
-  .dispatch-row {
+  .news-entry {
     display: grid;
-    grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr);
-    gap: clamp(1.25rem, 4vw, 3rem);
-    padding-block: 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-block: 1.8rem;
     border-bottom: 1px solid var(--c-rule, var(--line));
   }
 
-  .dispatch-row__image {
+  .news-entry--with-image {
+    grid-template-columns: minmax(8rem, 13rem) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .news-entry__image {
     width: 100%;
     aspect-ratio: 1;
     object-fit: cover;
   }
 
-  .dispatch-row__image--empty {
-    display: grid;
-    place-items: center;
-    color: var(--c-teal, var(--teal-deep));
-    background: var(--c-teal-soft, var(--mint-soft));
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 2rem;
-  }
-
-  .dispatch-row__body {
+  .news-entry__body {
     display: grid;
     align-content: start;
     gap: 0.55rem;
+    max-width: 48rem;
   }
 
-  .dispatch-row time {
+  .news-entry time {
     color: var(--c-teal, var(--teal-deep));
     font-size: 0.72rem;
     font-weight: 750;
@@ -214,29 +205,42 @@ const cards = entries.map((entry) => ({
     text-transform: uppercase;
   }
 
-  .dispatch-row h3 {
+  .news-entry h3 {
     margin-bottom: 0;
     font-size: clamp(1.35rem, 2.5vw, 2rem);
   }
 
-  .dispatch-row h3 a {
+  .news-entry h3 a {
     text-decoration: none;
   }
 
-  .dispatch-row h3 a:hover,
-  .dispatch-row h3 a:focus-visible {
+  .news-entry h3 a:hover,
+  .news-entry h3 a:focus-visible {
     color: var(--c-teal, var(--teal-deep));
     text-decoration: underline;
     text-underline-offset: 0.15em;
   }
 
-  .dispatch-row p {
-    max-width: 42rem;
+  .news-entry__summary {
+    margin-bottom: 0;
+    color: var(--c-muted, var(--ink-muted));
+  }
+
+  .news-entry__content {
+    margin-top: 0.35rem;
+    line-height: 1.65;
+  }
+
+  .news-entry__content :global(p) {
+    margin-bottom: 0.8rem;
+  }
+
+  .news-entry__content :global(p:last-child) {
     margin-bottom: 0;
   }
 
-  .dispatch-row .editorial-link {
-    margin-top: 0.25rem;
+  .news-entry__content :global(a) {
+    color: var(--c-teal, var(--teal-deep));
   }
 
   .empty-state {
@@ -246,12 +250,12 @@ const cards = entries.map((entry) => ({
   }
 
   @media (max-width: 38rem) {
-    .archive-intro {
+    .section-intro {
       grid-template-columns: 1fr;
       gap: 0.75rem;
     }
 
-    .dispatch-row {
+    .news-entry--with-image {
       grid-template-columns: 5.5rem minmax(0, 1fr);
       gap: 1rem;
     }
