@@ -6,4 +6,3 @@ order: 1
 photo: "/images/people/zohra.svg"
 ---
 
-Alumni · PRS-1.

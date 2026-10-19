@@ -31,11 +31,11 @@ Open **Site settings** to edit:
 
 Keep the field names and list/object shapes unchanged. Do not add a personal email address, phone number, department, or social account unless the lab has provided it.
 
-### Homepage and page introductions
+### Homepage and page settings
 
 The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions and captions. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order. Existing abstract illustrations are used until the lab supplies approved photos.
 
-Use **Research page text**, **Team page text**, **Publication page settings**, and **News, Funding and Recognition page text** to edit headings, descriptions, and introductions independently of the templates. Research starts directly with its themes; its page intro is used only as the search/social description. Publications displays a simple title and introduction, without source or snapshot notices. Keep group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
+Use **Research page text** and **Team page text** for section headings, category labels, links, and empty-state messages. Research starts directly with its themes; its page intro is used only as the search/social description. Team starts directly with its member groups. **Publication page settings** controls the title and simple introduction, without source or snapshot notices. **News, Funding and Recognition page text** controls concise empty-state messages; those pages use their page titles without extra introductory bands. Keep group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
 
 Content lives in `src/content/<collection>/*.md`; page settings live in `src/data/*.json`. Layout and rendering live in `src/pages`, `src/components`, and `src/layouts`. Adding a content entry does not require editing an Astro file. The public Funding and Recognition pages retain `/projects/` and `/achievements/` respectively, and Team retains `/people/`.
 
@@ -68,7 +68,7 @@ The supplied organisms and focus descriptions include _Streptococcus pneumoniae_
 Use **Funding → New** or edit an existing project. Each entry has:
 
 - **Title** (required).
-- **Funder**, **funding amount**, **period**, and **role** (optional when not supplied). Include the currency in the amount, for example `INR 10,00,000`; do not enter an unverified amount. Missing metadata displays as **Not listed**.
+- **Funder**, **funding amount**, **period**, and **role** (optional when not supplied). Include the currency in the amount, for example `INR 10,00,000`; do not enter an unverified amount. Missing metadata is omitted from the page.
 - **Display order** (required integer).
 - **Project description**, entered as Markdown rich text. Add the supplied project description to this body. The BIRAC entry is the only one for which the supplied information has no description, so its body may remain empty; do not write a replacement description.
 
@@ -91,6 +91,8 @@ Each person has a name, role, group (`leadership`, `researchers`, `students`, or
 - Zohra, Priyanka, and Virti — alumni.
 
 Use **Alumni** for the group label and `Varshaa M` for the student's name. Add biographies, email addresses, and websites only when the lab provides them.
+
+Profile bodies are intentionally empty until a real biography is supplied; do not repeat the role as a placeholder biography.
 
 ### Publications
 
@@ -123,7 +125,7 @@ Any text after the closing `---` is optional Markdown detail. The same frontmatt
 
 ### Join and contact
 
-The **Join** page uses the Site settings **Join text** and the lab's supplied research description. Write only an invitation the lab has approved. Department, email, phone, and social links are intentionally optional: leave each unknown value empty, then add each value in **Site settings** when the lab supplies it. Keep address lines limited to locations supplied by the lab. Never substitute placeholder or personal contact details.
+The **Join** page uses the Site settings **Join text** and the lab's supplied research description. Write only an invitation the lab has approved. Department, email, phone, and social links are intentionally optional: leave each unknown value empty, then add each value in **Site settings** when the lab supplies it. Contact shows only supplied location and contact details, without missing-information notices or empty columns. Keep address lines limited to locations supplied by the lab. Never substitute placeholder or personal contact details.
 
 ## Replace the named portrait placeholders
 

@@ -1,17 +1,11 @@
 {
   "news": {
-    "heroIntro": "Published news, events, and announcements appear here as they are shared.",
-    "sectionIntro": "Each entry includes the details supplied by the lab.",
-    "emptyState": "No news or events have been published yet. Updates will appear here when they are shared."
+    "emptyState": "No news or events yet."
   },
   "funding": {
-    "heroIntro": "A concise record of funded projects, with the provider, period, and role shown when those details are available.",
-    "sectionIntro": "Project records, presented as supplied.",
-    "emptyState": "No funded projects have been published yet."
+    "emptyState": "No funded projects yet."
   },
   "recognition": {
-    "heroIntro": "Distinctions and acknowledgements appear here when details are shared by the lab.",
-    "sectionIntro": "Entries include the dates and context supplied by the lab.",
-    "emptyState": "No recognition has been published yet. This record will be updated when details are shared."
+    "emptyState": "No recognition listed yet."
   }
 }

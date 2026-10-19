@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { asText, withBase } from "../../components/content";
+import { withBase } from "../../components/content";
 import site from "../../data/site.json";
 import updates from "../../data/updates.json";
 
@@ -16,9 +16,6 @@ const rendered = await Promise.all(
   })),
 );
 
-function listed(value: unknown): string {
-  return asText(value, "Not listed") || "Not listed";
-}
 ---
 
 <BaseLayout
@@ -29,28 +26,15 @@ function listed(value: unknown): string {
     <div class="editorial-sheet">
       <div class="editorial-bar">
         <p>Funding <span aria-hidden="true">/</span> {site.shortName}</p>
-        <p>Project record</p>
+        <p>Funding</p>
       </div>
 
       <div class="editorial-content">
         <header class="funding-hero" aria-labelledby="funding-title">
-          <div>
-            <p class="editorial-kicker">Funding / Project record</p>
-            <h1 id="funding-title">Work with support.</h1>
-          </div>
-          <p>{updates.funding.heroIntro}</p>
+          <h1 id="funding-title">Funding</h1>
         </header>
 
-        <section class="funding-list" aria-labelledby="funding-list-title">
-          <div class="funding-list__heading">
-            <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> Funding archive
-            </p>
-            <div>
-              <h2 id="funding-list-title">Project details</h2>
-              <p>{updates.funding.sectionIntro}</p>
-            </div>
-          </div>
+        <section class="funding-list" aria-label="Funding">
 
           {
             rendered.length ? (
@@ -61,32 +45,16 @@ function listed(value: unknown): string {
                       {String(index + 1).padStart(2, "0")}
                     </p>
                     <div class="funding-record__body">
-                      <h3>{entry.data.title}</h3>
-                      <dl class="funding-meta">
-                        <div>
-                          <dt>Provider</dt>
-                          <dd>{listed(entry.data.funder)}</dd>
-                        </div>
-                        <div>
-                          <dt>Period</dt>
-                          <dd>{listed(entry.data.period)}</dd>
-                        </div>
-                        <div>
-                          <dt>Role</dt>
-                          <dd>{listed(entry.data.role)}</dd>
-                        </div>
-                        <div>
-                          <dt>Amount</dt>
-                          <dd>{listed(entry.data.amount)}</dd>
-                        </div>
-                      </dl>
-                      <div class="prose">
-                        {hasBody ? (
-                          <Content />
-                        ) : (
-                          <p class="not-listed">No further project details listed.</p>
-                        )}
-                      </div>
+                      <h2>{entry.data.title}</h2>
+                      {(entry.data.funder || entry.data.period || entry.data.role || entry.data.amount) && (
+                        <dl class="funding-meta">
+                          {entry.data.funder && <div><dt>Provider</dt><dd>{entry.data.funder}</dd></div>}
+                          {entry.data.period && <div><dt>Period</dt><dd>{entry.data.period}</dd></div>}
+                          {entry.data.role && <div><dt>Role</dt><dd>{entry.data.role}</dd></div>}
+                          {entry.data.amount && <div><dt>Amount</dt><dd>{entry.data.amount}</dd></div>}
+                        </dl>
+                      )}
+                      {hasBody && <div class="prose"><Content /></div>}
                     </div>
                   </article>
                 ))}
@@ -123,17 +91,13 @@ function listed(value: unknown): string {
   }
 
   .funding-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 0.7fr);
-    gap: clamp(2rem, 8vw, 8rem);
-    align-items: end;
-    padding-block: clamp(4rem, 9vw, 7.5rem);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
     border-bottom: 1px solid var(--editorial-line);
   }
 
   .funding-hero h1 {
     max-width: 12ch;
-    margin: 0.85rem 0 0;
+    margin: 0;
     color: var(--editorial-navy);
     font-family: Georgia, "Times New Roman", serif;
     font-size: clamp(2.8rem, 6.5vw, 5.6rem);
@@ -142,42 +106,12 @@ function listed(value: unknown): string {
     line-height: 0.98;
   }
 
-  .funding-hero > p {
-    max-width: 25rem;
-    margin: 0;
-    color: var(--editorial-muted);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 1.1rem;
-    line-height: 1.5;
-  }
-
   .funding-list {
-    padding-block: clamp(3.5rem, 7vw, 6rem);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
   }
 
-  .funding-list__heading {
-    display: grid;
-    grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1.8fr);
-    gap: clamp(1.5rem, 6vw, 6rem);
-    align-items: start;
-    margin-bottom: 2.5rem;
-  }
 
-  .funding-list__heading h2 {
-    margin: 0 0 0.65rem;
-    color: var(--editorial-navy);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.9rem, 3.3vw, 3rem);
-    font-weight: 400;
-    line-height: 1.08;
-  }
 
-  .funding-list__heading p:last-child {
-    margin: 0;
-    color: var(--editorial-muted);
-  }
-
-  .editorial-index,
   .funding-record__number {
     margin: 0;
     color: var(--editorial-teal);
@@ -203,7 +137,7 @@ function listed(value: unknown): string {
     margin-top: 0.25rem;
   }
 
-  .funding-record h3 {
+  .funding-record h2 {
     margin: 0;
     color: var(--editorial-navy);
     font-family: Georgia, "Times New Roman", serif;
@@ -261,9 +195,6 @@ function listed(value: unknown): string {
     color: var(--editorial-teal);
   }
 
-  .not-listed {
-    font-style: italic;
-  }
 
   .empty-state {
     padding: 1.2rem 0;
@@ -283,17 +214,6 @@ function listed(value: unknown): string {
       display: block;
     }
 
-    .funding-hero > p {
-      margin-top: 1.75rem;
-    }
-
-    .funding-list__heading {
-      display: block;
-    }
-
-    .funding-list__heading > div {
-      margin-top: 1.25rem;
-    }
 
     .funding-record {
       grid-template-columns: 2rem minmax(0, 1fr);

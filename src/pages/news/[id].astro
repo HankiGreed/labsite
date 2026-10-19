@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import site from "../../data/site.json";
 import {
   asText,
   imageAlt,
@@ -48,13 +49,13 @@ const date =
   <div class="editorial-canvas editorial-story-page">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>News &amp; events <span aria-hidden="true">/</span> Journal</p>
+        <p>News &amp; events <span aria-hidden="true">/</span> {site.shortName}</p>
         <a class="editorial-link" href={withBase("/news/")}>Back to news</a>
       </div>
       <article class="editorial-content story">
         <header class="story__header">
           <a class="back-link" href={withBase("/news/")}>← Back to news</a>
-          <p class="editorial-kicker">Dispatch{date ? ` / ${date}` : ""}</p>
+          <p class="editorial-kicker">News{date ? ` / ${date}` : ""}</p>
           <h1>{title}</h1>
           {summary && <p class="story__summary">{summary}</p>}
           {externalUrl && (
@@ -76,15 +77,13 @@ const date =
                 alt={imageAlt(image, `Illustration for ${title}`)}
                 loading="lazy"
               />
-              <figcaption>Image accompanying this update.</figcaption>
             </figure>
           )
         }
         <div class="story__body prose"><Content /></div>
         <footer class="story__footer">
-          <p class="editorial-kicker">Keep reading</p>
           <a class="editorial-link" href={withBase("/news/")}
-            >More notes from the notebook <span aria-hidden="true">→</span></a
+            >All news &amp; events <span aria-hidden="true">→</span></a
           >
         </footer>
       </article>
@@ -150,13 +149,6 @@ const date =
     object-fit: cover;
   }
 
-  .story__figure figcaption {
-    margin-top: 0.7rem;
-    color: var(--c-muted, var(--ink-muted));
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
 
   .story__body {
     max-width: 40rem;
@@ -181,7 +173,4 @@ const date =
     border-top: 1px solid var(--c-rule, var(--line));
   }
 
-  .story__footer .editorial-kicker {
-    margin-bottom: 0.45rem;
-  }
 </style>

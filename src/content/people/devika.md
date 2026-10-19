@@ -6,4 +6,3 @@ order: 3
 photo: "/images/people/devika.svg"
 ---
 
-Student Intern.

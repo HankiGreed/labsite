@@ -6,4 +6,3 @@ order: 1
 photo: "/images/people/vaishnavi-vishram-naik.svg"
 ---
 
-Research Staff.

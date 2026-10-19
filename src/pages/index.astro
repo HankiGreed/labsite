@@ -52,7 +52,6 @@ const research = (await getCollection("research"))
           <div class="home-section-heading">
             <p class="editorial-index">02 / Research</p>
             <h2 id="research-title">{home.researchTitle}</h2>
-            <p>{home.researchIntro}</p>
           </div>
           <div class="research-grid">
             {research.map((entry, index) => (
@@ -118,8 +117,7 @@ const research = (await getCollection("research"))
   }
   .home-overview, .home-research { border-bottom: 1px solid var(--line); }
   .home-section-heading { margin-bottom: 2rem; }
-  .home-section-heading h2 { margin: 0.65rem 0 0.9rem; }
-  .home-section-heading > p:last-child:not(.editorial-index) { max-width: 42rem; margin-bottom: 0; }
+  .home-section-heading h2 { margin: 0.65rem 0 0; }
   .overview-grid {
     display: flex;
     align-items: flex-start;

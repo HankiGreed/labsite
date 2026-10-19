@@ -17,22 +17,16 @@ const invitation = asText(siteData.joinText);
     <div class="editorial-sheet">
       <div class="editorial-bar">
         <p>Join <span aria-hidden="true">/</span> {siteName}</p>
-        <p>Open invitation / Conversation</p>
+        <p>Join / Collaborate</p>
       </div>
 
       <div class="editorial-content">
         <header class="editorial-hero" aria-labelledby="join-title">
-          <p class="editorial-kicker">Join / Collaborate</p>
-          <h1 id="join-title">Join or collaborate.</h1>
-          {
-            invitation ? (
-              <p class="editorial-hero__intro">{invitation}</p>
-            ) : (
-              <p class="editorial-hero__intro empty-state">
-                Invitation details are not currently published.
-              </p>
-            )
-          }
+          <h1 id="join-title">Join or collaborate</h1>
+          {invitation && <p class="editorial-hero__intro">{invitation}</p>}
+          <a class="editorial-button" href={withBase("/contact/")}
+            >Contact the lab <span aria-hidden="true">↗</span></a
+          >
         </header>
 
         <section
@@ -41,20 +35,12 @@ const invitation = asText(siteData.joinText);
         >
           <div>
             <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> The focus
+              01 <span aria-hidden="true">/</span> Research
             </p>
-            <h2 id="focus-title">Work around infectious disease.</h2>
+            <h2 id="focus-title">Research focus</h2>
           </div>
           <div class="join-copy">
-            {
-              focus ? (
-                <p>{focus}</p>
-              ) : (
-                <p class="empty-state">
-                  Focus details are not currently published.
-                </p>
-              )
-            }
+            {focus && <p>{focus}</p>}
             <div class="join-links">
               <a class="editorial-link" href={withBase("/research/")}
                 >Explore research <span aria-hidden="true">→</span></a
@@ -66,19 +52,6 @@ const invitation = asText(siteData.joinText);
           </div>
         </section>
 
-        <section
-          class="editorial-section join-next"
-          aria-labelledby="next-title"
-        >
-          <p class="editorial-index">
-            02 <span aria-hidden="true">/</span> Start a conversation
-          </p>
-          <h2 id="next-title">Continue the conversation.</h2>
-          <p>Contact the lab to continue the conversation.</p>
-          <a class="editorial-button" href={withBase("/contact/")}
-            >Contact the lab <span aria-hidden="true">↗</span></a
-          >
-        </section>
       </div>
     </div>
   </div>
@@ -91,6 +64,15 @@ const invitation = asText(siteData.joinText);
     --c-teal: var(--editorial-teal, #276d6a);
   }
 
+  .join-page .editorial-hero {
+    display: block;
+    padding-block: clamp(2rem, 4vw, 3rem);
+  }
+
+  .join-page .editorial-hero > * + * {
+    margin-top: 1.5rem;
+  }
+
   .join-page .editorial-hero__intro {
     max-width: 42rem;
   }
@@ -100,6 +82,7 @@ const invitation = asText(siteData.joinText);
     grid-template-columns: minmax(9rem, 0.8fr) minmax(0, 1.5fr);
     gap: clamp(2rem, 8vw, 7rem);
     align-items: start;
+    padding-block: clamp(2rem, 4vw, 3rem);
     border-top: 1px solid var(--c-rule, var(--line));
   }
 
@@ -130,22 +113,6 @@ const invitation = asText(siteData.joinText);
     text-underline-offset: 0.2em;
   }
 
-  .join-next {
-    max-width: 52rem;
-    margin-top: 1rem;
-    padding-top: clamp(2.5rem, 6vw, 4rem);
-    border-top: 1px solid var(--c-rule, var(--line));
-  }
-
-  .join-next h2 {
-    max-width: 24rem;
-    margin-top: 0.7rem;
-  }
-
-  .join-next > p:not(.editorial-index) {
-    max-width: 35rem;
-    color: var(--c-muted, var(--ink-muted));
-  }
 
   .editorial-button {
     display: inline-flex;

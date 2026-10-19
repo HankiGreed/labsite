@@ -6,4 +6,3 @@ order: 3
 photo: "/images/people/ramanath.svg"
 ---
 
-Research Staff.

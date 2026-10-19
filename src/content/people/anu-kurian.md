@@ -6,4 +6,3 @@ order: 4
 photo: "/images/people/anu-kurian.svg"
 ---
 
-Research Staff.

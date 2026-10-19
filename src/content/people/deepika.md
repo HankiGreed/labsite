@@ -6,4 +6,3 @@ order: 4
 photo: "/images/people/deepika.svg"
 ---
 
-Student Intern.

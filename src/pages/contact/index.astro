@@ -26,6 +26,7 @@ const socials = Array.isArray(siteData.socials)
         social.url.trim().length > 0,
     )
   : [];
+const hasDetails = Boolean(email || phone || socials.length);
 const description = asText(siteData.description);
 ---
 
@@ -37,109 +38,93 @@ const description = asText(siteData.description);
     <div class="editorial-sheet">
       <div class="editorial-bar">
         <p>Contact <span aria-hidden="true">/</span> {siteName}</p>
-        <p>Directory / Open invitation</p>
+        <p>{site.location}</p>
       </div>
       <div class="editorial-content">
-        <header class="editorial-hero" aria-labelledby="contact-title">
-          <p class="editorial-kicker">Contact / Open invitation</p>
-          <h1 id="contact-title">Find the lab.</h1>
-          <p class="editorial-hero__intro">
-            {description || "Contact details are not currently published."}
-          </p>
+        <header
+          class="editorial-hero contact-hero"
+          aria-labelledby="contact-title"
+        >
+          <h1 id="contact-title">Contact</h1>
         </header>
 
-        <section class="editorial-section" aria-labelledby="hello-title">
-          <div class="contact-grid">
-            <div class="contact-intro">
-              <p class="editorial-index">
-                01 <span aria-hidden="true">/</span> Location
-              </p>
-              <h2 id="hello-title">Where the lab is based</h2>
-              {
-                location.length ? (
-                  <address>
-                    {location.map((line) => (
-                      <span>{line}</span>
-                    ))}
-                  </address>
-                ) : (
-                  <p class="empty-state">
-                    Location details are not currently published.
-                  </p>
-                )
-              }
-            </div>
-            <div class="contact-details">
-              {
-                email && (
-                  <div class="detail-block">
-                    <h3>Email</h3>
-                    <a class="email-link" href={`mailto:${email}`}>
-                      {email} <span aria-hidden="true">↗</span>
-                    </a>
-                  </div>
-                )
-              }
-              {
-                phone && (
-                  <div class="detail-block">
-                    <h3>Phone</h3>
-                    <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>
-                  </div>
-                )
-              }
-              {
-                socials.length > 0 && (
-                  <div class="detail-block">
-                    <h3>Elsewhere</h3>
-                    <ul>
-                      {socials.map((social) => (
-                        <li>
-                          <a href={social.url} target="_blank" rel="noreferrer">
-                            {social.label} <span aria-hidden="true">↗</span>
-                          </a>
-                        </li>
+        {
+          (location.length > 0 || hasDetails) && (
+            <section
+              class="editorial-section contact-section"
+              aria-label="Lab contact details"
+            >
+              <div
+                class:list={[
+                  "contact-grid",
+                  { "contact-grid--single": !location.length || !hasDetails },
+                ]}
+              >
+                {location.length > 0 && (
+                  <div class="contact-intro">
+                    <h2>Location</h2>
+                    <address>
+                      {location.map((line) => (
+                        <span>{line}</span>
                       ))}
-                    </ul>
+                    </address>
                   </div>
-                )
-              }
-              {
-                !email && !phone && socials.length === 0 && (
-                  <p class="empty-state">
-                    Email, phone, and social details are not currently
-                    published.
-                  </p>
-                )
-              }
-            </div>
-          </div>
-        </section>
+                )}
+                {hasDetails && (
+                  <div class="contact-details">
+                    {email && (
+                      <div class="detail-block">
+                        <h2>Email</h2>
+                        <a class="email-link" href={`mailto:${email}`}>
+                          {email} <span aria-hidden="true">↗</span>
+                        </a>
+                      </div>
+                    )}
+                    {phone && (
+                      <div class="detail-block">
+                        <h2>Phone</h2>
+                        <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>
+                          {phone}
+                        </a>
+                      </div>
+                    )}
+                    {socials.length > 0 && (
+                      <div class="detail-block">
+                        <h2>Elsewhere</h2>
+                        <ul>
+                          {socials.map((social) => (
+                            <li>
+                              <a
+                                href={social.url}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {social.label}{" "}
+                                <span aria-hidden="true">↗</span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+          )
+        }
 
-        <section
-          class="editorial-section next-step"
-          aria-labelledby="write-title"
-        >
-          <p class="editorial-index">
-            02 <span aria-hidden="true">/</span> Keep exploring
-          </p>
-          <h2 id="write-title">Follow the questions behind the work.</h2>
-          <p>
-            Read about the lab's research, explore its pathogen focus, or find
-            out how to join a conversation.
-          </p>
-          <div class="contact-links">
-            <a class="editorial-link" href={withBase("/research/")}
-              >Research <span aria-hidden="true">→</span></a
-            >
-            <a class="editorial-link" href={withBase("/pathogens/")}
-              >Pathogens <span aria-hidden="true">→</span></a
-            >
-            <a class="editorial-link" href={withBase("/join/")}
-              >Join or collaborate <span aria-hidden="true">→</span></a
-            >
-          </div>
-        </section>
+        <nav class="contact-links" aria-label="Related pages">
+          <a class="editorial-link" href={withBase("/research/")}
+            >Research <span aria-hidden="true">→</span></a
+          >
+          <a class="editorial-link" href={withBase("/pathogens/")}
+            >Pathogens <span aria-hidden="true">→</span></a
+          >
+          <a class="editorial-link" href={withBase("/join/")}
+            >Join or collaborate <span aria-hidden="true">→</span></a
+          >
+        </nav>
       </div>
     </div>
   </div>
@@ -152,8 +137,13 @@ const description = asText(siteData.description);
     --c-teal: var(--editorial-teal, #276d6a);
   }
 
-  .editorial-contact .editorial-hero__intro {
-    max-width: 40rem;
+  .contact-hero {
+    display: block;
+    padding-block: clamp(2rem, 4vw, 3rem);
+  }
+
+  .contact-section {
+    padding-block: clamp(2rem, 4vw, 3rem);
   }
 
   .contact-grid {
@@ -163,34 +153,15 @@ const description = asText(siteData.description);
     align-items: start;
   }
 
+  .contact-grid--single {
+    grid-template-columns: 1fr;
+  }
+
   .contact-intro h2 {
-    max-width: 12ch;
-    margin-top: 0.75rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .contact-intro > p:not(.editorial-index) {
-    max-width: 34rem;
-    margin-bottom: 0;
-    color: var(--c-muted, var(--ink-muted));
-  }
-
-  .editorial-index {
-    margin: 0;
-    color: var(--c-teal, var(--teal-deep));
-    font-size: 0.72rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    margin: 0 0 0.8rem;
   }
 
   .email-link {
-    display: inline-block;
-    margin-top: 1.4rem;
-    color: var(--c-teal, var(--teal-deep));
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.25rem, 2.7vw, 2rem);
-    text-underline-offset: 0.15em;
     overflow-wrap: anywhere;
   }
 
@@ -205,7 +176,7 @@ const description = asText(siteData.description);
     border-top: 1px solid var(--c-rule, var(--line));
   }
 
-  .detail-block h3 {
+  .detail-block h2 {
     margin-bottom: 0.55rem;
     font-family: inherit;
     font-size: 0.72rem;
@@ -238,28 +209,11 @@ const description = asText(siteData.description);
     margin-top: 0.45rem;
   }
 
-  .next-step {
-    max-width: 52rem;
-    margin-top: 1rem;
-    padding-top: clamp(2.5rem, 6vw, 4rem);
-    border-top: 1px solid var(--c-rule, var(--line));
-  }
-
-  .next-step h2 {
-    max-width: 15ch;
-    margin-top: 0.7rem;
-  }
-
-  .next-step > p:not(.editorial-index) {
-    max-width: 36rem;
-    color: var(--c-muted, var(--ink-muted));
-  }
-
   .contact-links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.5rem;
-    margin-top: 1.5rem;
+    padding-block: 1.5rem;
   }
 
   .editorial-link {

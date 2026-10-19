@@ -41,26 +41,15 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
     <div class="editorial-sheet">
       <div class="editorial-bar">
         <p>Recognition <span aria-hidden="true">/</span> {siteName}</p>
-        <p>Record / Selected notes</p>
+        <p>Recognition</p>
       </div>
 
       <div class="editorial-content">
         <header class="editorial-hero" aria-labelledby="recognition-title">
-          <p class="editorial-kicker">Recognition / Record</p>
-          <h1 id="recognition-title">Recognition, as recorded.</h1>
-          <p class="editorial-hero__intro">{updates.recognition.heroIntro}</p>
+          <h1 id="recognition-title">Recognition</h1>
         </header>
 
-        <section class="editorial-section" aria-labelledby="record-title">
-          <div class="section-intro">
-            <p class="editorial-index">
-              01 <span aria-hidden="true">/</span> The record
-            </p>
-            <div>
-              <h2 id="record-title">Recognition notes</h2>
-              <p>{updates.recognition.sectionIntro}</p>
-            </div>
-          </div>
+        <section class="editorial-section" aria-label="Recognition">
 
           {
             rendered.length ? (
@@ -71,22 +60,16 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
                   const date = dateParts(entry.data.date);
                   return (
                     <article class="recognition-row" id={entry.id}>
-                      <p class="editorial-index recognition-row__index">
+                      <p class="recognition-row__index">
                         {String(index + 1).padStart(2, "0")}
                       </p>
                       <div class="recognition-row__body">
                         <div class="recognition-row__heading">
-                          <h3>{title}</h3>
+                          <h2>{title}</h2>
                           {date && <time datetime={date.iso}>{date.label}</time>}
                         </div>
                         {summary && <p class="recognition-row__summary">{summary}</p>}
-                        <div class="prose">
-                          {hasBody ? (
-                            <Content />
-                          ) : (
-                            <p class="not-listed">No further details listed.</p>
-                          )}
-                        </div>
+                        {hasBody && <div class="prose"><Content /></div>}
                       </div>
                       {entry.data.featured && (
                         <p class="recognition-row__tag">Featured</p>
@@ -120,38 +103,13 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
     --c-muted: var(--editorial-muted, #64736f);
     --c-teal: var(--editorial-teal, #276d6a);
   }
-
-  .section-intro {
-    display: grid;
-    grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
-    column-gap: clamp(1.5rem, 5vw, 5rem);
-    align-items: start;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--c-rule, var(--line));
+  .recognition-page .editorial-hero {
+    display: block;
+    padding-block: clamp(2rem, 4vw, 3rem);
   }
 
-  .section-intro .editorial-index {
-    grid-row: span 2;
-  }
-
-  .section-intro h2 {
-    max-width: 25rem;
-    margin-bottom: 0.65rem;
-  }
-
-  .section-intro p:last-child {
-    max-width: 34rem;
-    margin-bottom: 0;
-    color: var(--c-muted, var(--ink-muted));
-  }
-
-  .editorial-index {
-    margin: 0;
-    color: var(--c-teal, var(--teal-deep));
-    font-size: 0.72rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  .recognition-page .editorial-section {
+    padding-block: clamp(2rem, 4vw, 3.5rem);
   }
 
   .recognition-list {
@@ -167,7 +125,13 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
   }
 
   .recognition-row__index {
+    margin: 0;
     padding-top: 0.3rem;
+    color: var(--c-teal, var(--teal-deep));
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
   .recognition-row__heading {
@@ -177,7 +141,7 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
     gap: 0.75rem 1.25rem;
   }
 
-  .recognition-row h3 {
+  .recognition-row h2 {
     margin: 0;
   }
 
@@ -220,10 +184,6 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
     white-space: nowrap;
   }
 
-  .not-listed {
-    color: var(--c-muted, var(--ink-muted));
-    font-style: italic;
-  }
 
   .empty-state {
     padding: 1rem 0;
@@ -245,14 +205,9 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
   }
 
   @media (max-width: 48rem) {
-    .section-intro,
     .recognition-row {
       grid-template-columns: 1fr;
       gap: 0.85rem;
-    }
-
-    .section-intro .editorial-index {
-      grid-row: auto;
     }
 
     .recognition-row__tag {

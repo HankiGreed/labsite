@@ -21,7 +21,7 @@ const renderedPeople = await Promise.all(
 
 <BaseLayout
   title="Team"
-  description={teamData.page.intro}
+  description={site.description}
 >
   <div class="editorial-canvas editorial-people">
     <div class="editorial-sheet">
@@ -31,21 +31,10 @@ const renderedPeople = await Promise.all(
       </div>
       <div class="editorial-content">
         <header class="editorial-hero people-hero" aria-labelledby="people-title">
-          <div>
-            <p class="editorial-kicker">{teamData.page.kicker}</p>
-            <h1 id="people-title">{teamData.page.title}</h1>
-          </div>
-          <p class="editorial-hero__intro">{teamData.page.intro}</p>
+          <h1 id="people-title">{teamData.page.title}</h1>
         </header>
 
-        <section class="editorial-section people-section" aria-labelledby="group-title">
-          <div class="section-intro">
-            <p class="editorial-index">{teamData.page.index}</p>
-            <div>
-              <h2 id="group-title">{teamData.page.sectionTitle}</h2>
-              <p>{teamData.page.sectionIntro}</p>
-            </div>
-          </div>
+        <section class="editorial-section people-section">
           {
             teamData.groups.map((group, index) => {
               const entries = renderedPeople.filter(
@@ -55,10 +44,7 @@ const renderedPeople = await Promise.all(
                 <section class="people-group" aria-labelledby={`${group.key}-title`}>
                   <div class="people-group__heading">
                     <p class="editorial-index">{String(index + 1).padStart(2, "0")}</p>
-                    <div>
-                      <h3 id={`${group.key}-title`}>{group.label}</h3>
-                      <p>{group.copy}</p>
-                    </div>
+                    <h2 id={`${group.key}-title`}>{group.label}</h2>
                   </div>
                   {entries.length ? (
                     <div class="people-grid">
@@ -89,70 +75,35 @@ const renderedPeople = await Promise.all(
   }
 
   .people-hero {
-    grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 0.7fr);
-    align-items: end;
+    display: block;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
   }
 
   .people-hero h1 {
-    margin-top: 0.85rem;
-  }
-
-  .people-hero__intro {
-    max-width: 30rem;
-    margin: 0;
-    color: var(--c-muted);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 1.1rem;
-    line-height: 1.5;
+    margin-top: 0;
   }
 
   .people-section {
     padding-bottom: 0;
   }
 
-  .section-intro {
-    display: grid;
-    grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
-    column-gap: clamp(1.5rem, 5vw, 5rem);
-    align-items: start;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--c-rule);
-  }
-
-  .section-intro h2 {
-    max-width: 21rem;
-    margin-bottom: 0.65rem;
-  }
-
-  .section-intro p:last-child {
-    max-width: 34rem;
-    margin-bottom: 0;
-    color: var(--c-muted);
-  }
 
   .people-group {
     display: grid;
     grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 5vw, 5rem);
-    padding-block: 2.4rem;
+    padding-block: clamp(1.5rem, 3vw, 2rem);
     border-bottom: 1px solid var(--c-rule);
   }
 
   .people-group__heading {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    display: flex;
     gap: 1rem;
-    align-content: start;
+    align-items: baseline;
   }
 
-  .people-group__heading h3 {
+  .people-group__heading h2 {
     margin-bottom: 0.5rem;
-  }
-
-  .people-group__heading p:last-child {
-    margin-bottom: 0;
-    color: var(--c-muted);
-    font-size: 0.95rem;
   }
 
   .people-grid {
@@ -219,14 +170,6 @@ const renderedPeople = await Promise.all(
   }
 
   @media (max-width: 48rem) {
-    .people-hero {
-      display: block;
-    }
-
-    .people-hero__intro {
-      margin-top: 1.5rem;
-    }
-
     .people-group {
       grid-template-columns: 1fr;
       gap: 1.5rem;
@@ -234,10 +177,6 @@ const renderedPeople = await Promise.all(
   }
 
   @media (max-width: 38rem) {
-    .section-intro {
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
 
     .people-grid :global(.person-card) {
       grid-template-columns: 5.5rem minmax(0, 1fr);

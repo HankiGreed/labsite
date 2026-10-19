@@ -6,4 +6,3 @@ order: 2
 photo: "/images/people/ankita.svg"
 ---
 
-Student Intern.

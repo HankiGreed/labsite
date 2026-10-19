@@ -58,10 +58,7 @@ const focusAreas = [
             </p>
           </div>
           <div class="about-hero__copy">
-            <h1 id="about-title">
-              Understanding infectious diseases through <em>careful methods.</em
-              >
-            </h1>
+            <h1 id="about-title">About the lab</h1>
             <p class="editorial-hero__intro">{site.tagline}</p>
           </div>
           <aside class="about-hero__aside" aria-label="Laboratory lead">
@@ -80,9 +77,7 @@ const focusAreas = [
             </p>
           </div>
           <div class="about-overview__body">
-            <h2 id="overview-title">
-              Infectious disease research with diagnostic purpose
-            </h2>
+            <h2 id="overview-title">Infectious disease research</h2>
             {about.map((paragraph) => <p>{paragraph}</p>)}
           </div>
         </section>
@@ -97,9 +92,7 @@ const focusAreas = [
             </p>
           </div>
           <div class="about-methods__body">
-            <h2 id="methods-title">
-              Methods that connect clinical questions to evidence
-            </h2>
+            <h2 id="methods-title">Research methods</h2>
             <ul class="about-methods__list">
               {methods.map((method) => <li>{method}</li>)}
             </ul>
@@ -116,7 +109,7 @@ const focusAreas = [
             </p>
           </div>
           <div class="about-focus__body">
-            <h2 id="focus-title">Four connected areas of focus</h2>
+            <h2 id="focus-title">Research areas</h2>
             <div class="about-focus__list">
               {
                 focusAreas.map((area, index) => (
@@ -159,7 +152,7 @@ const focusAreas = [
       );
     gap: clamp(1.25rem, 4vw, 4rem);
     align-items: start;
-    padding-block: clamp(3.75rem, 8vw, 6.75rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
     border-bottom: 1px solid var(--about-rule);
   }
 
@@ -178,10 +171,6 @@ const focusAreas = [
     line-height: 0.96;
   }
 
-  .about-hero__copy h1 em {
-    color: var(--about-teal);
-    font-style: normal;
-  }
 
   .about-hero__copy .editorial-hero__intro {
     max-width: 32rem;

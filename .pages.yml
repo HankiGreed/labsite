@@ -113,10 +113,6 @@ content:
         label: Research heading
         type: string
         required: true
-      - name: researchIntro
-        label: Research introduction
-        type: text
-        required: true
       - name: researchLinkLabel
         label: Research link label
         type: string
@@ -459,7 +455,7 @@ content:
             type: string
             required: true
           - name: intro
-            label: Intro
+            label: Search and social description
             type: text
             required: true
       - name: themes
@@ -473,10 +469,6 @@ content:
           - name: title
             label: Title
             type: string
-            required: true
-          - name: intro
-            label: Intro
-            type: text
             required: true
           - name: empty
             label: Empty
@@ -493,10 +485,6 @@ content:
           - name: title
             label: Title
             type: string
-            required: true
-          - name: intro
-            label: Intro
-            type: text
             required: true
           - name: empty
             label: Empty
@@ -522,10 +510,6 @@ content:
         fields:
           - name: label
             label: Label
-            type: string
-            required: true
-          - name: caption
-            label: Caption
             type: string
             required: true
           - name: href
@@ -557,22 +541,6 @@ content:
             label: Title
             type: string
             required: true
-          - name: intro
-            label: Intro
-            type: text
-            required: true
-          - name: index
-            label: Index
-            type: string
-            required: true
-          - name: sectionTitle
-            label: Section Title
-            type: string
-            required: true
-          - name: sectionIntro
-            label: Section Intro
-            type: text
-            required: true
       - name: groups
         label: Groups
         type: object
@@ -585,10 +553,6 @@ content:
           - name: label
             label: Label
             type: string
-            required: true
-          - name: copy
-            label: Copy
-            type: text
             required: true
           - name: empty
             label: Empty
@@ -626,14 +590,6 @@ content:
         label: News
         type: object
         fields:
-          - name: heroIntro
-            label: Hero Intro
-            type: text
-            required: true
-          - name: sectionIntro
-            label: Section Intro
-            type: text
-            required: true
           - name: emptyState
             label: Empty State
             type: text
@@ -642,14 +598,6 @@ content:
         label: Funding
         type: object
         fields:
-          - name: heroIntro
-            label: Hero Intro
-            type: text
-            required: true
-          - name: sectionIntro
-            label: Section Intro
-            type: text
-            required: true
           - name: emptyState
             label: Empty State
             type: text
@@ -658,14 +606,6 @@ content:
         label: Recognition
         type: object
         fields:
-          - name: heroIntro
-            label: Hero Intro
-            type: text
-            required: true
-          - name: sectionIntro
-            label: Section Intro
-            type: text
-            required: true
           - name: emptyState
             label: Empty State
             type: text
