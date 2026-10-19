@@ -35,7 +35,7 @@ Keep the field names and list/object shapes unchanged. Do not add a personal ema
 
 The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions and captions. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order. Existing abstract illustrations are used until the lab supplies approved photos.
 
-Use **Research page text** and **Team page text** for section headings, category labels, links, and empty-state messages. Research starts directly with its themes; its page intro is used only as the search/social description. Team starts directly with its member groups. **Publication page settings** controls the title and simple introduction, without source or snapshot notices. **News, Funding and Recognition page text** controls concise empty-state messages; those pages use their page titles without extra introductory bands. Keep group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
+Use **Research page text** and **Team page text** for section headings, category labels, links, and empty-state messages. Research shows its themes and related links only; its page intro is used only as the search/social description. There is no separate pathogen directory or organism table. Team starts directly with its member groups. **Publication page settings** controls the title and simple introduction, without source or snapshot notices. **News, Funding and Recognition page text** controls concise empty-state messages; those pages use their page titles without extra introductory bands. Keep team group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
 
 Content lives in `src/content/<collection>/*.md`; page settings live in `src/data/*.json`. Layout and rendering live in `src/pages`, `src/components`, and `src/layouts`. Adding a content entry does not require editing an Astro file. The public Funding and Recognition pages retain `/projects/` and `/achievements/` respectively, and Team retains `/people/`.
 
@@ -51,17 +51,6 @@ Use **Research → New** or edit an existing entry. Each entry has a title, summ
 
 Replace or remove any entry that does not describe the lab. Keep descriptions grounded in the supplied laboratory information.
 
-### Pathogens
-
-Use **Pathogens → New** to add an organism or pathogen group entry. The form has a name, one group, a summary, and an integer display order. Group values are exactly:
-
-- `respiratory`
-- `antimicrobial-resistant`
-- `hypervirulent`
-- `endodontic-other`
-- `fungal`
-
-The supplied organisms and focus descriptions include _Streptococcus pneumoniae_, _Haemophilus influenzae_, _Acinetobacter baumannii_, _Escherichia coli_, _Klebsiella pneumoniae_, carbapenem-resistant Enterobacterales (CRE), hypervirulent _Klebsiella pneumoniae_ (hvKp), _Enterococcus faecalis_ and _S. mutans_, anaerobic bacteria, and _Candida albicans_. Use the supplied spelling and descriptions, including “Enterococcus faecalis and S. mutans”.
 
 ### Funding
 

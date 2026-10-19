@@ -9,23 +9,7 @@
     "title": "Research themes",
     "empty": "No research themes are listed yet."
   },
-  "pathogens": {
-    "index": "02 / Pathogens",
-    "title": "Organisms under study",
-    "empty": "No pathogens are listed in this category.",
-    "groups": [
-      { "key": "respiratory", "label": "Respiratory pathogens" },
-      {
-        "key": "antimicrobial-resistant",
-        "label": "Antimicrobial-resistant bacteria"
-      },
-      { "key": "hypervirulent", "label": "Hypervirulent pathogens" },
-      { "key": "endodontic-other", "label": "Endodontic and other bacteria" },
-      { "key": "fungal", "label": "Fungal pathogens" }
-    ]
-  },
   "links": [
-    { "label": "Pathogens of interest", "href": "/pathogens/" },
     { "label": "Funding and projects", "href": "/projects/" }
   ]
 }

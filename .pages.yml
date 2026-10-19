@@ -171,44 +171,6 @@ content:
       create: true
       rename: true
       delete: true
-  - name: pathogens
-    label: Pathogens
-    type: collection
-    path: src/content/pathogens
-    format: yaml-frontmatter
-    filename: "{primary}.md"
-    view:
-      primary: name
-      sort: order
-      order: asc
-    fields:
-      - name: name
-        label: Name
-        type: string
-        required: true
-      - name: group
-        label: Group
-        type: select
-        required: true
-        options:
-          values:
-            - respiratory
-            - antimicrobial-resistant
-            - hypervirulent
-            - endodontic-other
-            - fungal
-      - name: summary
-        label: Summary
-        type: text
-        required: true
-      - name: order
-        label: Display order
-        type: number
-        required: true
-    operations:
-      create: true
-      rename: true
-      delete: true
 
   - name: projects
     label: Funding
@@ -474,35 +436,6 @@ content:
             label: Empty
             type: text
             required: true
-      - name: pathogens
-        label: pathogens
-        type: object
-        fields:
-          - name: index
-            label: Index
-            type: string
-            required: true
-          - name: title
-            label: Title
-            type: string
-            required: true
-          - name: empty
-            label: Empty
-            type: text
-            required: true
-          - name: groups
-            label: Groups
-            type: object
-            list: true
-            fields:
-              - name: key
-                label: Key
-                type: string
-                required: true
-              - name: label
-                label: Label
-                type: string
-                required: true
       - name: links
         label: Links
         type: object

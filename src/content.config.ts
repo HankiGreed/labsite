@@ -53,21 +53,6 @@ const news = defineCollection({
   }),
 });
 
-const pathogens = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/pathogens" }),
-  schema: z.object({
-    name: z.string(),
-    group: z.enum([
-      "respiratory",
-      "antimicrobial-resistant",
-      "hypervirulent",
-      "endodontic-other",
-      "fungal",
-    ]),
-    summary: z.string(),
-    order: z.number().int(),
-  }),
-});
 
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
@@ -96,7 +81,6 @@ export const collections = {
   people,
   publications,
   news,
-  pathogens,
   projects,
   achievements,
 };
