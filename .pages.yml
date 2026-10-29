@@ -109,6 +109,14 @@ content:
             label: Caption
             type: string
             required: false
+          - name: width
+            label: Image width in pixels
+            type: number
+            required: false
+          - name: height
+            label: Image height in pixels
+            type: number
+            required: false
       - name: researchTitle
         label: Research heading
         type: string
@@ -319,14 +327,14 @@ content:
       rename: true
       delete: true
   - name: achievements
-    label: Recognition
+    label: Achievements
     type: collection
     path: src/content/achievements
     format: yaml-frontmatter
     filename: "{primary}.md"
     view:
       primary: title
-      sort: date
+      sort: year
       order: desc
     fields:
       - name: title
@@ -334,8 +342,16 @@ content:
         type: string
         required: true
       - name: date
-        label: Date
+        label: Exact date (only when the full date is documented)
         type: date
+        required: false
+      - name: year
+        label: Year (leave blank if not documented)
+        type: number
+        required: false
+      - name: month
+        label: Month number (1–12, only if documented alongside a year)
+        type: number
         required: false
       - name: summary
         label: Summary
@@ -345,6 +361,32 @@ content:
         label: Featured
         type: boolean
         required: true
+      - name: images
+        label: Photographs (displayed in order)
+        type: object
+        list: true
+        required: false
+        fields:
+          - name: src
+            label: Image
+            type: image
+            required: true
+          - name: alt
+            label: Image description for accessibility
+            type: string
+            required: true
+          - name: width
+            label: Original image width in pixels
+            type: number
+            required: true
+          - name: height
+            label: Original image height in pixels
+            type: number
+            required: true
+          - name: caption
+            label: Optional caption
+            type: string
+            required: false
       - name: body
         label: Details
         type: rich-text
@@ -404,34 +446,10 @@ content:
     path: src/data/research.json
     format: json
     fields:
-      - name: page
-        label: Page
-        type: object
-        fields:
-          - name: kicker
-            label: Kicker
-            type: string
-            required: true
-          - name: edition
-            label: Edition
-            type: string
-            required: true
-          - name: intro
-            label: Search and social description
-            type: text
-            required: true
       - name: themes
         label: Themes
         type: object
         fields:
-          - name: index
-            label: Index
-            type: string
-            required: true
-          - name: title
-            label: Title
-            type: string
-            required: true
           - name: empty
             label: Empty
             type: text
@@ -511,10 +529,8 @@ content:
     operations:
       delete: false
 
-
-
   - name: updatesPage
-    label: News, Funding and Recognition page text
+    label: News and Funding page text
     type: file
     path: src/data/updates.json
     format: json
@@ -535,14 +551,48 @@ content:
             label: Empty State
             type: text
             required: true
-      - name: recognition
-        label: Recognition
-        type: object
-        fields:
-          - name: emptyState
-            label: Empty State
-            type: text
-            required: true
     operations:
       delete: false
 
+  - name: navigation
+    label: Navigation and sitemap
+    type: file
+    path: src/data/navigation.json
+    format: json
+    fields:
+      - name: primary
+        label: Main navigation
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+            required: true
+          - name: href
+            label: Page path
+            type: string
+            required: true
+          - name: sitemapOrder
+            label: Footer sitemap order
+            type: number
+            required: true
+      - name: secondary
+        label: Additional sitemap pages
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+            required: true
+          - name: href
+            label: Page path
+            type: string
+            required: true
+          - name: sitemapOrder
+            label: Footer sitemap order
+            type: number
+            required: true
+    operations:
+      delete: false

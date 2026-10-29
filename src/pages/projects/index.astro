@@ -12,10 +12,8 @@ const rendered = await Promise.all(
   entries.map(async (entry) => ({
     entry,
     Content: (await render(entry)).Content,
-    hasBody: Boolean(entry.body?.trim()),
   })),
 );
-
 ---
 
 <BaseLayout
@@ -35,26 +33,75 @@ const rendered = await Promise.all(
         </header>
 
         <section class="funding-list" aria-label="Funding">
-
           {
             rendered.length ? (
               <div class="funding-records">
-                {rendered.map(({ entry, Content, hasBody }, index) => (
+                {rendered.map(({ entry, Content }, index) => (
                   <article class="funding-record" id={entry.id}>
-                    <p class="funding-record__number" aria-hidden="true">
-                      {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <div class="funding-record__body">
-                      <h2>{entry.data.title}</h2>
-                      {(entry.data.funder || entry.data.period || entry.data.role || entry.data.amount) && (
-                        <dl class="funding-meta">
-                          {entry.data.funder && <div><dt>Provider</dt><dd>{entry.data.funder}</dd></div>}
-                          {entry.data.period && <div><dt>Period</dt><dd>{entry.data.period}</dd></div>}
-                          {entry.data.role && <div><dt>Role</dt><dd>{entry.data.role}</dd></div>}
-                          {entry.data.amount && <div><dt>Amount</dt><dd>{entry.data.amount}</dd></div>}
-                        </dl>
-                      )}
-                      {hasBody && <div class="prose"><Content /></div>}
+                    <div class="funding-record__header">
+                      <span class="funding-record__number" aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div class="funding-record__overview">
+                        <h2 class="funding-record__title">
+                          <button
+                            class="funding-record__trigger"
+                            id={`${entry.id}-title`}
+                            type="button"
+                            aria-expanded="false"
+                            aria-controls={`${entry.id}-details`}
+                          >
+                            <span>{entry.data.title}</span>
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M6 9l6 6 6-6"
+                                stroke="currentColor"
+                                fill="none"
+                                stroke-width="2"
+                              />
+                            </svg>
+                          </button>
+                        </h2>
+                        {(entry.data.funder ||
+                          entry.data.period ||
+                          entry.data.role ||
+                          entry.data.amount) && (
+                          <dl class="funding-meta">
+                            {entry.data.funder && (
+                              <div>
+                                <dt class="funding-meta__label">Provider</dt>
+                                <dd>{entry.data.funder}</dd>
+                              </div>
+                            )}
+                            {entry.data.period && (
+                              <div>
+                                <dt class="funding-meta__label">Period</dt>
+                                <dd>{entry.data.period}</dd>
+                              </div>
+                            )}
+                            {entry.data.role && (
+                              <div>
+                                <dt class="funding-meta__label">Role</dt>
+                                <dd>{entry.data.role}</dd>
+                              </div>
+                            )}
+                            {entry.data.amount && (
+                              <div>
+                                <dt class="funding-meta__label">Amount</dt>
+                                <dd>{entry.data.amount}</dd>
+                              </div>
+                            )}
+                          </dl>
+                        )}
+                      </div>
+                    </div>
+                    <div class="prose" id={`${entry.id}-details`} hidden>
+                      <Content />
                     </div>
                   </article>
                 ))}
@@ -77,6 +124,51 @@ const rendered = await Promise.all(
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  const projectButtons = document.querySelectorAll<HTMLButtonElement>(
+    ".funding-record__trigger",
+  );
+
+  function setProjectExpanded(button: HTMLButtonElement, expanded: boolean) {
+    const panel = document.getElementById(
+      button.getAttribute("aria-controls")!,
+    );
+    if (!panel) return;
+    button.setAttribute("aria-expanded", String(expanded));
+    panel.hidden = !expanded;
+  }
+
+  projectButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setProjectExpanded(
+        button,
+        button.getAttribute("aria-expanded") !== "true",
+      );
+    });
+  });
+
+  function openProjectHash() {
+    let id: string;
+    try {
+      id = decodeURIComponent(window.location.hash.slice(1));
+    } catch {
+      return;
+    }
+    if (!id) return;
+    const target = document.getElementById(id);
+    const record = target?.closest(".funding-record");
+    const button = record?.querySelector<HTMLButtonElement>(
+      ".funding-record__trigger",
+    );
+    if (!button) return;
+    setProjectExpanded(button, true);
+    requestAnimationFrame(() => target?.scrollIntoView());
+  }
+
+  openProjectHash();
+  window.addEventListener("hashchange", openProjectHash);
+</script>
 
 <style>
   .funding-page {
@@ -110,8 +202,6 @@ const rendered = await Promise.all(
     padding-block: clamp(2.5rem, 5vw, 4rem);
   }
 
-
-
   .funding-record__number {
     margin: 0;
     color: var(--editorial-teal);
@@ -126,18 +216,70 @@ const rendered = await Promise.all(
   }
 
   .funding-record {
-    display: grid;
-    grid-template-columns: minmax(3rem, 0.25fr) minmax(0, 2fr);
-    gap: clamp(1rem, 5vw, 5rem);
-    padding-block: clamp(1.7rem, 3vw, 2.75rem);
+    --funding-gap: clamp(1rem, 5vw, 5rem);
+    --funding-number-width: 3rem;
     border-bottom: 1px solid var(--editorial-line);
+  }
+
+  .funding-record__header {
+    display: grid;
+    grid-template-columns: var(--funding-number-width) minmax(0, 1fr);
+    gap: var(--funding-gap);
+    align-items: start;
+    padding-block: clamp(1.7rem, 3vw, 2.75rem);
+  }
+
+  .funding-record__trigger {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .funding-record__trigger:hover {
+    color: var(--editorial-teal);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .funding-record__trigger:focus-visible {
+    outline: 3px solid var(--editorial-teal);
+    outline-offset: 5px;
+    border-radius: 2px;
+  }
+
+  .funding-record__trigger svg {
+    flex: 0 0 20px;
+    transition: transform 160ms ease;
+  }
+
+  .funding-record__trigger[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .funding-record__trigger svg {
+      transition: none;
+    }
+  }
+
+  .funding-record__overview {
+    min-width: 0;
   }
 
   .funding-record__number {
     margin-top: 0.25rem;
   }
 
-  .funding-record h2 {
+  .funding-record__title {
+    display: block;
     margin: 0;
     color: var(--editorial-navy);
     font-family: Georgia, "Times New Roman", serif;
@@ -155,14 +297,14 @@ const rendered = await Promise.all(
     border-block: 1px solid var(--editorial-line);
   }
 
-  .funding-meta div {
+  .funding-meta > div {
     display: grid;
     grid-template-columns: 5.25rem minmax(0, 1fr);
     gap: 0.55rem;
     align-items: baseline;
   }
 
-  .funding-meta dt {
+  .funding-meta__label {
     color: var(--editorial-teal);
     font-size: 0.64rem;
     font-weight: 750;
@@ -172,15 +314,39 @@ const rendered = await Promise.all(
 
   .funding-meta dd {
     margin: 0;
+    min-width: 0;
     color: var(--editorial-ink);
     font-size: 0.92rem;
   }
 
   .prose {
     max-width: 46rem;
-    margin-top: 1rem;
+    margin: 0 0 clamp(1.7rem, 3vw, 2.75rem)
+      calc(var(--funding-number-width) + var(--funding-gap));
     color: var(--editorial-muted);
     line-height: 1.6;
+  }
+
+  .prose :global(h3) {
+    margin: 1.65rem 0 0.65rem;
+    color: var(--editorial-navy);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  .prose :global(h3:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(ul) {
+    margin: 0 0 1rem;
+    padding-left: 1.3rem;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 0.5rem;
   }
 
   .prose :global(p) {
@@ -194,7 +360,6 @@ const rendered = await Promise.all(
   .prose :global(a) {
     color: var(--editorial-teal);
   }
-
 
   .empty-state {
     padding: 1.2rem 0;
@@ -214,10 +379,14 @@ const rendered = await Promise.all(
       display: block;
     }
 
-
     .funding-record {
-      grid-template-columns: 2rem minmax(0, 1fr);
-      gap: 1rem;
+      --funding-gap: 1rem;
+      --funding-number-width: 2rem;
+    }
+
+    .funding-record__header {
+      grid-template-columns: var(--funding-number-width) minmax(0, 1fr);
+      gap: 0.75rem var(--funding-gap);
     }
 
     .funding-meta {

@@ -1,9 +1,8 @@
 ---
-title: "Respiratory Pathogen Research"
-summary: "Investigating Streptococcus pneumoniae, Haemophilus influenzae, and atypical pneumonia-associated pathogens, with emphasis on pathogen detection, epidemiological surveillance, and the development of diagnostic approaches for community-acquired pneumonia in children."
-order: 4
+title: "Respiratory Pathogens and Paediatric Pneumonia"
+summary: "Linking respiratory carriage surveillance with diagnostics for childhood pneumonia."
+order: 3
 featured: true
-image: "/images/research-microbial.svg"
 ---
 
-Investigating Streptococcus pneumoniae, Haemophilus influenzae, and atypical pneumonia-associated pathogens, with emphasis on pathogen detection, epidemiological surveillance, and the development of diagnostic approaches for community-acquired pneumonia in children.
+Studying respiratory pathogens, particularly _Streptococcus pneumoniae_ and _Haemophilus influenzae_, to improve pathogen detection, carriage surveillance, and the development of diagnostics for community-acquired pneumonia.

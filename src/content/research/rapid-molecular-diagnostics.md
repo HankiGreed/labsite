@@ -1,9 +1,8 @@
 ---
-title: "Rapid Molecular Diagnostics"
-summary: "Developing and evaluating multiplex PCR, real-time PCR, loop-mediated isothermal amplification (LAMP), and lateral flow assays for rapid detection of bacterial pathogens and antimicrobial resistance genes."
-order: 3
+title: "Rapid Diagnostics"
+summary: "Building accessible PCR, LAMP, and lateral flow technologies for pathogen detection."
+order: 4
 featured: true
-image: "/images/research-human-loop.svg"
 ---
 
-Developing and evaluating multiplex PCR, real-time PCR, loop-mediated isothermal amplification (LAMP), and lateral flow assays for rapid detection of bacterial pathogens and antimicrobial resistance genes.
+Developing accessible diagnostic technologies, including multiplex PCR, real-time PCR, LAMP, and lateral flow assays, for rapid identification of bacterial pathogens and selected antimicrobial resistance determinants.

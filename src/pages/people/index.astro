@@ -19,18 +19,22 @@ const renderedPeople = await Promise.all(
 );
 ---
 
-<BaseLayout
-  title="Team"
-  description={site.description}
->
+<BaseLayout title="Team" description={site.description}>
   <div class="editorial-canvas editorial-people">
     <div class="editorial-sheet">
       <div class="editorial-bar">
-        <p>{teamData.page.kicker} <span aria-hidden="true">/</span> {site.shortName}</p>
+        <p>
+          {teamData.page.kicker}
+          <span aria-hidden="true">/</span>
+          {site.shortName}
+        </p>
         <p>{teamData.page.barLabel}</p>
       </div>
       <div class="editorial-content">
-        <header class="editorial-hero people-hero" aria-labelledby="people-title">
+        <header
+          class="editorial-hero people-hero"
+          aria-labelledby="people-title"
+        >
           <h1 id="people-title">{teamData.page.title}</h1>
         </header>
 
@@ -41,18 +45,28 @@ const renderedPeople = await Promise.all(
                 ({ entry }) => entry.data.group === group.key,
               );
               return (
-                <section class="people-group" aria-labelledby={`${group.key}-title`}>
+                <section
+                  class="people-group"
+                  aria-labelledby={`${group.key}-title`}
+                >
                   <div class="people-group__heading">
-                    <p class="editorial-index">{String(index + 1).padStart(2, "0")}</p>
+                    <p class="editorial-index">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
                     <h2 id={`${group.key}-title`}>{group.label}</h2>
                   </div>
                   {entries.length ? (
                     <div class="people-grid">
-                      {entries.map(({ entry, Content }) => (
-                        <PersonCard entry={entry}>
-                          <Content />
-                        </PersonCard>
-                      ))}
+                      {entries.map(({ entry, Content }) =>
+                        entry.data.group === "students" ||
+                        entry.data.group === "alumni" ? (
+                          <PersonCard entry={entry} />
+                        ) : (
+                          <PersonCard entry={entry}>
+                            <Content />
+                          </PersonCard>
+                        ),
+                      )}
                     </div>
                   ) : (
                     <p class="empty-state">{group.empty}</p>
@@ -87,7 +101,6 @@ const renderedPeople = await Promise.all(
     padding-bottom: 0;
   }
 
-
   .people-group {
     display: grid;
     grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
@@ -113,7 +126,7 @@ const renderedPeople = await Promise.all(
 
   .people-grid :global(.person-card) {
     display: grid;
-    grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(1rem, 3vw, 1.75rem);
     padding-block: 1rem;
     border: 0;
@@ -125,8 +138,11 @@ const renderedPeople = await Promise.all(
     border-top: 0;
   }
 
-  .people-grid :global(.person-card__image),
-  .people-grid :global(.person-card__avatar) {
+  .people-grid :global(.person-card:not(.person-card--text-only)) {
+    grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
+  }
+
+  .people-grid :global(.person-card__image) {
     width: 100%;
     aspect-ratio: 1;
     border-radius: 0;
@@ -138,7 +154,7 @@ const renderedPeople = await Promise.all(
     padding: 0.15rem 0 0;
   }
 
-  .people-grid :global(.person-card h3) {
+  .people-grid :global(.person-card h4) {
     margin-bottom: 0.1rem;
     font-size: clamp(1.35rem, 2vw, 1.8rem);
   }
@@ -177,8 +193,7 @@ const renderedPeople = await Promise.all(
   }
 
   @media (max-width: 38rem) {
-
-    .people-grid :global(.person-card) {
+    .people-grid :global(.person-card:not(.person-card--text-only)) {
       grid-template-columns: 5.5rem minmax(0, 1fr);
       gap: 1rem;
     }

@@ -1,15 +1,6 @@
 {
-  "page": {
-    "kicker": "Research at a glance",
-    "edition": "Infectious disease research",
-    "intro": "The Tushar Shaw Lab investigates infectious diseases and bacterial pathogens, while developing rapid, reliable, and cost-effective diagnostic technologies."
-  },
   "themes": {
-    "index": "01 / Research · Themes",
-    "title": "Research themes",
     "empty": "No research themes are listed yet."
   },
-  "links": [
-    { "label": "Funding and projects", "href": "/projects/" }
-  ]
+  "links": [{ "label": "Funding and projects", "href": "/projects/" }]
 }

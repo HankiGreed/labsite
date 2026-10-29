@@ -7,7 +7,6 @@ import {
   type EntryLike,
   valueOf,
   withBase,
-  initials,
 } from "./content";
 
 interface Props {
@@ -19,7 +18,10 @@ const name = asText(valueOf(entry, "name", "fullName", "title"), "Researcher");
 const role = asText(valueOf(entry, "role", "position", "title"));
 const bio = asText(valueOf(entry, "bio", "description", "summary"));
 const image = valueOf(entry, "image", "photo", "portrait");
-const imageUrl = imageSrc(image);
+const textOnly = ["students", "alumni"].includes(
+  asText(valueOf(entry, "group")),
+);
+const imageUrl = textOnly ? "" : imageSrc(image);
 const linkValue = asText(valueOf(entry, "link", "profile", "website", "url"));
 const email = asText(valueOf(entry, "email"));
 const link = linkValue
@@ -29,50 +31,52 @@ const link = linkValue
   : "";
 ---
 
-<article class="person-card">
+<article class:list={["person-card", { "person-card--text-only": !imageUrl }]}>
   {
-    imageUrl ? (
+    imageUrl && (
       <img
         class="person-card__image"
         src={imageUrl}
         alt={imageAlt(image, name)}
         loading="lazy"
       />
-    ) : (
-      <div class="person-card__avatar" aria-hidden="true">
-        {initials(name)}
-      </div>
     )
   }
   <div class="person-card__body">
-    <h3>{name}</h3>
+    <h4>{name}</h4>
     {role && <p class="person-card__role">{role}</p>}
     {bio && <p>{bio}</p>}
-    <div class="person-card__prose prose">
-      <slot />
-    </div>
-    <div class="person-card__links">
-      {email && <a href={`mailto:${email}`}>Email</a>}
-      {
-        link && (
-          <a
-            href={link}
-            target={
-              isExternal(linkValue) && !link.startsWith("mailto:")
-                ? "_blank"
-                : undefined
-            }
-            rel={
-              isExternal(linkValue) && !link.startsWith("mailto:")
-                ? "noreferrer"
-                : undefined
-            }
-          >
-            Profile <span aria-hidden="true">↗</span>
-          </a>
-        )
-      }
-    </div>
+    {
+      Astro.slots.has("default") && (
+        <div class="person-card__prose prose">
+          <slot />
+        </div>
+      )
+    }
+    {
+      (email || link) && (
+        <div class="person-card__links">
+          {email && <a href={`mailto:${email}`}>Email</a>}
+          {link && (
+            <a
+              href={link}
+              target={
+                isExternal(linkValue) && !link.startsWith("mailto:")
+                  ? "_blank"
+                  : undefined
+              }
+              rel={
+                isExternal(linkValue) && !link.startsWith("mailto:")
+                  ? "noreferrer"
+                  : undefined
+              }
+            >
+              Profile <span aria-hidden="true">↗</span>
+            </a>
+          )}
+        </div>
+      )
+    }
   </div>
 </article>
 
@@ -86,21 +90,14 @@ const link = linkValue
     border-top: 1px solid var(--line);
   }
 
-  .person-card__image,
-  .person-card__avatar {
+  .person-card__image {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
   }
 
-  .person-card__avatar {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    color: var(--teal);
-    background: var(--teal-soft);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(2rem, 5vw, 3.8rem);
+  .person-card--text-only {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .person-card__body {
@@ -109,7 +106,7 @@ const link = linkValue
     gap: 0.6rem;
   }
 
-  .person-card h3 {
+  .person-card h4 {
     margin-bottom: 0;
   }
 
@@ -132,7 +129,11 @@ const link = linkValue
   }
 
   .person-card__prose :global(p) {
-    margin: 0;
+    margin: 0 0 0.75rem;
+  }
+
+  .person-card__prose :global(p:last-child) {
+    margin-bottom: 0;
   }
 
   .person-card__links {
@@ -152,7 +153,7 @@ const link = linkValue
   }
 
   @media (max-width: 38rem) {
-    .person-card {
+    .person-card:not(.person-card--text-only) {
       grid-template-columns: 5rem minmax(0, 1fr);
       gap: 1rem;
     }

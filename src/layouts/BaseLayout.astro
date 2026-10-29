@@ -200,11 +200,6 @@ const socialImage = "image" in site ? imageSrc(site.image) : undefined;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .container {
-    width: min(100% - (2 * var(--gutter)), var(--max-width));
-    margin-inline: auto;
-  }
-
   .editorial-canvas {
     padding: clamp(1.5rem, 4vw, 4rem) 0 clamp(3rem, 8vw, 7rem);
     color: var(--ink);
@@ -360,61 +355,14 @@ const socialImage = "image" in site ? imageSrc(site.image) : undefined;
     border-top: 1px solid var(--line);
   }
 
-  .page-section {
-    width: min(100% - (2 * var(--gutter)), var(--max-width));
-    margin-inline: auto;
-    padding-block: clamp(4rem, 8vw, 7rem);
-  }
-
-  .page-section + .page-section {
-    padding-top: 0;
-  }
-
   .section-heading {
     display: grid;
     gap: 1rem;
     margin-bottom: clamp(2rem, 5vw, 3.5rem);
   }
 
-  .section-heading__eyebrow {
-    margin: 0;
-    color: var(--teal);
-    font-size: 0.68rem;
-    font-weight: 750;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-
   .section-heading h2 {
     margin-bottom: 0;
-  }
-
-  .section-heading__copy {
-    max-width: 42rem;
-    margin-bottom: 0;
-  }
-  .editorial-section-heading {
-    grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 2fr) minmax(
-        8rem,
-        0.75fr
-      );
-    gap: clamp(1rem, 3vw, 3rem);
-    align-items: end;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .editorial-section-heading .section-heading__copy {
-    max-width: 14rem;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 0.98rem;
-    line-height: 1.45;
-  }
-
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
   }
 
   .prose {
@@ -429,19 +377,6 @@ const socialImage = "image" in site ? imageSrc(site.image) : undefined;
   @media (max-width: 52rem) {
     .editorial-hero {
       grid-template-columns: minmax(6rem, 0.55fr) minmax(0, 2fr);
-    }
-    .editorial-section-heading {
-      grid-template-columns: minmax(6rem, 0.55fr) minmax(0, 2fr);
-    }
-
-    .editorial-section-heading .section-heading__copy {
-      grid-column: 2;
-    }
-  }
-
-  @media (max-width: 48rem) {
-    .card-grid {
-      grid-template-columns: 1fr;
     }
   }
 
@@ -468,14 +403,6 @@ const socialImage = "image" in site ? imageSrc(site.image) : undefined;
     .editorial-hero {
       display: block;
     }
-    .editorial-section-heading {
-      grid-template-columns: 1fr;
-    }
-
-    .editorial-section-heading .section-heading__copy {
-      grid-column: auto;
-    }
-
     .editorial-hero > * + * {
       margin-top: 2rem;
     }

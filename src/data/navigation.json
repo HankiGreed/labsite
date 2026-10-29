@@ -1,0 +1,16 @@
+{
+  "primary": [
+    { "label": "Home", "href": "/", "sitemapOrder": 0 },
+    { "label": "Research", "href": "/research/", "sitemapOrder": 2 },
+    { "label": "Team", "href": "/people/", "sitemapOrder": 3 },
+    { "label": "Publications", "href": "/publications/", "sitemapOrder": 4 },
+    { "label": "News/Events", "href": "/news/", "sitemapOrder": 5 },
+    { "label": "Funding", "href": "/projects/", "sitemapOrder": 6 },
+    { "label": "Recognition", "href": "/achievements/", "sitemapOrder": 7 },
+    { "label": "Contact", "href": "/contact/", "sitemapOrder": 9 }
+  ],
+  "secondary": [
+    { "label": "About the lab", "href": "/about/", "sitemapOrder": 1 },
+    { "label": "Join the lab", "href": "/join/", "sitemapOrder": 8 }
+  ]
+}

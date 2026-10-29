@@ -1,5 +1,6 @@
 ---
 import site from "../data/site.json";
+import navigation from "../data/navigation.json";
 import { asText, isExternal, withBase } from "./content";
 
 const siteName = asText(site.name, "Research Lab");
@@ -20,12 +21,9 @@ const socials: Social[] = Array.isArray(rawSocials)
         typeof social === "object" && social !== null && !Array.isArray(social),
     )
   : [];
-const footerLinks = [
-  { label: "Funding", href: "/projects/" },
-  { label: "Recognition", href: "/achievements/" },
-  { label: "About the lab", href: "/about/" },
-  { label: "Join the lab", href: "/join/" },
-];
+const footerLinks = [...navigation.primary, ...navigation.secondary].sort(
+  (first, second) => first.sitemapOrder - second.sitemapOrder,
+);
 const hasContact = Boolean(email || phone || location || address.length);
 ---
 
@@ -60,15 +58,17 @@ const hasContact = Boolean(email || phone || location || address.length);
       )
     }
 
-    <nav class="site-footer__links" aria-label="More pages">
-      <p class="eyebrow">Explore</p>
-      <div>
+    <nav class="site-footer__links" aria-label="Sitemap">
+      <h2 class="eyebrow">Explore</h2>
+      <ul>
         {
           footerLinks.map((item) => (
-            <a href={withBase(item.href)}>{item.label}</a>
+            <li>
+              <a href={withBase(item.href)}>{item.label}</a>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </nav>
 
     {
@@ -157,6 +157,7 @@ const hasContact = Boolean(email || phone || location || address.length);
 
   .site-footer .eyebrow {
     color: var(--teal-soft);
+    font-family: inherit;
   }
 
   .site-footer a {
@@ -178,7 +179,15 @@ const hasContact = Boolean(email || phone || location || address.length);
     font-style: normal;
   }
 
-  .site-footer__links > div,
+  .site-footer__links ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   .site-footer__socials > div {
     display: flex;
     flex-wrap: wrap;

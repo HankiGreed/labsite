@@ -1,8 +1,6 @@
 ---
 name: "Deepika"
-role: "Student Intern"
+role: "M.Sc. Biotechnology"
 group: students
 order: 4
-photo: "/images/people/deepika.svg"
 ---
-

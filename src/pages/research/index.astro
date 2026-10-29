@@ -3,7 +3,6 @@ import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ResearchCard from "../../components/ResearchCard.astro";
 import { withBase } from "../../components/content";
-import site from "../../data/site.json";
 import researchData from "../../data/research.json";
 
 const entries = (await getCollection("research")).sort(
@@ -17,30 +16,23 @@ const rendered = await Promise.all(
 );
 ---
 
-<BaseLayout
-  title="Research"
-  description={researchData.page.intro}
->
+<BaseLayout title="Research">
   <div class="editorial-canvas research-page">
     <div class="editorial-sheet">
-      <div class="editorial-bar">
-        <p>{researchData.page.kicker} <span aria-hidden="true">/</span> {site.shortName}</p>
-        <p>{researchData.page.edition}</p>
-      </div>
-
       <div class="editorial-content">
-
-        <section class="editorial-section research-section" aria-labelledby="themes-title">
-          <div class="section-heading">
-            <p class="editorial-index">{researchData.themes.index}</p>
-            <h1 id="themes-title">{researchData.themes.title}</h1>
-          </div>
+        <section
+          class="editorial-section research-section"
+          aria-labelledby="themes-title"
+        >
+          <h1 id="themes-title">Research</h1>
           {
             rendered.length ? (
               <div class="research-grid">
                 {rendered.map(({ entry, Content }, index) => (
                   <ResearchCard entry={entry}>
-                    <span slot="number">{String(index + 1).padStart(2, "0")}</span>
+                    <span slot="number">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                     <Content />
                   </ResearchCard>
                 ))}
@@ -51,12 +43,13 @@ const rendered = await Promise.all(
           }
         </section>
 
-
         <nav class="research-links" aria-label="Related research pages">
           {
             researchData.links.map((link) => (
               <a class="research-link" href={withBase(link.href)}>
-                <strong>{link.label} <span aria-hidden="true">↗</span></strong>
+                <strong>
+                  {link.label} <span aria-hidden="true">↗</span>
+                </strong>
               </a>
             ))
           }
@@ -65,6 +58,34 @@ const rendered = await Promise.all(
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  function openTargetedResearch() {
+    let id: string;
+    try {
+      id = decodeURIComponent(window.location.hash.slice(1));
+    } catch {
+      return;
+    }
+    if (!id) return;
+    const target = document.getElementById(id);
+    const card = target?.closest(".research-card");
+    const button = card?.querySelector<HTMLButtonElement>(
+      ".research-card__title",
+    );
+    const panel = document.getElementById(
+      button?.getAttribute("aria-controls") ?? "",
+    );
+    if (!button || !panel) return;
+    button.setAttribute("aria-expanded", "true");
+    panel.hidden = false;
+    requestAnimationFrame(() => target?.scrollIntoView());
+  }
+
+  openTargetedResearch();
+  window.addEventListener("hashchange", openTargetedResearch);
+  document.addEventListener("astro:page-load", openTargetedResearch);
+</script>
 
 <style>
   .research-page {
@@ -80,30 +101,13 @@ const rendered = await Promise.all(
     background: var(--editorial-ivory);
   }
 
-
   .research-section {
-    padding-block: clamp(3rem, 6vw, 5rem);
+    padding-block: 1.5rem 2rem;
   }
 
-  .research-section {
-    padding-top: clamp(2rem, 4vw, 3rem);
-  }
-
-  .section-heading {
-    display: grid;
-    grid-template-columns: minmax(8rem, 0.65fr) minmax(0, 2.1fr);
-    gap: clamp(1.25rem, 4vw, 4rem);
-    align-items: start;
-    margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
-  }
-
-  .section-heading h1 {
-    max-width: 19ch;
-    margin: 0;
-  }
-
-  .section-heading h1 {
-    font-size: clamp(2rem, 4vw, 3.15rem);
+  .research-section h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
   }
 
   .research-grid {
@@ -119,14 +123,9 @@ const rendered = await Promise.all(
     border-bottom: 1px solid var(--editorial-line);
   }
 
-  .research-grid :global(.research-card__number) {
-    order: -1;
-  }
-
   .research-grid :global(.research-card__prose) {
     max-width: 38rem;
   }
-
 
   .empty-state {
     padding: 1rem 0;
@@ -163,20 +162,8 @@ const rendered = await Promise.all(
   }
 
   @media (max-width: 48rem) {
-    .section-heading {
-      grid-template-columns: minmax(6rem, 0.45fr) minmax(0, 1.55fr);
-    }
-
-
     .research-grid {
       grid-template-columns: 1fr;
     }
-  }
-
-  @media (max-width: 38rem) {
-    .section-heading {
-      display: block;
-    }
-
   }
 </style>

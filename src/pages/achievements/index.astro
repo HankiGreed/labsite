@@ -2,40 +2,79 @@
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { asText, withBase } from "../../components/content";
-import updates from "../../data/updates.json";
 import site from "../../data/site.json";
 
 const siteName = asText(site.shortName ?? site.name, "Research Lab");
-const entries = (await getCollection("achievements")).sort((a, b) => {
-  const aDate = a.data.date instanceof Date ? a.data.date.getTime() : 0;
-  const bDate = b.data.date instanceof Date ? b.data.date.getTime() : 0;
-  return bDate - aDate || a.data.title.localeCompare(b.data.title) || a.id.localeCompare(b.id);
-});
+type Chronology = { year?: number; month?: number; date?: Date };
+
+function entryYear(data: Chronology): number | undefined {
+  if (data.date instanceof Date && !Number.isNaN(data.date.getTime())) {
+    return data.date.getUTCFullYear();
+  }
+  return data.year;
+}
+
+function dateParts(
+  data: Chronology,
+): { label: string; iso: string } | undefined {
+  if (data.date instanceof Date && !Number.isNaN(data.date.getTime())) {
+    return {
+      label: new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC",
+      }).format(data.date),
+      iso: data.date.toISOString().slice(0, 10),
+    };
+  }
+  if (data.year === undefined) return undefined;
+  const year = String(data.year);
+  if (data.month === undefined) return { label: year, iso: year };
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return {
+    label: `${months[data.month - 1]} ${year}`,
+    iso: `${year}-${String(data.month).padStart(2, "0")}`,
+  };
+}
+
+const entries = (await getCollection("achievements")).sort(
+  (a, b) =>
+    (entryYear(b.data) ?? 0) - (entryYear(a.data) ?? 0) ||
+    a.data.title.localeCompare(b.data.title) ||
+    a.id.localeCompare(b.id),
+);
 const rendered = await Promise.all(
   entries.map(async (entry) => ({
     entry,
     Content: (await render(entry)).Content,
-    hasBody: Boolean(entry.body?.trim()),
   })),
 );
-
-function dateParts(value: unknown): { label: string; iso: string } | undefined {
-  if (!(value instanceof Date) || Number.isNaN(value.getTime())) return undefined;
-  return {
-    label: new Intl.DateTimeFormat("en", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      timeZone: "UTC",
-    }).format(value),
-    iso: value.toISOString().slice(0, 10),
-  };
-}
+const years = [...new Set(entries.map((entry) => entryYear(entry.data)))];
+const groups = years.map((year) => ({
+  year,
+  id: year === undefined ? "year-unspecified" : `year-${year}`,
+  label: year === undefined ? undefined : String(year),
+  items: rendered.filter(({ entry }) => entryYear(entry.data) === year),
+}));
 ---
 
 <BaseLayout
   title="Recognition"
-  description={`Recognition shared by ${siteName}.`}
+  description={`Awards, invited sessions, conference presentations and research travel from ${siteName}.`}
 >
   <div class="editorial-canvas recognition-page">
     <div class="editorial-sheet">
@@ -49,40 +88,102 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
           <h1 id="recognition-title">Recognition</h1>
         </header>
 
-        <section class="editorial-section" aria-label="Recognition">
-
+        <nav class="archive-years" aria-label="Browse achievements by year">
           {
-            rendered.length ? (
-              <div class="recognition-list">
-                {rendered.map(({ entry, Content, hasBody }, index) => {
-                  const title = asText(entry.data.title, "Recognition");
-                  const summary = asText(entry.data.summary);
-                  const date = dateParts(entry.data.date);
-                  return (
-                    <article class="recognition-row" id={entry.id}>
-                      <p class="recognition-row__index">
-                        {String(index + 1).padStart(2, "0")}
-                      </p>
-                      <div class="recognition-row__body">
-                        <div class="recognition-row__heading">
-                          <h2>{title}</h2>
-                          {date && <time datetime={date.iso}>{date.label}</time>}
-                        </div>
-                        {summary && <p class="recognition-row__summary">{summary}</p>}
-                        {hasBody && <div class="prose"><Content /></div>}
-                      </div>
-                      {entry.data.featured && (
-                        <p class="recognition-row__tag">Featured</p>
-                      )}
-                    </article>
-                  );
-                })}
-              </div>
-            ) : (
-              <p class="empty-state">{updates.recognition.emptyState}</p>
-            )
+            groups
+              .filter((group) => group.year !== undefined)
+              .map((group) => <a href={`#${group.id}`}>{group.label}</a>)
           }
-        </section>
+        </nav>
+
+        <div class="archive-record">
+          {
+            groups.map((group) => (
+              <section
+                class:list={[
+                  "achievement-year",
+                  { "achievement-year--undated": group.year === undefined },
+                ]}
+                id={group.year === undefined ? group.id : undefined}
+                aria-labelledby={
+                  group.year === undefined ? undefined : group.id
+                }
+                aria-label={
+                  group.year === undefined ? "Other achievements" : undefined
+                }
+              >
+                {group.year !== undefined && (
+                  <header class="year-heading">
+                    <h2 id={group.id}>{group.label}</h2>
+                    <p>
+                      {group.items.length}{" "}
+                      {group.items.length === 1
+                        ? "achievement"
+                        : "achievements"}
+                    </p>
+                  </header>
+                )}
+                <div class="recognition-list">
+                  {group.items.map(({ entry, Content }) => {
+                    const date = dateParts(entry.data);
+                    const images = entry.data.images ?? [];
+                    const Heading = group.year === undefined ? "h2" : "h3";
+                    return (
+                      <article class="recognition-row" id={entry.id}>
+                        <div class="recognition-row__heading">
+                          {date && (
+                            <time datetime={date.iso}>{date.label}</time>
+                          )}
+                          <Heading>{entry.data.title}</Heading>
+                        </div>
+                        <div class="recognition-row__body">
+                          <p class="recognition-row__summary">
+                            {entry.data.summary}
+                          </p>
+                          <div class="prose">
+                            <Content />
+                          </div>
+                          {images.length > 0 && (
+                            <div
+                              class="achievement-photos"
+                              role="group"
+                              aria-label={`Photographs: ${entry.data.title}`}
+                            >
+                              {images.map((image, index) => (
+                                <figure class="achievement-photo">
+                                  <a
+                                    href={withBase(image.src)}
+                                    aria-label={`View full-size photograph ${index + 1}: ${image.alt}`}
+                                  >
+                                    <img
+                                      src={withBase(image.src)}
+                                      alt={image.alt}
+                                      width={image.width}
+                                      height={image.height}
+                                      loading="lazy"
+                                      decoding="async"
+                                    />
+                                    <span class="photo-view">
+                                      View full size{" "}
+                                      <span aria-hidden="true">↗</span>
+                                    </span>
+                                  </a>
+                                  {image.caption && (
+                                    <figcaption>{image.caption}</figcaption>
+                                  )}
+                                </figure>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            ))
+          }
+        </div>
 
         <nav class="recognition-links" aria-label="Explore related pages">
           <a class="editorial-link" href={withBase("/research/")}
@@ -108,45 +209,64 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
     padding-block: clamp(2rem, 4vw, 3rem);
   }
 
-  .recognition-page .editorial-section {
-    padding-block: clamp(2rem, 4vw, 3.5rem);
+  .archive-years {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem 1.5rem;
+    padding-block: 1.2rem;
+    border-block: 1px solid var(--c-rule, var(--line));
   }
 
-  .recognition-list {
-    display: grid;
+  .archive-years a {
+    color: var(--c-teal, var(--teal-deep));
+    font-size: 0.9rem;
+    text-underline-offset: 0.25em;
+  }
+
+  .achievement-year {
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .achievement-year--undated {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding-top: 0;
+    border-top: 1px solid var(--c-teal, var(--teal-deep));
+    scroll-margin-top: 6rem;
+  }
+
+  .year-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--c-teal, var(--teal-deep));
+  }
+
+  .year-heading h2 {
+    margin: 0;
+    scroll-margin-top: 6rem;
+  }
+
+  .year-heading p {
+    margin: 0;
+    color: var(--c-muted, var(--ink-muted));
+    font-size: 0.8rem;
   }
 
   .recognition-row {
     display: grid;
-    grid-template-columns: minmax(4rem, 0.45fr) minmax(0, 1fr) auto;
-    gap: clamp(1rem, 4vw, 4rem);
-    padding-block: 2.2rem;
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
     border-bottom: 1px solid var(--c-rule, var(--line));
+    scroll-margin-top: 6rem;
   }
 
-  .recognition-row__index {
-    margin: 0;
-    padding-top: 0.3rem;
-    color: var(--c-teal, var(--teal-deep));
-    font-size: 0.72rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .recognition-row__heading {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.75rem 1.25rem;
-  }
-
-  .recognition-row h2 {
-    margin: 0;
-  }
-
-  .recognition-row time,
-  .recognition-row__tag {
+  .recognition-row__heading time {
+    display: block;
+    margin-bottom: 0.65rem;
     color: var(--c-teal, var(--teal-deep));
     font-size: 0.72rem;
     font-weight: 750;
@@ -154,41 +274,87 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
     text-transform: uppercase;
   }
 
+  .recognition-row__heading :is(h2, h3) {
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
   .recognition-row__summary {
-    max-width: 40rem;
-    margin: 0.8rem 0 0;
-    color: var(--c-muted, var(--ink-muted));
+    margin: 0 0 1rem;
+    color: var(--c-teal, var(--teal-deep));
+    font-size: 0.87rem;
+    font-weight: 650;
+    line-height: 1.6;
   }
 
   .recognition-row .prose {
-    max-width: 42rem;
-    margin-top: 1rem;
-    line-height: 1.65;
+    max-width: 46rem;
+    line-height: 1.75;
   }
 
   .recognition-row .prose :global(p) {
-    margin-bottom: 0.8rem;
-  }
-
-  .recognition-row .prose :global(p:last-child) {
-    margin-bottom: 0;
+    margin: 0 0 1rem;
   }
 
   .recognition-row .prose :global(a) {
     color: var(--c-teal, var(--teal-deep));
   }
 
-  .recognition-row__tag {
-    align-self: start;
-    margin: 0;
-    white-space: nowrap;
+  .achievement-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    align-items: start;
   }
 
+  .achievement-photo {
+    min-width: 0;
+    margin: 0;
+  }
 
-  .empty-state {
-    padding: 1rem 0;
-    border-bottom: 1px dashed var(--c-rule, var(--line));
+  .achievement-photo a {
+    display: block;
+    border: 1px solid var(--c-rule, var(--line));
+    color: var(--c-teal, var(--teal-deep));
+    background: #e9ede5;
+    text-decoration: none;
+  }
+
+  .achievement-photo img {
+    display: block;
+    width: 100%;
+    height: 23rem;
+    object-fit: scale-down;
+  }
+
+  .photo-view {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-top: 1px solid var(--c-rule, var(--line));
+    font-size: 0.72rem;
+    font-weight: 650;
+  }
+
+  .achievement-photo a:hover .photo-view {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .recognition-page a:focus-visible {
+    outline: 3px solid var(--c-teal, var(--teal-deep));
+    outline-offset: 4px;
+  }
+
+  .achievement-photo figcaption {
+    padding-top: 0.6rem;
     color: var(--c-muted, var(--ink-muted));
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
 
   .recognition-links {
@@ -207,11 +373,11 @@ function dateParts(value: unknown): { label: string; iso: string } | undefined {
   @media (max-width: 48rem) {
     .recognition-row {
       grid-template-columns: 1fr;
-      gap: 0.85rem;
+      gap: 1rem;
     }
 
-    .recognition-row__tag {
-      justify-self: start;
+    .achievement-photo img {
+      height: 21rem;
     }
   }
 </style>

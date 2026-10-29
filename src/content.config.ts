@@ -53,7 +53,6 @@ const news = defineCollection({
   }),
 });
 
-
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
   schema: z.object({
@@ -71,8 +70,21 @@ const achievements = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date().optional(),
+    year: z.number().int().optional(),
+    month: z.number().int().min(1).max(12).optional(),
     summary: z.string(),
     featured: z.boolean(),
+    images: z
+      .array(
+        z.object({
+          src: imagePath,
+          alt: z.string().min(1),
+          width: z.number().int().positive(),
+          height: z.number().int().positive(),
+          caption: z.string().optional(),
+        }),
+      )
+      .optional(),
   }),
 });
 

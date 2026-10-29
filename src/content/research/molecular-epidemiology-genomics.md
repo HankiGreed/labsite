@@ -1,9 +1,8 @@
 ---
-title: "Molecular Epidemiology and Genomics"
-summary: "Characterizing bacterial genetic diversity, population structure, serotype distribution, and virulence-associated traits using molecular typing and whole-genome sequencing, with a particular focus on Streptococcus pneumoniae."
+title: "Bacterial Epidemiology and Genomics"
+summary: "Mapping bacterial carriage, transmission, and population diversity."
 order: 1
 featured: true
-image: "/images/research-microbial.svg"
 ---
 
-Characterizing bacterial genetic diversity, population structure, serotype distribution, and virulence-associated traits using molecular typing and whole-genome sequencing, with a particular focus on Streptococcus pneumoniae.
+Investigating bacterial carriage, transmission, population structure, serotype distribution, genetic diversity, and virulence-associated characteristics using molecular epidemiology and genomic approaches.

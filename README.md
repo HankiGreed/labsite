@@ -33,24 +33,26 @@ Keep the field names and list/object shapes unchanged. Do not add a personal ema
 
 ### Homepage and page settings
 
-The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions and captions. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order. Existing abstract illustrations are used until the lab supplies approved photos.
+The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions, captions, and optional intrinsic width/height. Home and About share these photographs. The supplied culture and pipetting photographs illustrate laboratory activities; their source does not establish that they depict the lab's own facilities. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order.
 
-Use **Research page text** and **Team page text** for section headings, category labels, links, and empty-state messages. Research shows its themes and related links only; its page intro is used only as the search/social description. There is no separate pathogen directory or organism table. Team starts directly with its member groups. **Publication page settings** controls the title and simple introduction, without source or snapshot notices. **News, Funding and Recognition page text** controls concise empty-state messages; those pages use their page titles without extra introductory bands. Keep team group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
+Use **Research page text** and **Team page text** for section headings, category labels, links, and empty-state messages. Research starts directly with a compact title and six expandable themes, without an introduction, long-term-goal block, or pathogen section; its page intro is used only as the search/social description. There is no separate pathogen directory or organism table. Team starts directly with its member groups. **Publication page settings** controls the title and simple introduction, without source or snapshot notices. **News and Funding page text** controls concise empty-state messages; those pages use their page titles without extra introductory bands. Recognition has no separate page-text settings. Keep team group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
 
 Content lives in `src/content/<collection>/*.md`; page settings live in `src/data/*.json`. Layout and rendering live in `src/pages`, `src/components`, and `src/layouts`. Adding a content entry does not require editing an Astro file. The public Funding and Recognition pages retain `/projects/` and `/achievements/` respectively, and Team retains `/people/`.
 
+Header navigation and the complete ten-page footer sitemap share `src/data/navigation.json`. Keep its primary and secondary route lists in sync with the public pages; `sitemapOrder` controls footer ordering. The footer displays the sitemap in two columns and does not include a pathogen route.
 
 ### Research themes
 
-Use **Research → New** or edit an existing entry. Each entry has a title, summary, integer display order (lower numbers appear first), featured toggle, optional image, and Markdown body. The supplied themes are:
+Use **Research → New** or edit an existing entry. Each entry has a title, summary, integer display order (lower numbers appear first), featured toggle, optional image, and Markdown body. The six supplied themes and their scientific descriptions come from **for website_guru,part.docx**:
 
-- Molecular Epidemiology and Genomics.
-- Antimicrobial Resistance Surveillance and Detection.
-- Rapid Molecular Diagnostics.
-- Respiratory Pathogen Research.
+- Bacterial Epidemiology and Genomics.
+- Antimicrobial Resistance and Molecular Surveillance.
+- Respiratory Pathogens and Paediatric Pneumonia.
+- Rapid Diagnostics.
+- Antibody-Based Diagnostics and Emerging Infections.
+- Antimicrobial Peptides and Infection Control.
 
-Replace or remove any entry that does not describe the lab. Keep descriptions grounded in the supplied laboratory information.
-
+Each theme expands through its title button and adjacent rotating chevron to reveal its full Markdown description. Use a distinct concise summary for the collapsed view; clicking that noninteractive summary does not toggle the panel. Fragment links open the corresponding theme. Home and About consume the same collection, so update the research records rather than duplicating their text in templates.
 
 ### Funding
 
@@ -59,29 +61,29 @@ Use **Funding → New** or edit an existing project. Each entry has:
 - **Title** (required).
 - **Funder**, **funding amount**, **period**, and **role** (optional when not supplied). Include the currency in the amount, for example `INR 10,00,000`; do not enter an unverified amount. Missing metadata is omitted from the page.
 - **Display order** (required integer).
-- **Project description**, entered as Markdown rich text. Add the supplied project description to this body. The BIRAC entry is the only one for which the supplied information has no description, so its body may remain empty; do not write a replacement description.
+- **Project description**, entered as Markdown rich text. Include the full project title, background and rationale, objectives, and scientific significance. Each project opens through its title button and adjacent rotating chevron, with independent keyboard-operable state. Funding metadata stays visible and selectable outside the title control. Fragment links open the corresponding project.
 
-The supplied project records are:
+The six supplied project records and their full scientific descriptions come from **for website_guru,part.docx**:
 
 1. Pneumococcal Carriage and Epidemiology — ICMR; 2022–2025; Principal Investigator.
 2. Rapid Detection of Carbapenem Resistance — RUAS; 2022–2023; Principal Investigator.
 3. Multiplex Diagnostics for Paediatric Pneumonia — ICMR; 2023–2026; Principal Investigator.
-4. Development of Peptide-Based Agents for Endodontic Disinfection — ICMR; 2024–2026; Co-Principal Investigator.
+4. Peptide-Based Agents for Endodontic Disinfection — ICMR; 2024–2026; Co-Principal Investigator.
 5. Accelerated Diagnostics for Antimicrobial Resistance — ICMR; 2025–2028; Co-Principal Investigator.
-6. BIRAC — no further project details supplied.
+6. Point-of-Care Diagnosis for Melioidosis — BIRAC; 2026–2028; Principal Investigator.
 
 ### Team
 
 Each person has a name, role, group (`leadership`, `researchers`, `students`, or `alumni`), integer display order, optional photo, optional public email, optional website, and Markdown bio. The supplied team is:
 
 - Dr. Tushar Shaw — leadership.
-- Vaishnavi Vishram Naik, Guruprasad, Ramanath, and Anu Kurian — researchers.
-- Varshaa M, Ankita, Devika, and Deepika — students.
-- Zohra, Priyanka, and Virti — alumni.
+- Vaishnavi Vishram Naik, Anu Kurian, Guruprasad Baipadithaya, and Ramnadh Yenduri — researchers.
+- Varshaa Manikandan, Ankita Sharma, Devika, and Deepika — students.
+- Umme Zohra, Sinchana Raj, Priyanka V., Virthi Chheda, Ramya A. S., Prakruthi N. S., Souvik Adhikari, and Aakarsh — alumni.
 
-Use **Alumni** for the group label and `Varshaa M` for the student's name. Add biographies, email addresses, and websites only when the lab provides them.
+Student interns and alumni are intentionally text-only: photos and initials avatars are not rendered for these groups. Include supplied degrees or past roles in the role field. Add biographies, email addresses, and websites only when the lab provides them.
 
-Profile bodies are intentionally empty until a real biography is supplied; do not repeat the role as a placeholder biography.
+Retain supplied biographies and roles from **for website_guru,part.docx**. Where no biography is supplied, leave the body empty rather than repeating the role as a placeholder biography.
 
 ### Publications
 
@@ -93,7 +95,7 @@ Use **Publications → New** for subsequent work. Enter title, authors as list i
 
 ### Recognition
 
-No recognition entries were supplied. Leave **Recognition** empty rather than adding an invented award or date. When the lab provides one, add its title, optional date, summary, featured toggle, and optional Markdown details. Undated entries are supported and follow dated entries. Dates must be supplied by the lab; do not infer them.
+The archive contains all 15 achievements from **Lab website.docx**, with 19 embedded photographs mapped to their source events. Entries include awards, invited sessions, presentations, and travel support. Edit **Recognition** to maintain title, summary, full Markdown context, featured toggle, optional year/month or exact date, and optional photographs with descriptions and intrinsic dimensions. Use only documented precision: year-only events stay year-only and Barcelona is April 2024. The four undated sessions follow dated entries without a visible undated heading or navigation link; the page does not display archive totals. Do not invent dates or add substitute photos to events without supplied images. Photographs link to their full-size local files.
 
 ### News/Events
 
@@ -118,15 +120,13 @@ Any text after the closing `---` is optional Markdown detail. The same frontmatt
 
 The **Join** page uses the Site settings **Join text** and the lab's supplied research description. Write only an invitation the lab has approved. Department, email, phone, and social links are intentionally optional: leave each unknown value empty, then add each value in **Site settings** when the lab supplies it. Contact shows only supplied location and contact details, without missing-information notices or empty columns. Keep address lines limited to locations supplied by the lab. Never substitute placeholder or personal contact details.
 
-## Replace the named portrait placeholders
+## Maintain supplied photographs and branding
 
-The initial team photos are named SVG replacement cues in `public/images/people/`. To use a real portrait without local tools:
+The five leadership/researcher portraits were extracted from **for website_guru,part.docx** and are stored in `public/images/people/`; obsolete SVG portrait placeholders have been removed. To replace a portrait, open **Team** in Pages CMS, select the person, and upload an approved image with the **Photo** field. Keep the image focused on the named person. Interns and alumni remain photo-free regardless of an uploaded photo.
 
-1. In Pages CMS, open **Team**, select the person, and use the **Photo** image field to upload the approved portrait. Pages CMS stores uploads in `public/images/uploads`.
-2. Save/commit the person entry. The uploaded photo replaces that person's placeholder on the site; repeat for each person as portraits become available.
-3. Keep the image focused on the named person, use a descriptive filename, and publish only portraits approved for public use.
+Use **Homepage → Overview images** for approved laboratory photographs; the same ordered list appears on Home and About. An empty list hides both galleries. Use descriptive alt text and neutral captions that do not imply an unverified location or affiliation.
 
-The named placeholders map to these people: `tushar-shaw.svg` (Dr. Tushar Shaw), `vaishnavi-vishram-naik.svg` (Vaishnavi Vishram Naik), `guruprasad.svg` (Guruprasad), `ramanath.svg` (Ramanath), `anu-kurian.svg` (Anu Kurian), `varshaa-m.svg` (Varshaa M), `ankita.svg` (Ankita), `devika.svg` (Devika), `deepika.svg` (Deepika), `zohra.svg` (Zohra), `priyanka.svg` (Priyanka), and `virti.svg` (Virti). A person can keep the replacement cue until an approved portrait is available.
+The header emblem is cropped from the supplied branding image and stored as `public/images/branding/lab-emblem.webp`, without the adjacent wordmark or tagline.
 
 ## Images and GitHub project paths
 
@@ -147,3 +147,34 @@ If a custom domain is attached in **Settings → Pages**, configure its DNS in G
 ## Local development
 
 Run `npm ci`, then `npm run dev`. If a new entry in a previously empty collection does not appear in the local development server, restart it; production builds always reload the collections. Use `npm run check` for Astro/TypeScript diagnostics and `npm run build` for the static site. To exercise GitHub project hosting locally, set `BASE_PATH=/labsite` and `SITE_URL=https://example.org/labsite` when building, then run `npm run preview` and open `/labsite/`.
+
+### Persistent preview on the development host
+
+This host serves the current checkout at **http://100.73.74.17:30001/**, bound only to its private-network interface. Connect through the host's private network; this is an unauthenticated development server, not a public deployment. One branch is served at a time, with Astro's normal live reload for edits.
+
+To serve this preview behind a domain, set `LABSITE_URL` in the ignored root `.env` file to that URL or hostname, then restart the service. `astro.config.mjs` loads it at startup and adds only its exact hostname to `vite.server.allowedHosts`; it does not disable host checks or allow arbitrary subdomains. Astro ignores a separate `vite.config.js`. The reverse proxy should send traffic to `http://100.73.74.17:30001`, preserve the original `Host` header, and forward WebSocket upgrades for live reload. Terminate HTTPS and apply any authentication/access restrictions at the proxy; the dev server itself has no authentication.
+
+The enabled user service `labsite-dev.service` runs independently of the assistant session. User lingering is enabled so it can start at boot without an interactive login. Its machine-local unit is `~/.config/systemd/user/labsite-dev.service`; it uses this checkout at `/home/azureuser/code/labsite` and the installed Node 24.18.1 runtime. No application source changes are needed to run the service.
+
+Resume the assistant session and ask **“Serve branch <name> on port 30001.”** The workflow is to preserve any uncommitted work, stop the service, switch to the requested source branch, install that branch's locked dependencies, and restart the service at the same URL. Do not use the generated `gh-pages` branch as a development source checkout.
+
+To switch manually, first commit or otherwise preserve all working-tree changes and confirm `git status --short` is empty. From the repository root, replace `BRANCH_NAME` below with an existing source branch:
+
+```sh
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+systemctl --user stop labsite-dev.service &&
+  git switch BRANCH_NAME &&
+  npm ci &&
+  systemctl --user start labsite-dev.service
+```
+
+If switching or installing fails, the service intentionally stays stopped; resolve the failure or switch back before starting it. The service clears Astro's content cache on startup (`--force`) so a restarted branch does not reuse the previous branch's collection data. Wait for the ready message in the journal before reloading the browser; check that the announced port is 30001, since Astro can choose another port if that port is occupied.
+
+```sh
+systemctl --user status labsite-dev.service
+journalctl --user -u labsite-dev.service -n 50 --no-pager
+systemctl --user restart labsite-dev.service
+systemctl --user stop labsite-dev.service
+```
+
+Use `systemctl --user disable --now labsite-dev.service` to stop the server and remove boot startup. This host setup does not change GitHub Pages publishing.

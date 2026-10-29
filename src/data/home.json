@@ -3,14 +3,18 @@
   "overviewLabel": "The laboratory",
   "images": [
     {
-      "src": "/images/research-microbial.svg",
-      "alt": "Abstract illustration of connected microbial populations",
-      "caption": "Pathogen diversity & transmission"
+      "src": "/images/laboratory/bacterial-culture.webp",
+      "alt": "Gloved hands holding a bacterial culture plate above a laboratory bench",
+      "caption": "Bacterial culture and microbiology",
+      "width": 506,
+      "height": 337
     },
     {
-      "src": "/images/research-signals.svg",
-      "alt": "Abstract illustration of diagnostic signal patterns",
-      "caption": "Rapid molecular diagnostics"
+      "src": "/images/laboratory/molecular-workflow.webp",
+      "alt": "A multichannel pipette and gloved hands working with a microplate",
+      "caption": "Molecular laboratory workflows",
+      "width": 533,
+      "height": 342
     }
   ],
   "researchTitle": "Research overview",
