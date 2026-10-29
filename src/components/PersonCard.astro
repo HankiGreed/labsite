@@ -32,6 +32,10 @@ const link = linkValue
 ---
 
 <article class:list={["person-card", { "person-card--text-only": !imageUrl }]}>
+  <header class="person-card__header">
+    <h3>{name}</h3>
+    {role && <p class="person-card__role">{role}</p>}
+  </header>
   {
     imageUrl && (
       <img
@@ -43,8 +47,6 @@ const link = linkValue
     )
   }
   <div class="person-card__body">
-    <h4>{name}</h4>
-    {role && <p class="person-card__role">{role}</p>}
     {bio && <p>{bio}</p>}
     {
       Astro.slots.has("default") && (
@@ -83,17 +85,25 @@ const link = linkValue
 <style>
   .person-card {
     display: grid;
-    grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 1.3fr);
+    grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr);
     gap: clamp(1rem, 2.5vw, 1.75rem);
     align-items: start;
     padding: 1.35rem 0;
     border-top: 1px solid var(--line);
   }
 
+  .person-card__header {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 0.4rem;
+  }
+
   .person-card__image {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    height: auto;
+    max-height: 22rem;
+    object-fit: contain;
+    object-position: left top;
   }
 
   .person-card--text-only {
@@ -106,7 +116,10 @@ const link = linkValue
     gap: 0.6rem;
   }
 
-  .person-card h4 {
+  .person-card h3 {
+    font-size: clamp(1.35rem, 2vw, 1.8rem);
+    line-height: 1.2;
+    margin-top: 0;
     margin-bottom: 0;
   }
 
@@ -153,9 +166,18 @@ const link = linkValue
   }
 
   @media (max-width: 38rem) {
-    .person-card:not(.person-card--text-only) {
-      grid-template-columns: 5rem minmax(0, 1fr);
+    .person-card {
+      grid-template-columns: minmax(0, 1fr);
       gap: 1rem;
+    }
+
+    .person-card__image {
+      width: min(100%, 11rem);
+      max-height: 16rem;
+    }
+
+    .person-card h3 {
+      font-size: 1.3rem;
     }
   }
 </style>

@@ -103,8 +103,8 @@ const renderedPeople = await Promise.all(
 
   .people-group {
     display: grid;
-    grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
     padding-block: clamp(1.5rem, 3vw, 2rem);
     border-bottom: 1px solid var(--c-rule);
   }
@@ -116,67 +116,13 @@ const renderedPeople = await Promise.all(
   }
 
   .people-group__heading h2 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
   }
 
   .people-grid {
     display: grid;
     gap: 0;
-  }
-
-  .people-grid :global(.person-card) {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(1rem, 3vw, 1.75rem);
-    padding-block: 1rem;
-    border: 0;
-    border-top: 1px solid var(--c-rule);
-  }
-
-  .people-grid :global(.person-card:first-child) {
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .people-grid :global(.person-card:not(.person-card--text-only)) {
-    grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
-  }
-
-  .people-grid :global(.person-card__image) {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 0;
-  }
-
-  .people-grid :global(.person-card__body) {
-    align-content: start;
-    gap: 0.45rem;
-    padding: 0.15rem 0 0;
-  }
-
-  .people-grid :global(.person-card h4) {
-    margin-bottom: 0.1rem;
-    font-size: clamp(1.35rem, 2vw, 1.8rem);
-  }
-
-  .people-grid :global(.person-card p) {
-    margin-bottom: 0;
-  }
-
-  .people-grid :global(.person-card__role) {
-    color: var(--c-teal);
-  }
-
-  .people-grid :global(.person-card__prose) {
-    color: var(--c-muted);
-  }
-
-  .people-grid :global(.person-card__links) {
-    margin-top: 0.4rem;
-  }
-
-  .people-grid :global(.person-card__links a) {
-    color: var(--c-teal);
   }
 
   .empty-state {
@@ -185,17 +131,17 @@ const renderedPeople = await Promise.all(
     color: var(--c-muted);
   }
 
-  @media (max-width: 48rem) {
-    .people-group {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-  }
-
   @media (max-width: 38rem) {
-    .people-grid :global(.person-card:not(.person-card--text-only)) {
-      grid-template-columns: 5.5rem minmax(0, 1fr);
-      gap: 1rem;
+    .people-hero h1 {
+      font-size: 2.1rem;
+    }
+
+    .people-group__heading {
+      gap: 0.75rem;
+    }
+
+    .people-group__heading h2 {
+      font-size: 1.4rem;
     }
   }
 </style>

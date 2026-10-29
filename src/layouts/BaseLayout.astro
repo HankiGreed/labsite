@@ -381,6 +381,23 @@ const socialImage = "image" in site ? imageSrc(site.image) : undefined;
   }
 
   @media (max-width: 38rem) {
+    h1,
+    .editorial-hero h1 {
+      font-size: clamp(1.9rem, 7vw, 2.2rem);
+      line-height: 1.12;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+
+    h3,
+    h4 {
+      font-size: 1.2rem;
+      line-height: 1.25;
+    }
+
     .editorial-canvas {
       padding-top: 0;
     }

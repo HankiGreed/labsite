@@ -66,16 +66,15 @@ const focusAreas = (await getCollection("research")).sort(
             <p class="editorial-index">
               01 <span aria-hidden="true">/</span> About the laboratory
             </p>
+            <h2 id="overview-title">Infectious disease research</h2>
           </div>
           <div class="about-overview__body">
-            <h2 id="overview-title">Infectious disease research</h2>
-            {about.map((paragraph) => <p>{paragraph}</p>)}
             {
               overviewImages.length > 0 && (
                 <div
                   class="about-overview__images"
                   role="group"
-                  aria-label="Laboratory workflows"
+                  aria-label="Laboratory group photographs"
                 >
                   {overviewImages.map((image) => (
                     <figure>
@@ -95,6 +94,9 @@ const focusAreas = (await getCollection("research")).sort(
                 </div>
               )
             }
+            <div class="about-overview__copy">
+              {about.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
           </div>
         </section>
 
@@ -225,6 +227,27 @@ const focusAreas = (await getCollection("research")).sort(
     border-bottom: 1px solid var(--about-rule);
   }
 
+  .about-overview {
+    display: block;
+  }
+
+  .about-overview .about-section-label {
+    max-width: none;
+    margin-bottom: 2rem;
+  }
+
+  .about-overview .about-section-label h2 {
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .about-overview__body {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: start;
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+
   .about-overview__body,
   .about-methods__body,
   .about-focus__body {
@@ -245,9 +268,8 @@ const focusAreas = (await getCollection("research")).sort(
 
   .about-overview__images {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    grid-template-columns: 1fr;
     gap: 1.25rem;
-    margin-top: 2rem;
   }
 
   .about-overview__images figure {
@@ -352,6 +374,25 @@ const focusAreas = (await getCollection("research")).sort(
   }
 
   @media (max-width: 38rem) {
+    .about-hero__copy h1 {
+      font-size: clamp(1.9rem, 8vw, 2.2rem);
+      line-height: 1.1;
+    }
+
+    .about-overview h2,
+    .about-methods h2,
+    .about-focus h2 {
+      font-size: 1.5rem;
+    }
+
+    .about-focus__item h3 {
+      font-size: 1.25rem;
+    }
+
+    .about-overview__body {
+      grid-template-columns: 1fr;
+    }
+
     .about-methods__list {
       grid-template-columns: 1fr;
     }

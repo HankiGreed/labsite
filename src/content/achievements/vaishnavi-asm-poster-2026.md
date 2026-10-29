@@ -1,6 +1,7 @@
 ---
 title: "Poster Presentation — ASM Global Research Symposium 2026"
 year: 2026
+order: 2
 summary: "Vaishnavi Naik | ASM Student Chapter, RUAS"
 featured: false
 images:

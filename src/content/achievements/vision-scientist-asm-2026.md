@@ -1,6 +1,7 @@
 ---
 title: "Vision Scientist Presentation — ASM Global Research Symposium 2026"
 year: 2026
+order: 1
 summary: "Dr. Tushar Shaw | M. S. Ramaiah University of Applied Sciences"
 featured: false
 images:

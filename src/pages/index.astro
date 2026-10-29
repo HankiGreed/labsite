@@ -42,7 +42,7 @@ const research = (await getCollection("research"))
                 <div
                   class="overview-images"
                   role="group"
-                  aria-label="Laboratory workflows"
+                  aria-label="Laboratory group photographs"
                 >
                   {overviewImages.map((image) => (
                     <figure>
@@ -190,7 +190,7 @@ const research = (await getCollection("research"))
   .overview-images {
     display: grid;
     gap: 1.1rem;
-    flex: 0 0 34%;
+    flex: 0 0 42%;
   }
   figure {
     margin: 0;
@@ -286,15 +286,30 @@ const research = (await getCollection("research"))
       gap: 2rem;
     }
     .overview-images {
-      flex-basis: 34%;
+      flex-basis: 42%;
     }
   }
   @media (max-width: 38rem) {
+    .home-titlebar h1 {
+      font-size: clamp(1.9rem, 8vw, 2.2rem);
+    }
+    .home-section-heading h2,
+    .home-contact h2 {
+      font-size: 1.5rem;
+    }
+    .research-grid h3 {
+      font-size: 1.25rem;
+    }
+    .overview-copy {
+      width: 100%;
+    }
     .overview-grid {
-      flex-direction: column-reverse;
+      flex-direction: column;
     }
     .overview-images {
       width: 100%;
+      flex-basis: auto;
+      grid-template-columns: 1fr;
       gap: 1.25rem;
     }
     .research-grid,

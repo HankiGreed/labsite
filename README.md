@@ -33,7 +33,7 @@ Keep the field names and list/object shapes unchanged. Do not add a personal ema
 
 ### Homepage and page settings
 
-The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions, captions, and optional intrinsic width/height. Home and About share these photographs. The supplied culture and pipetting photographs illustrate laboratory activities; their source does not establish that they depict the lab's own facilities. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order.
+The homepage follows the overview → research overview → contact layout. Edit **Homepage** for headings, links, and the ordered overview images with descriptions, captions, and optional intrinsic width/height. Home and About share the supplied group photograph followed by the group selfie. The overview paragraphs come from **Site settings → About paragraphs**; contact details and the collaboration paragraph also come from Site settings. Research previews are populated from entries marked **Featured**, in display order.
 
 Use **Research page text** and **Team page text** for section headings, category labels, links, and empty-state messages. Research starts directly with a compact title and six expandable themes, without an introduction, long-term-goal block, or pathogen section; its page intro is used only as the search/social description. There is no separate pathogen directory or organism table. Team starts directly with its member groups. **Publication page settings** controls the title and simple introduction, without source or snapshot notices. **News and Funding page text** controls concise empty-state messages; those pages use their page titles without extra introductory bands. Recognition has no separate page-text settings. Keep team group keys unchanged: they connect the page sections to the categories in the content records. Changing a visible label does not require changing its key.
 
@@ -43,7 +43,7 @@ Header navigation and the complete ten-page footer sitemap share `src/data/navig
 
 ### Research themes
 
-Use **Research → New** or edit an existing entry. Each entry has a title, summary, integer display order (lower numbers appear first), featured toggle, optional image, and Markdown body. The six supplied themes and their scientific descriptions come from **for website_guru,part.docx**:
+Use **Research → New** or edit an existing entry. Each entry has a title, summary, integer display order (lower numbers appear first), featured toggle, optional image with alt text and intrinsic width/height, and Markdown body. The six supplied themes, scientific descriptions, and matching illustrations come from **for website_guru,part.docx**:
 
 - Bacterial Epidemiology and Genomics.
 - Antimicrobial Resistance and Molecular Surveillance.
@@ -52,7 +52,7 @@ Use **Research → New** or edit an existing entry. Each entry has a title, summ
 - Antibody-Based Diagnostics and Emerging Infections.
 - Antimicrobial Peptides and Infection Control.
 
-Each theme expands through its title button and adjacent rotating chevron to reveal its full Markdown description. Use a distinct concise summary for the collapsed view; clicking that noninteractive summary does not toggle the panel. Fragment links open the corresponding theme. Home and About consume the same collection, so update the research records rather than duplicating their text in templates.
+Each theme shows its illustration while collapsed and expands through its title button and adjacent rotating chevron to reveal its full Markdown description. Use a distinct concise summary; clicking that noninteractive summary does not toggle the panel. Set `image`, `imageAlt`, `imageWidth`, and `imageHeight` together when replacing a research illustration. Fragment links open the corresponding theme. Home and About consume the same collection, so update the research records rather than duplicating their text in templates.
 
 ### Funding
 
@@ -95,7 +95,7 @@ Use **Publications → New** for subsequent work. Enter title, authors as list i
 
 ### Recognition
 
-The archive contains all 15 achievements from **Lab website.docx**, with 19 embedded photographs mapped to their source events. Entries include awards, invited sessions, presentations, and travel support. Edit **Recognition** to maintain title, summary, full Markdown context, featured toggle, optional year/month or exact date, and optional photographs with descriptions and intrinsic dimensions. Use only documented precision: year-only events stay year-only and Barcelona is April 2024. The four undated sessions follow dated entries without a visible undated heading or navigation link; the page does not display archive totals. Do not invent dates or add substitute photos to events without supplied images. Photographs link to their full-size local files.
+The archive contains all 15 achievements from **Lab website.docx**, with 19 embedded photographs mapped to their source events. Edit **Recognition** to maintain title, summary, full Markdown context, featured toggle, optional year/month or exact date, optional display order, and photographs with descriptions and intrinsic dimensions. Years sort newest first; within a year, explicit `order` values come before unordered entries, which retain alphabetical ordering. The first four 2026 records have orders 1–4: Vision Scientist, Vaishnavi’s ASM poster, Research Incentive Award, and Vaishnavi’s Best Poster Award. Use only documented date precision; four undated sessions follow dated entries without a visible undated heading. Photographs link to their full-size local files.
 
 ### News/Events
 
@@ -124,7 +124,9 @@ The **Join** page uses the Site settings **Join text** and the lab's supplied re
 
 The five leadership/researcher portraits were extracted from **for website_guru,part.docx** and are stored in `public/images/people/`; obsolete SVG portrait placeholders have been removed. To replace a portrait, open **Team** in Pages CMS, select the person, and upload an approved image with the **Photo** field. Keep the image focused on the named person. Interns and alumni remain photo-free regardless of an uploaded photo.
 
-Use **Homepage → Overview images** for approved laboratory photographs; the same ordered list appears on Home and About. An empty list hides both galleries. Use descriptive alt text and neutral captions that do not imply an unverified location or affiliation.
+Use **Homepage → Overview images** for approved group photographs; the same ordered list appears on Home and About. The supplied originals remain at `public/images/laboratory/group-photo.jpeg` and `group-selfie.jpeg`. An empty list hides both galleries. Use descriptive alt text and neutral captions.
+
+Photo-section headings sit above their image and text regions. On small screens, images precede full-width body text; page and card headings use a reduced scale. Keep that reading order when updating Home, About, Research, Team, or Recognition layouts.
 
 The header emblem is cropped from the supplied branding image and stored as `public/images/branding/lab-emblem.webp`, without the adjacent wordmark or tagline.
 

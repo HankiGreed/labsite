@@ -11,6 +11,9 @@ const research = defineCollection({
     order: z.number().int(),
     featured: z.boolean(),
     image: imagePath.optional(),
+    imageAlt: z.string().min(1).optional(),
+    imageWidth: z.number().int().positive().optional(),
+    imageHeight: z.number().int().positive().optional(),
   }),
 });
 
@@ -72,6 +75,7 @@ const achievements = defineCollection({
     date: z.coerce.date().optional(),
     year: z.number().int().optional(),
     month: z.number().int().min(1).max(12).optional(),
+    order: z.number().int().optional(),
     summary: z.string(),
     featured: z.boolean(),
     images: z

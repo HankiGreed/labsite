@@ -171,6 +171,18 @@ content:
         label: Image
         type: image
         required: false
+      - name: imageAlt
+        label: Image description for accessibility
+        type: string
+        required: false
+      - name: imageWidth
+        label: Image width in pixels
+        type: number
+        required: false
+      - name: imageHeight
+        label: Image height in pixels
+        type: number
+        required: false
       - name: body
         label: Body
         type: rich-text
@@ -351,6 +363,10 @@ content:
         required: false
       - name: month
         label: Month number (1–12, only if documented alongside a year)
+        type: number
+        required: false
+      - name: order
+        label: Display order within year (lower numbers first)
         type: number
         required: false
       - name: summary

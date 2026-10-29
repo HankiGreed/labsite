@@ -1,5 +1,5 @@
 ---
-import { asText, type EntryLike, valueOf } from "./content";
+import { asText, imageSrc, type EntryLike, valueOf } from "./content";
 
 interface Props {
   entry: EntryLike;
@@ -8,6 +8,13 @@ interface Props {
 const { entry } = Astro.props;
 const title = asText(valueOf(entry, "title"), "Research area");
 const summary = asText(valueOf(entry, "summary"));
+const imageUrl = imageSrc(valueOf(entry, "image"));
+const imageAlt = asText(
+  valueOf(entry, "imageAlt"),
+  `${title} research illustration`,
+);
+const imageWidth = asText(valueOf(entry, "imageWidth")) || undefined;
+const imageHeight = asText(valueOf(entry, "imageHeight")) || undefined;
 const panelId = `research-${entry.id ?? entry.slug}-body`;
 ---
 
@@ -32,7 +39,27 @@ const panelId = `research-${entry.id ?? entry.slug}-body`;
       </svg>
     </button>
   </h2>
-  <p class="research-card__excerpt">{summary}</p>
+  <div
+    class:list={[
+      "research-card__preview",
+      { "research-card__preview--illustrated": Boolean(imageUrl) },
+    ]}
+  >
+    {
+      imageUrl && (
+        <img
+          class="research-card__image"
+          src={imageUrl}
+          alt={imageAlt}
+          width={imageWidth}
+          height={imageHeight}
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
+    <p class="research-card__excerpt">{summary}</p>
+  </div>
   <div id={panelId} class="research-card__prose prose" hidden>
     <slot />
   </div>
@@ -112,6 +139,20 @@ const panelId = `research-${entry.id ?? entry.slug}-body`;
     text-underline-offset: 0.2em;
   }
 
+  .research-card__preview--illustrated {
+    display: grid;
+    grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.1rem;
+  }
+
+  .research-card__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.35rem;
+  }
+
   .research-card__excerpt,
   .research-card__prose {
     color: var(--muted);
@@ -150,5 +191,20 @@ const panelId = `research-${entry.id ?? entry.slug}-body`;
 
   .research-card__prose :global(p + p) {
     margin-top: 0.8rem;
+  }
+
+  @media (max-width: 38rem) {
+    .research-card__title {
+      font-size: clamp(1.2rem, 4.7vw, 1.35rem);
+    }
+
+    .research-card__preview--illustrated {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.85rem;
+    }
+
+    .research-card__image {
+      max-width: 24rem;
+    }
   }
 </style>

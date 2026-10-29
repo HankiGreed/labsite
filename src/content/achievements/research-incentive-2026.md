@@ -1,6 +1,7 @@
 ---
 title: "Research Incentive Award — 2026"
 year: 2026
+order: 3
 summary: "M. S. Ramaiah University of Applied Sciences (RUAS), Bengaluru"
 featured: false
 images:
