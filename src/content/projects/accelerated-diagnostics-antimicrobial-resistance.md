@@ -3,7 +3,7 @@ title: "Accelerated Diagnostics for Antimicrobial Resistance"
 funder: "ICMR"
 period: "2025–2028"
 role: "Co-Principal Investigator: Dr. Tushar Shaw"
-amount: "Grant amount to be confirmed"
+amount: "₹1.35 Cr"
 order: 5
 ---
 

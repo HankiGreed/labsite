@@ -5,14 +5,12 @@
     {
       "src": "/images/laboratory/group-photo.jpeg",
       "alt": "Four laboratory group members standing together",
-      "caption": "Laboratory group photo",
       "width": 868,
       "height": 1156
     },
     {
       "src": "/images/laboratory/group-selfie.jpeg",
       "alt": "Six laboratory group members posing for a selfie in the lab",
-      "caption": "Group selfie in the laboratory",
       "width": 1280,
       "height": 960
     }

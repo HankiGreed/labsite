@@ -69,7 +69,7 @@ The six supplied project records and their full scientific descriptions come fro
 2. Rapid Detection of Carbapenem Resistance — RUAS; 2022–2023; Principal Investigator.
 3. Multiplex Diagnostics for Paediatric Pneumonia — ICMR; 2023–2026; Principal Investigator.
 4. Peptide-Based Agents for Endodontic Disinfection — ICMR; 2024–2026; Co-Principal Investigator.
-5. Accelerated Diagnostics for Antimicrobial Resistance — ICMR; 2025–2028; Co-Principal Investigator.
+5. Accelerated Diagnostics for Antimicrobial Resistance — ICMR; ₹1.35 Cr; 2025–2028; Co-Principal Investigator.
 6. Point-of-Care Diagnosis for Melioidosis — BIRAC; 2026–2028; Principal Investigator.
 
 ### Team
@@ -124,7 +124,7 @@ The **Join** page uses the Site settings **Join text** and the lab's supplied re
 
 The five leadership/researcher portraits were extracted from **for website_guru,part.docx** and are stored in `public/images/people/`; obsolete SVG portrait placeholders have been removed. To replace a portrait, open **Team** in Pages CMS, select the person, and upload an approved image with the **Photo** field. Keep the image focused on the named person. Interns and alumni remain photo-free regardless of an uploaded photo.
 
-Use **Homepage → Overview images** for approved group photographs; the same ordered list appears on Home and About. The supplied originals remain at `public/images/laboratory/group-photo.jpeg` and `group-selfie.jpeg`. An empty list hides both galleries. Use descriptive alt text and neutral captions.
+Use **Homepage → Overview images** for approved group photographs; the same ordered list appears on Home and About. The supplied originals remain at `public/images/laboratory/group-photo.jpeg` and `group-selfie.jpeg`. An empty list hides both galleries. Keep descriptive alt text; the two group photographs are displayed without captions (leave their optional caption fields empty).
 
 Photo-section headings sit above their image and text regions. On small screens, images precede full-width body text; page and card headings use a reduced scale. Keep that reading order when updating Home, About, Research, Team, or Recognition layouts.
 
