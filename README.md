@@ -4,16 +4,16 @@ This repository contains the static Astro site for the **Tushar Shaw Lab**, led 
 
 ## Publish the site on GitHub Pages
 
-1. The production site is **https://tusharshawlab.site/**. Keep `main` as the editable source branch; the workflow generates the `gh-pages` publishing branch.
+1. The production site is **https://www.tusharshawlab.site/**. Keep `main` as the editable source branch; the workflow generates the `gh-pages` publishing branch.
 2. Upload this entire project to the repository's `main` branch, including `.github`, `.pages.yml`, and `package-lock.json`. GitHub's web uploader is sufficient; developers may use Git.
-3. In GitHub, open **Settings → Pages**, set **Build and deployment → Source** to **Deploy from a branch**, and select **gh-pages** with **/ (root)**. Set **Custom domain** to `tusharshawlab.site` and enable **Enforce HTTPS** once its certificate is ready.
+3. In GitHub, open **Settings → Pages**, set **Build and deployment → Source** to **Deploy from a branch**, and select **gh-pages** with **/ (root)**. Set **Custom domain** to `www.tusharshawlab.site` and enable **Enforce HTTPS** once GitHub makes it available.
 4. Open **Actions** and wait for **Deploy Astro site to GitHub Pages**, followed by **pages build and deployment**, to finish. The site is served at the custom-domain root, not `/labsite/`.
 
 ## Update content without installing anything
 
 Pages CMS edits the files in this repository and saves each change as a Git commit. Every commit to `main` starts the GitHub Actions deployment.
 
-1. Open **Settings → Pages** in GitHub and confirm the publishing source is **Deploy from a branch → gh-pages → / (root)** and the custom domain is `tusharshawlab.site`.
+1. Open **Settings → Pages** in GitHub and confirm the publishing source is **Deploy from a branch → gh-pages → / (root)** and the custom domain is `www.tusharshawlab.site`.
 2. Visit [pagescms.org](https://pagescms.org), sign in with GitHub, and select this repository and its `main` branch. Pages CMS reads `.pages.yml` and presents the forms below.
 3. Edit or add an entry, review the form, and choose **Save/commit**. Keep the commit on `main` to publish it. The **Actions** tab shows deployment progress and the Pages URL after a successful run.
 
@@ -134,21 +134,21 @@ The header emblem is cropped from the supplied branding image and stored as `pub
 
 Use an image field in Pages CMS and upload files to the configured media folder. Use the generated media value, such as `/images/uploads/lab-meeting.webp`, rather than a full domain or a path beginning with the repository name. The site adds its Astro base path automatically, so the same content works at the root domain and at a GitHub project URL. Prefer descriptive, compressed JPG, PNG, or WebP files; avoid very large originals. Keep image subjects and captions/alt text appropriate for public use.
 
-Production builds default to `https://tusharshawlab.site` with base path `/` in `astro.config.mjs`. The deployment workflow uses those defaults; do not reintroduce a repository-name prefix. `public/CNAME` is copied into the generated site and preserves the custom domain on each publish. `SITE_URL` and `BASE_PATH` remain optional overrides for local routing checks, not values to hard-code in content.
+Production builds default to the HTTPS-ready hostname `https://www.tusharshawlab.site` with base path `/` in `astro.config.mjs`. The deployment workflow uses those defaults; do not reintroduce a repository-name prefix. `public/CNAME` is copied into the generated site and preserves the custom domain on each publish. `SITE_URL` and `BASE_PATH` remain optional overrides for local routing checks, not values to hard-code in content.
 
-In **Settings → Pages**, keep **Custom domain** set to `tusharshawlab.site`. At the DNS provider, retain the four `@` A records pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`, plus `www` CNAME pointing to `hankigreed.github.io` (no repository path). GitHub Pages redirects `www` to the apex domain. DNS records do not configure URL paths; use `https://tusharshawlab.site/`, not `https://tusharshawlab.site/labsite/`.
+In **Settings → Pages**, keep **Custom domain** set to `www.tusharshawlab.site`. At the DNS provider, retain the four `@` A records pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`, plus `www` CNAME pointing to `hankigreed.github.io` (no repository path). GitHub Pages redirects the apex domain to `www`; apex HTTPS additionally requires GitHub to issue its certificate, since a `www`-only certificate does not cover the apex. DNS records do not configure URL paths; use `https://www.tusharshawlab.site/`, not `/labsite/`.
 
 ## If an Actions deployment fails
 
 1. Open **Actions**, select the failed **Deploy Astro site to GitHub Pages** run, and open the first failed step.
 2. For `npm ci` failures, confirm that the committed `package-lock.json` matches `package.json`.
 3. For check or build failures, read the file and line named in the log. Common causes are a missing required field, invalid date or URL, or malformed Markdown frontmatter. Fix the entry in Pages CMS and commit again.
-4. Confirm **Settings → Pages** still uses **Deploy from a branch → gh-pages → / (root)** and the custom domain is `tusharshawlab.site`. Do not broaden permissions unnecessarily.
+4. Confirm **Settings → Pages** still uses **Deploy from a branch → gh-pages → / (root)** and the custom domain is `www.tusharshawlab.site`. Do not broaden permissions unnecessarily.
 5. After fixing the cause, choose **Re-run failed jobs** or save a new CMS commit. A successful run uploads `dist/` and deploys it; browser caches can make the update take a few minutes to appear.
 
 ## Local development
 
-Run `npm ci`, then `npm run dev`. If a new entry in a previously empty collection does not appear in the local development server, restart it; production builds always reload the collections. Use `npm run check` for Astro/TypeScript diagnostics and `npm run build` for the static site. Run `npm run preview` and open `/` to check the production build locally; canonical URLs use `https://tusharshawlab.site`.
+Run `npm ci`, then `npm run dev`. If a new entry in a previously empty collection does not appear in the local development server, restart it; production builds always reload the collections. Use `npm run check` for Astro/TypeScript diagnostics and `npm run build` for the static site. Run `npm run preview` and open `/` to check the production build locally; canonical URLs use `https://www.tusharshawlab.site`.
 
 ### Persistent preview on the development host
 
