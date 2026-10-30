@@ -9,7 +9,7 @@ const normalizeBase = (value = "/") => {
 };
 
 const base = normalizeBase(process.env.BASE_PATH ?? "/");
-const site = process.env.SITE_URL ?? "http://localhost:4321";
+const site = process.env.SITE_URL ?? "https://tusharshawlab.site";
 const { LABSITE_URL } = loadEnv(
   process.env.NODE_ENV ?? "development",
   process.cwd(),

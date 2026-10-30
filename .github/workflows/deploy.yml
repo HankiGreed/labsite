@@ -29,21 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Set site URL and base path
-        shell: bash
-        run: |
-          owner="${GITHUB_REPOSITORY%%/*}"
-          repository="${GITHUB_REPOSITORY#*/}"
-          if [[ "${repository,,}" == "${owner,,}.github.io" ]]; then
-            site_url="https://${owner}.github.io"
-            base_path="/"
-          else
-            site_url="https://${owner}.github.io/${repository}"
-            base_path="/${repository}"
-          fi
-          echo "SITE_URL=${site_url}" >> "$GITHUB_ENV"
-          echo "BASE_PATH=${base_path}" >> "$GITHUB_ENV"
-
       - name: Check Astro project
         run: npm run check
 
